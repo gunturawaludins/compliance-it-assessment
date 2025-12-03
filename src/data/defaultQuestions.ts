@@ -1,0 +1,98 @@
+import { Question, AspectCategory } from '@/types/assessment';
+
+// Default questions extracted from IT Assessment Excel - Dana Pensiun
+export const defaultQuestions: Question[] = [
+  // ================== ASPECT A: PENGAWASAN AKTIF DIREKSI DAN DEWAN KOMISARIS ==================
+  { id: 'A.1', category: 'A', text: 'Apakah Dana Pensiun telah menetapkan wewenang dan tanggung jawab Pengurus, Dewan Pengawas, Dewan Pengawas Syariah, dan pejabat pada setiap jenjang jabatan yang terkait dengan penggunaan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'A.2', category: 'A', text: 'Jika telah ada, Apakah wewenang dan tanggung jawab Pengurus mencakup paling sedikit meliputi:', isSubQuestion: false },
+  { id: 'A.2.a', category: 'A', parentId: 'A.2', text: 'Penetapan rencana pengembangan Teknologi Informasi dan kebijakan terkait penggunaan Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.b', category: 'A', parentId: 'A.2', text: 'Penetapan kebijakan dan prosedur terkait penyelenggaraan Teknologi Informasi yang memadai dan mengomunikasikannya secara efektif', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.c', category: 'A', parentId: 'A.2', text: 'Memastikan Teknologi Informasi yang digunakan dapat mendukung perkembangan usaha, pencapaian tujuan bisnis dan kelangsungan pelayanan terhadap konsumen', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.d', category: 'A', parentId: 'A.2', text: 'Memastikan kecukupan dan peningkatan kompetensi sumber daya manusia yang terkait dengan penyelenggaraan dan penggunaan Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.e', category: 'A', parentId: 'A.2', text: 'Memastikan ketersediaan sistem pengelolaan pengamanan informasi yang efektif', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.f', category: 'A', parentId: 'A.2', text: 'Memastikan proses manajemen risiko dalam penggunaan Teknologi Informasi dilaksanakan secara memadai dan efektif', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.g', category: 'A', parentId: 'A.2', text: 'Memastikan penerapan kebijakan dan prosedur Teknologi Informasi dilakukan secara efektif pada satuan kerja', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.2.h', category: 'A', parentId: 'A.2', text: 'Memastikan ketersediaan sistem pengukuran kinerja proses penyelenggaraan Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.5', category: 'A', text: 'Apakah Dana Pensiun sudah memiliki Komite pengarah Teknologi Informasi?', isSubQuestion: false },
+  { id: 'A.6', category: 'A', text: 'Apakah Dana Pensiun sudah memiliki Komite pengarah Teknologi Informasi yang beranggotakan (paling sedikit):', isSubQuestion: false },
+  { id: 'A.6.a', category: 'A', parentId: 'A.6', text: 'Direktur yang membawahkan satuan kerja penyelenggara Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.6.b', category: 'A', parentId: 'A.6', text: 'Direktur atau pejabat yang membawahkan fungsi manajemen risiko', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.6.c', category: 'A', parentId: 'A.6', text: 'Pejabat tertinggi yang membawahkan satuan kerja penyelenggara Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.6.d', category: 'A', parentId: 'A.6', text: 'Pejabat tertinggi yang membawahkan satuan kerja pengguna Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'A.8', category: 'A', text: 'Apakah pelaksanaan tugas dan tanggung jawab komite pengawas Teknologi Informasi telah diwujudkan dengan pertemuan secara berkala dan didokumentasikan?', isSubQuestion: false },
+  { id: 'A.9', category: 'A', text: 'Apakah Komite Pengarah Teknologi Informasi telah menetapkan jangka waktu pertemuan secara berkala dan sudah tertulis didalam kebijakan?', isSubQuestion: false },
+
+  // ================== ASPECT B: KEBIJAKAN DAN PROSEDUR PENGGUNAAN TI ==================
+  { id: 'B.1', category: 'B', text: 'Apakah Dana Pensiun memiliki kebijakan dan prosedur penggunaan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'B.2', category: 'B', text: 'Apakah Dana Pensiun telah melakukan kaji ulang dan pengkinian atas kebijakan dan prosedur secara berkala?', isSubQuestion: false },
+  { id: 'B.3', category: 'B', text: 'Apakah Dana Pensiun telah menetapkan jangka waktu minimal pelaksanaan kaji ulang dan pengkinian atas kebijakan dan prosedur?', isSubQuestion: false },
+  { id: 'B.4', category: 'B', text: 'Apakah kebijakan dan prosedur penggunaan Teknologi Informasi telah memuat aspek yang paling sedikit meliputi:', isSubQuestion: false },
+  { id: 'B.4.a', category: 'B', parentId: 'B.4', text: 'Manajemen', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.b', category: 'B', parentId: 'B.4', text: 'Pengembangan dan pengadaan', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.c', category: 'B', parentId: 'B.4', text: 'Operasional Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.d', category: 'B', parentId: 'B.4', text: 'Jaringan komunikasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.e', category: 'B', parentId: 'B.4', text: 'Pengamanan informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.f', category: 'B', parentId: 'B.4', text: 'Rencana Pemulihan Bencana', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.g', category: 'B', parentId: 'B.4', text: 'Penggunaan pihak penyedia jasa Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.4.h', category: 'B', parentId: 'B.4', text: 'Layanan Keuangan Elektronik', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.35', category: 'B', text: 'Apakah Dana Pensiun telah melakukan prosedur rekam cadang (backup) data secara berkala?', isSubQuestion: false },
+  { id: 'B.35.1', category: 'B', parentId: 'B.35', text: 'Rekam cadang data dilakukan pada perangkat keras di luar sistem utama', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.35.2', category: 'B', parentId: 'B.35', text: 'Rekam cadang data sebaiknya diletakkan pada lokasi yang berbeda dengan Pusat Data', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.35.3', category: 'B', parentId: 'B.35', text: 'Rekam cadang data sebaiknya diletakkan pada lokasi yang aman dari bencana', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.35.4', category: 'B', parentId: 'B.35', text: 'Harus dilakukan uji restore secara berkala untuk memastikan rekam cadang data dapat digunakan', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.35.5', category: 'B', parentId: 'B.35', text: 'Terdapat mekanisme pemusnahan dan/atau penghapusan media rekam cadang data', isSubQuestion: true, subLevel: 1 },
+  { id: 'B.52', category: 'B', text: 'Apakah kebijakan dan prosedur terkait aspek Rencana Pemulihan Bencana (Disaster Recovery Plan)?', isSubQuestion: false },
+
+  // ================== ASPECT C: RISIKO (Identifikasi, Pengukuran, Pengendalian) ==================
+  { id: 'C.1', category: 'C', text: 'Apakah Dana Pensiun telah memiliki kebijakan dan prosedur dalam melakukan proses identifikasi, pengukuran, pengendalian, dan pemantauan risiko penggunaan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'C.2', category: 'C', text: 'Apakah Dana Pensiun telah melaksanakan kebijakan dan prosedur tersebut secara konsisten?', isSubQuestion: false },
+  { id: 'C.3', category: 'C', text: 'Dalam melakukan identifikasi, pengukuran, pengendalian dan pemantauan risiko penggunaan TI, apakah telah memuat aspek:', isSubQuestion: false },
+  { id: 'C.3.a', category: 'C', parentId: 'C.3', text: 'Manajemen', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.b', category: 'C', parentId: 'C.3', text: 'Pengembangan dan pengadaan', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.c', category: 'C', parentId: 'C.3', text: 'Operasional Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.d', category: 'C', parentId: 'C.3', text: 'Jaringan komunikasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.e', category: 'C', parentId: 'C.3', text: 'Pengamanan informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.f', category: 'C', parentId: 'C.3', text: 'Rencana Pemulihan Bencana', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.g', category: 'C', parentId: 'C.3', text: 'Penggunaan pihak penyedia jasa Teknologi Informasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.3.h', category: 'C', parentId: 'C.3', text: 'Layanan Keuangan Elektronik', isSubQuestion: true, subLevel: 1 },
+  { id: 'C.6', category: 'C', text: 'Apakah Dana Pensiun memiliki pendekatan manajemen risiko yang terpadu atau terintegrasi?', isSubQuestion: false },
+  { id: 'C.19', category: 'C', text: 'Apakah Dana Pensiun telah memastikan Rencana Pemulihan Bencana (Disaster Recovery Plan) dapat dilaksanakan secara efektif?', isSubQuestion: false },
+  { id: 'C.20', category: 'C', text: 'Apakah Dana Pensiun telah memiliki daftar aplikasi inti dan infrastruktur yang tergolong kritikal, medium dan non kritikal?', isSubQuestion: false },
+  { id: 'C.21', category: 'C', text: 'Apakah Dana Pensiun telah melakukan uji coba atas Rencana Pemulihan Bencana terhadap seluruh aplikasi inti?', isSubQuestion: false },
+  { id: 'C.22', category: 'C', text: 'Apakah Dana Pensiun telah melakukan kaji ulang atas Rencana Pemulihan Bencana secara berkala?', isSubQuestion: false },
+  { id: 'C.24', category: 'C', text: 'Apakah Dana Pensiun telah memastikan pengamanan informasi dilakukan secara efektif?', isSubQuestion: false },
+
+  // ================== ASPECT D: AUDIT (Sistem Pengendalian Internal) ==================
+  { id: 'D.1', category: 'D', text: 'Apakah Dana Pensiun telah melaksanakan sistem pengendalian internal secara efektif terhadap seluruh aspek penggunaan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'D.2', category: 'D', text: 'Apakah sistem pengendalian internal telah melakukan pengendalian pada area (paling sedikit):', isSubQuestion: false },
+  { id: 'D.2.a', category: 'D', parentId: 'D.2', text: 'Pengawasan oleh manajemen', isSubQuestion: true, subLevel: 1 },
+  { id: 'D.2.b', category: 'D', parentId: 'D.2', text: 'Identifikasi dan penilaian risiko', isSubQuestion: true, subLevel: 1 },
+  { id: 'D.2.c', category: 'D', parentId: 'D.2', text: 'Kegiatan pengendalian dan pemisahan fungsi', isSubQuestion: true, subLevel: 1 },
+  { id: 'D.2.d', category: 'D', parentId: 'D.2', text: 'Sistem informasi, sistem akuntansi, dan sistem komunikasi', isSubQuestion: true, subLevel: 1 },
+  { id: 'D.2.e', category: 'D', parentId: 'D.2', text: 'Kegiatan pemantauan dan koreksi penyimpangan', isSubQuestion: true, subLevel: 1 },
+  { id: 'D.6', category: 'D', text: 'Apakah Dana Pensiun telah memastikan ketersediaan jejak audit atas seluruh kegiatan penyelenggaraan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'D.7', category: 'D', text: 'Apakah Dana Pensiun telah melaksanakan audit internal secara berkala terhadap seluruh aspek dalam penyelenggaraan dan penggunaan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'D.8', category: 'D', text: 'Apakah Dana Pensiun telah menetapkan jangka waktu pelaksanaan audit internal dalam kebijakan secara tertulis?', isSubQuestion: false },
+  { id: 'D.9', category: 'D', text: 'Apakah Dana Pensiun telah memiliki pedoman audit internal atas penggunaan Teknologi Informasi?', isSubQuestion: false },
+  { id: 'D.10', category: 'D', text: 'Apakah Dana Pensiun telah melakukan kaji ulang atas fungsi audit internal dalam penggunaan Teknologi Informasi secara berkala?', isSubQuestion: false },
+  { id: 'D.11', category: 'D', text: 'Apakah Dana Pensiun telah menetapkan jangka waktu kaji ulang atas fungsi audit internal dalam penggunaan Teknologi Informasi dalam kebijakan secara tertulis?', isSubQuestion: false },
+
+  // ================== DPA Evidence Questions (Bukti Pendukung) ==================
+  { id: 'DPA1', category: 'A', text: 'Bukti: Dokumen Job Description terkait TI tersedia?', isSubQuestion: false },
+  { id: 'DPA2', category: 'A', text: 'Bukti: SK Pembentukan Komite TI tersedia?', isSubQuestion: false },
+  { id: 'DPA3', category: 'A', text: 'Bukti: Risalah Rapat Komite TI tersedia?', isSubQuestion: false },
+  { id: 'DPB1', category: 'B', text: 'Bukti: Dokumen Kebijakan TI tersedia?', isSubQuestion: false },
+  { id: 'DPB2', category: 'B', text: 'Bukti: SOP Penggunaan TI tersedia?', isSubQuestion: false },
+  { id: 'DPA12', category: 'B', text: 'Bukti: Log Uji Restore Backup tersedia?', isSubQuestion: false },
+  { id: 'DPB3', category: 'B', text: 'Bukti: Dokumen DRP tersedia?', isSubQuestion: false },
+  { id: 'DPC1', category: 'C', text: 'Bukti: Dokumen Risk Assessment TI tersedia?', isSubQuestion: false },
+  { id: 'DPC2', category: 'C', text: 'Bukti: Laporan Uji DRP tersedia?', isSubQuestion: false },
+  { id: 'DPC3', category: 'C', text: 'Bukti: Daftar Aplikasi Kritikal tersedia?', isSubQuestion: false },
+  { id: 'DPD1', category: 'D', text: 'Bukti: Laporan Audit Internal TI tersedia?', isSubQuestion: false },
+  { id: 'DPD2', category: 'D', text: 'Bukti: Jejak Audit Log tersedia?', isSubQuestion: false },
+  { id: 'DPD3', category: 'D', text: 'Bukti: Pedoman Audit Internal TI tersedia?', isSubQuestion: false },
+];
+
+export function generateId(): string {
+  return `Q${Date.now().toString(36).toUpperCase()}`;
+}
