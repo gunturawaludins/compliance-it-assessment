@@ -1,5 +1,13 @@
 export type AspectCategory = 'A' | 'B' | 'C' | 'D';
 
+export interface AssessorInfo {
+  namaDanaPensiun: string;
+  namaPIC: string;
+  nomorHP: string;
+  jabatanPIC: string;
+  memilikiUnitSyariah: boolean;
+}
+
 export interface Question {
   id: string;
   category: AspectCategory;

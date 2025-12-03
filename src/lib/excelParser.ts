@@ -1,15 +1,12 @@
 import * as XLSX from 'xlsx';
-import { Question, AspectCategory } from '@/types/assessment';
+import { Question, AspectCategory, AssessorInfo } from '@/types/assessment';
 
-interface ExcelRow {
-  ID?: string;
-  Pertanyaan?: string;
-  Jawaban?: string;
-  'Bukti Dokumen'?: string;
-  [key: string]: string | undefined;
+export interface ParsedExcelData {
+  assessorInfo: AssessorInfo;
+  questions: Question[];
 }
 
-export function parseExcelFile(file: File): Promise<Question[]> {
+export function parseExcelFile(file: File): Promise<ParsedExcelData> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -19,58 +16,104 @@ export function parseExcelFile(file: File): Promise<Question[]> {
         const workbook = XLSX.read(data, { type: 'binary' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json<ExcelRow>(worksheet, { defval: '' });
+        
+        // Convert to array of arrays for easier parsing
+        const rawData = XLSX.utils.sheet_to_json<(string | number | undefined)[]>(worksheet, { 
+          header: 1,
+          defval: ''
+        });
+        
+        // Parse assessor info from rows 1-5 (index 0-4)
+        const assessorInfo: AssessorInfo = {
+          namaDanaPensiun: String(rawData[0]?.[3] || '').trim(),
+          namaPIC: String(rawData[1]?.[3] || '').trim(),
+          nomorHP: String(rawData[2]?.[3] || '').trim(),
+          jabatanPIC: String(rawData[3]?.[3] || '').trim(),
+          memilikiUnitSyariah: String(rawData[4]?.[3] || '').toUpperCase() === 'Y',
+        };
         
         const questions: Question[] = [];
+        let currentCategory: AspectCategory = 'A';
+        let currentMainId = '';
         
-        for (const row of jsonData) {
-          // Try different column naming conventions
-          const id = row.ID || row.id || row['No'] || row['Nomor'] || '';
-          const questionText = row.Pertanyaan || row.pertanyaan || row['Question'] || row['Soal'] || '';
-          const answer = row.Jawaban || row.jawaban || row['Answer'] || row['Ya/Tidak'] || '';
-          const evidence = row['Bukti Dokumen'] || row.Bukti || row.bukti || row['Evidence'] || '';
+        // Start from row 6 (index 5) onwards
+        for (let i = 5; i < rawData.length; i++) {
+          const row = rawData[i];
+          if (!row || row.length === 0) continue;
           
-          if (!id || !questionText) continue;
+          const colA = String(row[0] || '').trim();
+          const colB = String(row[1] || '').trim();
+          const colD = String(row[3] || '').trim();
           
-          // Determine category from ID
-          let category: AspectCategory = 'A';
-          const idStr = String(id).toUpperCase();
+          // Skip empty rows
+          if (!colA && !colB) continue;
           
-          if (idStr.startsWith('A') || idStr.startsWith('DPA')) {
-            category = 'A';
-          } else if (idStr.startsWith('B') || idStr.startsWith('DPB')) {
-            category = 'B';
-          } else if (idStr.startsWith('C') || idStr.startsWith('DPC')) {
-            category = 'C';
-          } else if (idStr.startsWith('D') || idStr.startsWith('DPD')) {
-            category = 'D';
+          // Check if this is a category header (A, B, C, D)
+          if (['A', 'B', 'C', 'D'].includes(colA) && colB.includes('ASPEK')) {
+            currentCategory = colA as AspectCategory;
+            continue;
           }
           
-          // Parse answer
+          // Check if this is a main question (has number in column A)
+          const isMainQuestion = /^\d+$/.test(colA);
+          
+          // Check if this is a sub-question (empty column A, has letter prefix in column B)
+          const isSubQuestion = !colA && colB && /^[a-z][\.\)]/.test(colB);
+          
+          let questionId = '';
+          let questionText = colB;
+          let isSubQ = false;
+          let subLevel = 0;
+          
+          if (isMainQuestion) {
+            currentMainId = colA;
+            questionId = `${currentCategory}.${colA}`;
+            questionText = colB;
+            isSubQ = false;
+          } else if (isSubQuestion) {
+            // Extract sub-question letter (a, b, c, etc.)
+            const match = colB.match(/^([a-z])[\.\)]\s*/);
+            if (match) {
+              const subLetter = match[1];
+              questionId = `${currentCategory}.${currentMainId}.${subLetter}`;
+              questionText = colB.replace(/^[a-z][\.\)]\s*/, '');
+              isSubQ = true;
+              subLevel = 1;
+            }
+          } else if (colA && !isMainQuestion) {
+            // Could be a continuation or special row
+            questionId = `${currentCategory}.${colA}`;
+            questionText = colB;
+            isSubQ = false;
+          } else {
+            continue;
+          }
+          
+          if (!questionText) continue;
+          
+          // Parse answer (Y/T)
           let parsedAnswer: 'Ya' | 'Tidak' | null = null;
-          const answerStr = String(answer).toLowerCase().trim();
-          if (answerStr === 'ya' || answerStr === 'y' || answerStr === 'yes' || answerStr === '1') {
+          const answerStr = colD.toUpperCase().trim();
+          if (answerStr === 'Y' || answerStr === 'YA' || answerStr === 'YES' || answerStr === '1') {
             parsedAnswer = 'Ya';
-          } else if (answerStr === 'tidak' || answerStr === 't' || answerStr === 'no' || answerStr === '0') {
+          } else if (answerStr === 'T' || answerStr === 'TIDAK' || answerStr === 'NO' || answerStr === '0') {
             parsedAnswer = 'Tidak';
           }
           
-          // Determine if sub-question
-          const isSubQuestion = String(id).includes('.') && String(id).split('.').length > 2;
-          
           questions.push({
-            id: String(id),
-            category,
-            text: String(questionText),
-            isSubQuestion,
-            subLevel: isSubQuestion ? 1 : undefined,
+            id: questionId,
+            category: currentCategory,
+            text: questionText,
+            isSubQuestion: isSubQ,
+            subLevel: isSubQ ? subLevel : undefined,
             answer: parsedAnswer,
-            evidence: evidence ? String(evidence) : undefined,
+            evidence: undefined,
           });
         }
         
-        resolve(questions);
+        resolve({ assessorInfo, questions });
       } catch (error) {
+        console.error('Excel parsing error:', error);
         reject(new Error('Gagal membaca file Excel. Pastikan format file benar.'));
       }
     };
@@ -83,12 +126,12 @@ export function parseExcelFile(file: File): Promise<Question[]> {
   });
 }
 
-export function exportToExcel(questions: Question[]): void {
+export function exportToExcel(questions: Question[], assessorInfo?: AssessorInfo): void {
   const exportData = questions.map(q => ({
     ID: q.id,
     Kategori: q.category,
     Pertanyaan: q.text,
-    Jawaban: q.answer || '',
+    Jawaban: q.answer === 'Ya' ? 'Y' : q.answer === 'Tidak' ? 'T' : '',
     'Bukti Dokumen': q.evidence || '',
   }));
   
@@ -96,5 +139,9 @@ export function exportToExcel(questions: Question[]): void {
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Assessment');
   
-  XLSX.writeFile(workbook, `IT_Assessment_${new Date().toISOString().split('T')[0]}.xlsx`);
+  const fileName = assessorInfo?.namaDanaPensiun 
+    ? `IT_Assessment_${assessorInfo.namaDanaPensiun}_${new Date().toISOString().split('T')[0]}.xlsx`
+    : `IT_Assessment_${new Date().toISOString().split('T')[0]}.xlsx`;
+  
+  XLSX.writeFile(workbook, fileName);
 }

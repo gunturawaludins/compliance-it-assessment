@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { AlertTriangle, AlertCircle, CheckCircle2, TrendingUp, FileSearch, ShieldAlert, ShieldCheck } from 'lucide-react';
-import { Question, FraudRule, AssessmentResult, ASPECT_SHORT_LABELS, AspectCategory } from '@/types/assessment';
+import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, ShieldCheck, Building, User, Phone, Briefcase, Calendar } from 'lucide-react';
+import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
 
@@ -8,9 +8,10 @@ interface DashboardProps {
   questions: Question[];
   rules: FraudRule[];
   onAnalyze: () => void;
+  assessorInfo?: AssessorInfo;
 }
 
-export function Dashboard({ questions, rules, onAnalyze }: DashboardProps) {
+export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: DashboardProps) {
   const result = useMemo(() => analyzeFraud(questions, rules), [questions, rules]);
 
   const categoryStats = useMemo(() => {
@@ -36,6 +37,66 @@ export function Dashboard({ questions, rules, onAnalyze }: DashboardProps) {
 
   return (
     <div className="space-y-6">
+      {/* Assessor Info Card */}
+      {assessorInfo && assessorInfo.namaDanaPensiun && (
+        <div className="glass-card rounded-2xl p-6 bg-gradient-to-br from-primary/5 to-accent/5">
+          <div className="flex items-start justify-between mb-4">
+            <h2 className="text-lg font-semibold text-foreground">Informasi Pengisi Assessment</h2>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calendar className="w-4 h-4" />
+              {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Building className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Dana Pensiun</p>
+                <p className="font-semibold text-foreground">{assessorInfo.namaDanaPensiun}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+              <div className="p-2 rounded-lg bg-accent/10">
+                <User className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">PIC (Person In Charge)</p>
+                <p className="font-semibold text-foreground">{assessorInfo.namaPIC}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+              <div className="p-2 rounded-lg bg-success/10">
+                <Briefcase className="w-5 h-5 text-success" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Jabatan</p>
+                <p className="font-semibold text-foreground">{assessorInfo.jabatanPIC}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50">
+              <div className="p-2 rounded-lg bg-warning/10">
+                <Phone className="w-5 h-5 text-warning" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">No. Handphone</p>
+                <p className="font-semibold text-foreground">{assessorInfo.nomorHP}</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+              assessorInfo.memilikiUnitSyariah 
+                ? 'bg-success/20 text-success' 
+                : 'bg-muted text-muted-foreground'
+            }`}>
+              {assessorInfo.memilikiUnitSyariah ? '✓ Memiliki Unit Syariah' : 'Tidak Memiliki Unit Syariah'}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Analyze Button */}
       <div className="glass-card rounded-xl p-4 flex items-center justify-between">
         <div>

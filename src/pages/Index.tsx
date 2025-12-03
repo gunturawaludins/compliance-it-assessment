@@ -3,18 +3,20 @@ import { Header } from '@/components/Header';
 import { QuestionEditor } from '@/components/QuestionEditor';
 import { ExcelUploader } from '@/components/ExcelUploader';
 import { Dashboard } from '@/components/Dashboard';
-import { Question, FraudRule } from '@/types/assessment';
+import { Question, FraudRule, AssessorInfo } from '@/types/assessment';
 import { defaultQuestions } from '@/data/defaultQuestions';
 import { defaultFraudRules } from '@/data/fraudRules';
 import { useToast } from '@/hooks/use-toast';
 
 const STORAGE_KEY = 'it_audit_questions';
 const RULES_KEY = 'it_audit_rules';
+const ASSESSOR_KEY = 'it_audit_assessor';
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState<'editor' | 'upload' | 'dashboard'>('editor');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [rules, setRules] = useState<FraudRule[]>([]);
+  const [assessorInfo, setAssessorInfo] = useState<AssessorInfo | undefined>();
   const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
 
@@ -22,6 +24,7 @@ export default function Index() {
   useEffect(() => {
     const savedQuestions = localStorage.getItem(STORAGE_KEY);
     const savedRules = localStorage.getItem(RULES_KEY);
+    const savedAssessor = localStorage.getItem(ASSESSOR_KEY);
     
     if (savedQuestions) {
       try {
@@ -42,6 +45,14 @@ export default function Index() {
     } else {
       setRules(defaultFraudRules);
     }
+
+    if (savedAssessor) {
+      try {
+        setAssessorInfo(JSON.parse(savedAssessor));
+      } catch {
+        // ignore
+      }
+    }
     
     setIsLoaded(true);
   }, []);
@@ -59,8 +70,17 @@ export default function Index() {
     }
   }, [rules, isLoaded]);
 
-  const handleImportQuestions = (importedQuestions: Question[]) => {
+  useEffect(() => {
+    if (isLoaded && assessorInfo) {
+      localStorage.setItem(ASSESSOR_KEY, JSON.stringify(assessorInfo));
+    }
+  }, [assessorInfo, isLoaded]);
+
+  const handleImportQuestions = (importedQuestions: Question[], importedAssessorInfo?: AssessorInfo) => {
     setQuestions(importedQuestions);
+    if (importedAssessorInfo) {
+      setAssessorInfo(importedAssessorInfo);
+    }
     setActiveTab('dashboard');
   };
 
@@ -74,6 +94,8 @@ export default function Index() {
   const handleResetData = () => {
     setQuestions(defaultQuestions);
     setRules(defaultFraudRules);
+    setAssessorInfo(undefined);
+    localStorage.removeItem(ASSESSOR_KEY);
     toast({
       title: 'Data Direset',
       description: 'Semua data telah dikembalikan ke default',
@@ -101,13 +123,13 @@ export default function Index() {
         
         {activeTab === 'upload' && (
           <div className="animate-fade-in">
-            <ExcelUploader questions={questions} onImport={handleImportQuestions} />
+            <ExcelUploader questions={questions} onImport={handleImportQuestions} assessorInfo={assessorInfo} />
           </div>
         )}
         
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in">
-            <Dashboard questions={questions} rules={rules} onAnalyze={handleAnalyze} />
+            <Dashboard questions={questions} rules={rules} onAnalyze={handleAnalyze} assessorInfo={assessorInfo} />
           </div>
         )}
       </main>

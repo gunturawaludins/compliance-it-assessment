@@ -1,20 +1,21 @@
 import { useState, useCallback } from 'react';
-import { Upload, FileSpreadsheet, Check, AlertCircle, Download, X } from 'lucide-react';
+import { Upload, FileSpreadsheet, Check, AlertCircle, Download, X, User, Building, Phone, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Question } from '@/types/assessment';
-import { parseExcelFile, exportToExcel } from '@/lib/excelParser';
+import { Question, AssessorInfo } from '@/types/assessment';
+import { parseExcelFile, exportToExcel, ParsedExcelData } from '@/lib/excelParser';
 import { useToast } from '@/hooks/use-toast';
 
 interface ExcelUploaderProps {
-  onImport: (questions: Question[]) => void;
+  onImport: (questions: Question[], assessorInfo?: AssessorInfo) => void;
   questions: Question[];
+  assessorInfo?: AssessorInfo;
 }
 
-export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
+export function ExcelUploader({ onImport, questions, assessorInfo }: ExcelUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
-  const [previewData, setPreviewData] = useState<Question[] | null>(null);
+  const [previewData, setPreviewData] = useState<ParsedExcelData | null>(null);
   const { toast } = useToast();
 
   const handleFile = async (file: File) => {
@@ -29,12 +30,12 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
 
     setIsLoading(true);
     try {
-      const parsedQuestions = await parseExcelFile(file);
+      const parsedData = await parseExcelFile(file);
       setUploadedFile(file.name);
-      setPreviewData(parsedQuestions);
+      setPreviewData(parsedData);
       toast({
         title: 'File Berhasil Dibaca',
-        description: `${parsedQuestions.length} pertanyaan ditemukan`,
+        description: `${parsedData.questions.length} pertanyaan ditemukan`,
       });
     } catch (error) {
       toast({
@@ -70,10 +71,10 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
 
   const confirmImport = () => {
     if (previewData) {
-      onImport(previewData);
+      onImport(previewData.questions, previewData.assessorInfo);
       toast({
         title: 'Import Berhasil',
-        description: `${previewData.length} pertanyaan telah diimport`,
+        description: `${previewData.questions.length} pertanyaan telah diimport`,
       });
       setPreviewData(null);
       setUploadedFile(null);
@@ -142,7 +143,7 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
               </div>
               <div>
                 <p className="font-medium text-foreground">{uploadedFile}</p>
-                <p className="text-xs text-muted-foreground">{previewData.length} pertanyaan ditemukan</p>
+                <p className="text-xs text-muted-foreground">{previewData.questions.length} pertanyaan ditemukan</p>
               </div>
             </div>
             <Button variant="ghost" size="icon" onClick={cancelImport}>
@@ -150,32 +151,82 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
             </Button>
           </div>
 
+          {/* Assessor Info Preview */}
+          {previewData.assessorInfo.namaDanaPensiun && (
+            <div className="bg-primary/10 rounded-lg p-4 space-y-3">
+              <p className="text-sm font-semibold text-primary">Informasi Pengisi Assessment</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center gap-2">
+                  <Building className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Dana Pensiun</p>
+                    <p className="text-sm font-medium text-foreground">{previewData.assessorInfo.namaDanaPensiun}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Nama PIC</p>
+                    <p className="text-sm font-medium text-foreground">{previewData.assessorInfo.namaPIC}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Jabatan</p>
+                    <p className="text-sm font-medium text-foreground">{previewData.assessorInfo.jabatanPIC}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">No. HP</p>
+                    <p className="text-sm font-medium text-foreground">{previewData.assessorInfo.nomorHP}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <span className={`px-2 py-0.5 rounded text-xs font-medium ${previewData.assessorInfo.memilikiUnitSyariah ? 'bg-success/20 text-success' : 'bg-muted text-muted-foreground'}`}>
+                  {previewData.assessorInfo.memilikiUnitSyariah ? 'Memiliki Unit Syariah' : 'Tidak Memiliki Unit Syariah'}
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Preview Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {(['A', 'B', 'C', 'D'] as const).map(cat => {
-              const count = previewData.filter(q => q.category === cat).length;
+              const count = previewData.questions.filter(q => q.category === cat).length;
+              const answered = previewData.questions.filter(q => q.category === cat && q.answer).length;
               return (
                 <div key={cat} className="bg-secondary/50 rounded-lg p-3 text-center">
                   <p className="text-2xl font-bold text-foreground">{count}</p>
                   <p className="text-xs text-muted-foreground">Aspek {cat}</p>
+                  <p className="text-xs text-primary">{answered} dijawab</p>
                 </div>
               );
             })}
           </div>
 
           {/* Sample Preview */}
-          <div className="bg-secondary/30 rounded-lg p-3 max-h-40 overflow-y-auto scrollbar-thin">
+          <div className="bg-secondary/30 rounded-lg p-3 max-h-48 overflow-y-auto scrollbar-thin">
             <p className="text-xs text-muted-foreground mb-2">Preview Data:</p>
-            {previewData.slice(0, 5).map((q, idx) => (
-              <div key={idx} className="text-xs py-1 border-b border-border/30 last:border-0">
-                <span className="font-mono text-primary">{q.id}</span>
-                <span className="mx-2 text-muted-foreground">-</span>
-                <span className="text-foreground">{q.text.substring(0, 60)}...</span>
+            {previewData.questions.slice(0, 8).map((q, idx) => (
+              <div key={idx} className="text-xs py-1.5 border-b border-border/30 last:border-0 flex items-start gap-2">
+                <span className="font-mono text-primary shrink-0 w-16">{q.id}</span>
+                <span className="text-foreground flex-1">{q.text.substring(0, 80)}{q.text.length > 80 ? '...' : ''}</span>
+                <span className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                  q.answer === 'Ya' ? 'bg-success/20 text-success' : 
+                  q.answer === 'Tidak' ? 'bg-destructive/20 text-destructive' : 
+                  'bg-muted text-muted-foreground'
+                }`}>
+                  {q.answer || '-'}
+                </span>
               </div>
             ))}
-            {previewData.length > 5 && (
+            {previewData.questions.length > 8 && (
               <p className="text-xs text-muted-foreground mt-2">
-                ...dan {previewData.length - 5} pertanyaan lainnya
+                ...dan {previewData.questions.length - 8} pertanyaan lainnya
               </p>
             )}
           </div>
@@ -187,7 +238,7 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
             </Button>
             <Button variant="success" onClick={confirmImport}>
               <Check className="w-4 h-4" />
-              Import {previewData.length} Pertanyaan
+              Import {previewData.questions.length} Pertanyaan
             </Button>
           </div>
         </div>
@@ -202,7 +253,7 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
           </div>
           <Button
             variant="outline"
-            onClick={() => exportToExcel(questions)}
+            onClick={() => exportToExcel(questions, assessorInfo)}
             disabled={questions.length === 0}
           >
             <Download className="w-4 h-4" />
@@ -218,10 +269,11 @@ export function ExcelUploader({ onImport, questions }: ExcelUploaderProps) {
           <div>
             <p className="font-medium text-foreground">Format File Excel</p>
             <p className="text-sm text-muted-foreground mt-1">
-              Pastikan file Excel memiliki kolom: <code className="font-mono text-primary">ID</code>, 
-              <code className="font-mono text-primary ml-1">Pertanyaan</code>, 
-              <code className="font-mono text-primary ml-1">Jawaban</code> (Ya/Tidak), 
-              <code className="font-mono text-primary ml-1">Bukti Dokumen</code>
+              Baris 1-5: Informasi pengisi (Nama Dana Pensiun, Nama PIC, No HP, Jabatan, Unit Syariah).
+              <br />
+              Baris 6 ke bawah: Data pertanyaan dengan format - Kolom A: <code className="font-mono text-primary">ID</code>, 
+              Kolom B: <code className="font-mono text-primary">Pertanyaan</code>, 
+              Kolom D: <code className="font-mono text-primary">Jawaban (Y/T)</code>
             </p>
           </div>
         </div>
