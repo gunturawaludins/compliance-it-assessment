@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, ShieldCheck, Building, User, Phone, Briefcase, Calendar } from 'lucide-react';
+import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, ShieldCheck, Building, User, Phone, Briefcase, Calendar, BookOpen, Scale, Shield } from 'lucide-react';
 import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
@@ -224,54 +224,68 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
           </div>
         ) : (
           <div className="space-y-3">
-            {result.findings.map((finding, idx) => (
-              <div
-                key={finding.id}
-                className={`
-                  glass-card rounded-xl p-4 border-l-4 animate-slide-up
-                  ${finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'}
-                `}
-                style={{ animationDelay: `${idx * 100}ms` }}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`
-                        px-2 py-0.5 rounded text-xs font-medium
-                        ${finding.severity === 'major' 
-                          ? 'bg-destructive/20 text-destructive' 
-                          : 'bg-warning/20 text-warning'
-                        }
-                      `}>
-                        {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
-                      </span>
-                      <span className="px-2 py-0.5 rounded text-xs font-medium bg-secondary text-foreground">
-                        {finding.fraudType}
-                      </span>
+            {result.findings.map((finding, idx) => {
+              // Extract standard reference from description
+              const standardMatch = finding.description.match(/\[(.*?)\]/);
+              const standardRef = standardMatch ? standardMatch[1] : null;
+              
+              return (
+                <div
+                  key={finding.id}
+                  className={`
+                    glass-card rounded-xl p-4 border-l-4 animate-slide-up
+                    ${finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'}
+                  `}
+                  style={{ animationDelay: `${idx * 50}ms` }}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className={`
+                          px-2 py-0.5 rounded text-xs font-medium
+                          ${finding.severity === 'major' 
+                            ? 'bg-destructive/20 text-destructive' 
+                            : 'bg-warning/20 text-warning'
+                          }
+                        `}>
+                          {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-xs font-medium bg-secondary text-foreground">
+                          {finding.fraudType}
+                        </span>
+                        {standardRef && (
+                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary flex items-center gap-1">
+                            <BookOpen className="w-3 h-3" />
+                            {standardRef}
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="font-medium text-foreground mb-1">{finding.ruleName}</h4>
+                      <p className="text-sm text-muted-foreground mb-3">
+                        {finding.description.replace(/\s*\[.*?\]\s*$/, '')}
+                      </p>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="flex gap-2 p-2 rounded bg-background/50">
+                          <span className="text-muted-foreground shrink-0">Soal Kondisi:</span>
+                          <span className="font-mono text-primary font-medium">{finding.questionId}</span>
+                        </div>
+                        <div className="flex gap-2 p-2 rounded bg-background/50">
+                          <span className="text-muted-foreground shrink-0">Bukti Tidak Konsisten:</span>
+                          <span className="font-mono text-destructive font-medium">{finding.evidenceId}</span>
+                        </div>
+                      </div>
                     </div>
-                    <h4 className="font-medium text-foreground mb-1">{finding.ruleName}</h4>
-                    <p className="text-sm text-muted-foreground mb-3">{finding.description}</p>
                     
-                    <div className="space-y-2 text-xs">
-                      <div className="flex gap-2">
-                        <span className="text-muted-foreground shrink-0">Soal Bermasalah:</span>
-                        <span className="font-mono text-primary">{finding.questionId}</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <span className="text-muted-foreground shrink-0">Bukti Tidak Konsisten:</span>
-                        <span className="font-mono text-destructive">{finding.evidenceId}</span>
-                      </div>
-                    </div>
+                    {finding.severity === 'major' ? (
+                      <ShieldAlert className="w-6 h-6 text-destructive shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-6 h-6 text-warning shrink-0" />
+                    )}
                   </div>
-                  
-                  {finding.severity === 'major' ? (
-                    <ShieldAlert className="w-6 h-6 text-destructive shrink-0" />
-                  ) : (
-                    <AlertCircle className="w-6 h-6 text-warning shrink-0" />
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

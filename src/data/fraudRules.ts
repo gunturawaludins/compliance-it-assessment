@@ -1,217 +1,59 @@
 import { FraudRule } from '@/types/assessment';
 
-// Fraud detection rules - Logic Map
-// Struktur fleksibel untuk menambah aturan logika deteksi kecurangan
+// Comprehensive fraud detection rules based on ISO 27001, COBIT 2019, ITIL v4
 export const defaultFraudRules: FraudRule[] = [
-  // ============= KATEGORI A: TATA KELOLA =============
-  {
-    id: 'RULE001',
-    name: 'Kebijakan Tanpa Job Description',
-    description: 'Klaim memiliki wewenang dan tanggung jawab TI, tetapi tidak ada bukti Job Description',
-    conditionQuestionId: 'A.1',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPA1',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Manipulasi Administratif',
-  },
-  {
-    id: 'RULE002',
-    name: 'Komite TI Tanpa SK',
-    description: 'Klaim memiliki Komite TI, tetapi tidak ada SK Pembentukan',
-    conditionQuestionId: 'A.5',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPA2',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Manipulasi Administratif',
-  },
-  {
-    id: 'RULE003',
-    name: 'Pertemuan Berkala Tanpa Dokumentasi',
-    description: 'Klaim melakukan pertemuan berkala, tetapi tidak ada risalah rapat',
-    conditionQuestionId: 'A.8',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPA3',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Operasional Fiktif',
-  },
-
-  // ============= KATEGORI B: KEBIJAKAN =============
-  {
-    id: 'RULE004',
-    name: 'Kebijakan TI Tanpa Dokumen',
-    description: 'Klaim memiliki kebijakan TI, tetapi dokumen tidak tersedia',
-    conditionQuestionId: 'B.1',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPB1',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Manipulasi Administratif',
-  },
-  {
-    id: 'RULE005',
-    name: 'Backup Tanpa Uji Restore',
-    description: 'Klaim melakukan backup berkala, tetapi tidak ada log uji restore',
-    conditionQuestionId: 'B.35',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPA12',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Operasional Fiktif',
-  },
-  {
-    id: 'RULE006',
-    name: 'DRP Tanpa Dokumen',
-    description: 'Klaim memiliki Rencana Pemulihan Bencana, tetapi dokumen DRP tidak tersedia',
-    conditionQuestionId: 'B.52',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPB3',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Manipulasi Administratif',
-  },
-  {
-    id: 'RULE007',
-    name: 'Kaji Ulang Tanpa Bukti',
-    description: 'Klaim melakukan kaji ulang berkala, tetapi tidak konsisten dengan pelaksanaan',
-    conditionQuestionId: 'B.2',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'B.3',
-    evidenceCondition: 'Tidak',
-    severity: 'minor',
-    fraudType: 'Inkonsistensi Kebijakan',
-  },
-
-  // ============= KATEGORI C: RISIKO =============
-  {
-    id: 'RULE008',
-    name: 'Manajemen Risiko Tanpa Assessment',
-    description: 'Klaim memiliki manajemen risiko TI, tetapi tidak ada dokumen risk assessment',
-    conditionQuestionId: 'C.1',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPC1',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Inkonsistensi Kebijakan',
-  },
-  {
-    id: 'RULE009',
-    name: 'Inkonsistensi Implementasi Risiko',
-    description: 'Klaim memiliki kebijakan risiko tetapi tidak konsisten dalam pelaksanaan',
-    conditionQuestionId: 'C.1',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'C.2',
-    evidenceCondition: 'Tidak',
-    severity: 'minor',
-    fraudType: 'Inkonsistensi Kebijakan',
-  },
-  {
-    id: 'RULE010',
-    name: 'DRP Tanpa Uji Coba',
-    description: 'Klaim DRP dapat berjalan efektif, tetapi tidak ada laporan uji coba',
-    conditionQuestionId: 'C.19',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPC2',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Operasional Fiktif',
-  },
-  {
-    id: 'RULE011',
-    name: 'DRP Efektif Tanpa Uji Coba',
-    description: 'Klaim DRP efektif, tetapi belum pernah dilakukan uji coba',
-    conditionQuestionId: 'C.19',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'C.21',
-    evidenceCondition: 'Tidak',
-    severity: 'major',
-    fraudType: 'Operasional Fiktif',
-  },
-  {
-    id: 'RULE012',
-    name: 'Aplikasi Kritikal Tanpa Daftar',
-    description: 'Klaim melakukan uji DRP untuk aplikasi kritikal, tetapi tidak ada daftar aplikasi',
-    conditionQuestionId: 'C.21',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPC3',
-    evidenceCondition: 'empty',
-    severity: 'minor',
-    fraudType: 'Bukti Tidak Memadai',
-  },
-
-  // ============= KATEGORI D: AUDIT =============
-  {
-    id: 'RULE013',
-    name: 'Audit Internal Tanpa Laporan',
-    description: 'Klaim melakukan audit internal TI, tetapi tidak ada laporan audit',
-    conditionQuestionId: 'D.7',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPD1',
-    evidenceCondition: 'empty',
-    severity: 'major',
-    fraudType: 'Operasional Fiktif',
-  },
-  {
-    id: 'RULE014',
-    name: 'Jejak Audit Tidak Tersedia',
-    description: 'Klaim memiliki jejak audit, tetapi log tidak tersedia',
-    conditionQuestionId: 'D.6',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPD2',
-    evidenceCondition: 'empty',
-    severity: 'minor',
-    fraudType: 'Bukti Tidak Memadai',
-  },
-  {
-    id: 'RULE015',
-    name: 'Pedoman Audit Tidak Ada',
-    description: 'Klaim memiliki pedoman audit internal, tetapi dokumen tidak tersedia',
-    conditionQuestionId: 'D.9',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'DPD3',
-    evidenceCondition: 'empty',
-    severity: 'minor',
-    fraudType: 'Manipulasi Administratif',
-  },
-  {
-    id: 'RULE016',
-    name: 'Pengendalian Internal Tanpa Sistem',
-    description: 'Klaim pengendalian internal efektif, tetapi tidak ada implementasi nyata',
-    conditionQuestionId: 'D.1',
-    conditionAnswer: 'Ya',
-    evidenceQuestionId: 'D.6',
-    evidenceCondition: 'Tidak',
-    severity: 'major',
-    fraudType: 'Inkonsistensi Kebijakan',
-  },
+  // KATEGORI A: TATA KELOLA
+  { id: 'RULE_A2_001', name: 'Klaim Wewenang Tanpa Sistem Pengukuran Kinerja', description: 'Klaim kewenangan TI lengkap (A.2=Ya) tetapi tidak ada sistem pengukuran kinerja (A.2.h=Tidak). [COBIT MEA01 - Performance Monitoring]', conditionQuestionId: 'A.2', conditionAnswer: 'Ya', evidenceQuestionId: 'A.2.h', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_A4_001', name: 'Dewan Pengawas Tanpa Evaluasi Pengembangan TI', description: 'Klaim kewenangan Dewan Pengawas (A.4=Ya) tetapi tidak evaluasi pengembangan TI (A.4.a=Tidak). [COBIT EDM01]', conditionQuestionId: 'A.4', conditionAnswer: 'Ya', evidenceQuestionId: 'A.4.a', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Operasional Fiktif' },
+  { id: 'RULE_A4_002', name: 'Dewan Pengawas Tanpa Evaluasi Manajemen Risiko', description: 'Klaim kewenangan Dewan Pengawas (A.4=Ya) tetapi tidak evaluasi manajemen risiko (A.4.b=Tidak). [ISO 27001 5.3]', conditionQuestionId: 'A.4', conditionAnswer: 'Ya', evidenceQuestionId: 'A.4.b', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_A5_001', name: 'Komite TI Tanpa Struktur Lengkap', description: 'Klaim Komite TI ada (A.5=Ya) tetapi anggota tidak lengkap (A.6=Tidak). [COBIT EDM01.02]', conditionQuestionId: 'A.5', conditionAnswer: 'Ya', evidenceQuestionId: 'A.6', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Manipulasi Administratif' },
+  { id: 'RULE_A8_001', name: 'Pertemuan Berkala Tanpa Kebijakan Jangka Waktu', description: 'Klaim pertemuan berkala (A.8=Ya) tetapi tidak ditetapkan jangka waktu (A.9=Tidak). [ISO 27001 7.5]', conditionQuestionId: 'A.8', conditionAnswer: 'Ya', evidenceQuestionId: 'A.9', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Operasional Fiktif' },
+  
+  // KATEGORI B: KEBIJAKAN & PROSEDUR  
+  { id: 'RULE_B1_001', name: 'Kebijakan TI Tanpa Kaji Ulang Berkala', description: 'Klaim kebijakan TI ada (B.1=Ya) tetapi tidak kaji ulang berkala (B.2=Tidak). [ISO 27001 9.3]', conditionQuestionId: 'B.1', conditionAnswer: 'Ya', evidenceQuestionId: 'B.2', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B4_001', name: 'Kebijakan Tanpa Aspek Operasional TI', description: 'Klaim kebijakan lengkap (B.4=Ya) tetapi tidak ada operasional TI (B.4.c=Tidak). [ITIL Service Operation]', conditionQuestionId: 'B.4', conditionAnswer: 'Ya', evidenceQuestionId: 'B.4.c', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B4_002', name: 'Kebijakan Tanpa Jaringan Komunikasi', description: 'Klaim kebijakan lengkap (B.4=Ya) tetapi tidak ada jaringan (B.4.d=Tidak). [ISO 27001 A.13]', conditionQuestionId: 'B.4', conditionAnswer: 'Ya', evidenceQuestionId: 'B.4.d', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B4_003', name: 'Kebijakan Tanpa DRP', description: 'Klaim kebijakan lengkap (B.4=Ya) tetapi tidak ada DRP (B.4.f=Tidak). [ISO 27001 A.17]', conditionQuestionId: 'B.4', conditionAnswer: 'Ya', evidenceQuestionId: 'B.4.f', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B5_001', name: 'Manajemen Tanpa Pemahaman Regulasi', description: 'Klaim aspek manajemen lengkap (B.5=Ya) tetapi tidak paham regulasi (B.5.c=Tidak). [COBIT MEA03]', conditionQuestionId: 'B.5', conditionAnswer: 'Ya', evidenceQuestionId: 'B.5.c', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B5_002', name: 'Manajemen Tanpa Transparansi Risiko', description: 'Klaim aspek manajemen lengkap (B.5=Ya) tetapi tidak transparan risiko (B.5.d=Tidak). [ISO 27001 6.1.2]', conditionQuestionId: 'B.5', conditionAnswer: 'Ya', evidenceQuestionId: 'B.5.d', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B6_001', name: 'Pengembangan Tanpa Inisiasi', description: 'Klaim prosedur pengembangan (B.6=Ya) tetapi tidak ada inisiasi (B.6.1=Tidak). [COBIT BAI01]', conditionQuestionId: 'B.6', conditionAnswer: 'Ya', evidenceQuestionId: 'B.6.1', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B6_002', name: 'Pengembangan Tanpa Definisi Kebutuhan', description: 'Klaim prosedur pengembangan (B.6=Ya) tetapi tidak ada definisi kebutuhan (B.6.2=Tidak). [COBIT BAI02]', conditionQuestionId: 'B.6', conditionAnswer: 'Ya', evidenceQuestionId: 'B.6.2', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B29_001', name: 'Operasional Tanpa Pengelolaan Perubahan', description: 'Klaim kebijakan operasional (B.29=Ya) tetapi tidak ada change management (B.29.b=Tidak). [ITIL Change Management]', conditionQuestionId: 'B.29', conditionAnswer: 'Ya', evidenceQuestionId: 'B.29.b', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B29_002', name: 'Operasional Tanpa Penanganan Kejadian', description: 'Klaim kebijakan operasional (B.29=Ya) tetapi tidak ada incident management (B.29.c=Tidak). [ITIL Incident Management]', conditionQuestionId: 'B.29', conditionAnswer: 'Ya', evidenceQuestionId: 'B.29.c', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B29_003', name: 'Operasional Tanpa Pengendalian Pertukaran Info', description: 'Klaim kebijakan operasional (B.29=Ya) tetapi tidak ada pengendalian pertukaran info (B.29.d=Tidak). [ISO 27001 A.13.2]', conditionQuestionId: 'B.29', conditionAnswer: 'Ya', evidenceQuestionId: 'B.29.d', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B29_004', name: 'Operasional Tanpa Mekanisme Pemusnahan', description: 'Klaim kebijakan operasional (B.29=Ya) tetapi tidak ada mekanisme pemusnahan (B.29.f=Tidak). [ISO 27001 A.8.3.2]', conditionQuestionId: 'B.29', conditionAnswer: 'Ya', evidenceQuestionId: 'B.29.f', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B30_001', name: 'Pengelolaan Data Tanpa Pusat Data', description: 'Klaim pengelolaan data (B.30=Ya) tetapi tidak ada Data Center (B.30.1=Tidak). [COBIT DSS01]', conditionQuestionId: 'B.30', conditionAnswer: 'Ya', evidenceQuestionId: 'B.30.1', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B30_002', name: 'Pengelolaan Data Tanpa DRC', description: 'Klaim pengelolaan data (B.30=Ya) tetapi tidak ada DRC (B.30.2=Tidak). [ISO 27001 A.17.1]', conditionQuestionId: 'B.30', conditionAnswer: 'Ya', evidenceQuestionId: 'B.30.2', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B40_001', name: 'Jaringan Tanpa Pengukuran Kinerja', description: 'Klaim kebijakan jaringan (B.40=Ya) tetapi tidak ada pengukuran kinerja (B.40.a=Tidak). [COBIT DSS01.04]', conditionQuestionId: 'B.40', conditionAnswer: 'Ya', evidenceQuestionId: 'B.40.a', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B40_002', name: 'Jaringan Tanpa Pengamanan', description: 'Klaim kebijakan jaringan (B.40=Ya) tetapi tidak ada pengamanan (B.40.b=Tidak). [ISO 27001 A.13.1]', conditionQuestionId: 'B.40', conditionAnswer: 'Ya', evidenceQuestionId: 'B.40.b', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B40_003', name: 'Jaringan Tanpa Manajemen', description: 'Klaim kebijakan jaringan (B.40=Ya) tetapi tidak ada manajemen jaringan (B.40.c=Tidak). [COBIT DSS01]', conditionQuestionId: 'B.40', conditionAnswer: 'Ya', evidenceQuestionId: 'B.40.c', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B40_004', name: 'Jaringan Tanpa Problem Management', description: 'Klaim kebijakan jaringan (B.40=Ya) tetapi tidak ada penanganan masalah (B.40.d=Tidak). [ITIL Problem Management]', conditionQuestionId: 'B.40', conditionAnswer: 'Ya', evidenceQuestionId: 'B.40.d', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_B52_001', name: 'DRP Tanpa Uji Coba', description: 'Klaim DRP ada (B.52=Ya) tetapi tidak ada uji coba (B.52.e=Tidak). [ISO 27001 A.17.1.3]', conditionQuestionId: 'B.52', conditionAnswer: 'Ya', evidenceQuestionId: 'B.52.e', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Operasional Fiktif' },
+  { id: 'RULE_B52_002', name: 'DRP Tanpa Pengkinian', description: 'Klaim DRP ada (B.52=Ya) tetapi tidak ada pengkinian (B.52.f=Tidak). [COBIT DSS04.04]', conditionQuestionId: 'B.52', conditionAnswer: 'Ya', evidenceQuestionId: 'B.52.f', evidenceCondition: 'Tidak', severity: 'minor', fraudType: 'Bukti Tidak Memadai' },
+  
+  // KATEGORI C: RISIKO
+  { id: 'RULE_C1_001', name: 'Kebijakan Risiko Tanpa Konsistensi', description: 'Klaim kebijakan risiko (C.1=Ya) tetapi tidak konsisten (C.2=Tidak). [ISO 27001 6.1.1]', conditionQuestionId: 'C.1', conditionAnswer: 'Ya', evidenceQuestionId: 'C.2', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_C3_001', name: 'Identifikasi Risiko Tanpa Operasional', description: 'Klaim identifikasi risiko (C.3=Ya) tetapi tidak mencakup operasional (C.3.c=Tidak). [COBIT APO12.02]', conditionQuestionId: 'C.3', conditionAnswer: 'Ya', evidenceQuestionId: 'C.3.c', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_C3_002', name: 'Identifikasi Risiko Tanpa Jaringan', description: 'Klaim identifikasi risiko (C.3=Ya) tetapi tidak mencakup jaringan (C.3.d=Tidak). [ISO 27001 A.13]', conditionQuestionId: 'C.3', conditionAnswer: 'Ya', evidenceQuestionId: 'C.3.d', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_C3_003', name: 'Identifikasi Risiko Tanpa Pengamanan', description: 'Klaim identifikasi risiko (C.3=Ya) tetapi tidak mencakup pengamanan (C.3.e=Tidak). [ISO 27001 6.1.2]', conditionQuestionId: 'C.3', conditionAnswer: 'Ya', evidenceQuestionId: 'C.3.e', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_C10_001', name: 'Vendor TI Tanpa Review Kepatuhan', description: 'Klaim menggunakan vendor (C.10=Ya) tetapi tidak ada review kepatuhan (C.11=Tidak). [COBIT APO10.04]', conditionQuestionId: 'C.10', conditionAnswer: 'Ya', evidenceQuestionId: 'C.11', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_C19_001', name: 'DRP Efektif Tanpa Daftar Aplikasi Kritikal', description: 'Klaim DRP efektif (C.19=Ya) tetapi tidak ada daftar aplikasi kritikal (C.20=Tidak). [COBIT DSS04.03]', conditionQuestionId: 'C.19', conditionAnswer: 'Ya', evidenceQuestionId: 'C.20', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Bukti Tidak Memadai' },
+  { id: 'RULE_C19_002', name: 'DRP Efektif Tanpa Uji Coba', description: 'Klaim DRP efektif (C.19=Ya) tetapi tidak ada uji coba (C.21=Tidak). [ISO 27001 A.17.1.3]', conditionQuestionId: 'C.19', conditionAnswer: 'Ya', evidenceQuestionId: 'C.21', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Operasional Fiktif' },
+  { id: 'RULE_C24_001', name: 'Pengamanan Efektif Tanpa Manajemen Insiden', description: 'Klaim pengamanan efektif (C.24=Ya) tetapi tidak ada manajemen insiden (C.25.d=Tidak). [ISO 27001 A.16]', conditionQuestionId: 'C.24', conditionAnswer: 'Ya', evidenceQuestionId: 'C.25.d', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  
+  // KATEGORI D: AUDIT
+  { id: 'RULE_D1_001', name: 'Pengendalian Internal Tanpa Pengawasan', description: 'Klaim pengendalian internal (D.1=Ya) tetapi tidak ada pengawasan manajemen (D.2.a=Tidak). [COBIT MEA01]', conditionQuestionId: 'D.1', conditionAnswer: 'Ya', evidenceQuestionId: 'D.2.a', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_D1_002', name: 'Pengendalian Internal Tanpa Identifikasi Risiko', description: 'Klaim pengendalian internal (D.1=Ya) tetapi tidak ada identifikasi risiko (D.2.b=Tidak). [ISO 27001 6.1]', conditionQuestionId: 'D.1', conditionAnswer: 'Ya', evidenceQuestionId: 'D.2.b', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_D1_003', name: 'Pengendalian Internal Tanpa Pemisahan Fungsi', description: 'Klaim pengendalian internal (D.1=Ya) tetapi tidak ada pemisahan fungsi (D.2.c=Tidak). [ISO 27001 A.6.1.2]', conditionQuestionId: 'D.1', conditionAnswer: 'Ya', evidenceQuestionId: 'D.2.c', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_D4_001', name: 'Pemantauan Tanpa Kontinuitas', description: 'Klaim pemantauan ada (D.4=Ya) tetapi tidak kontinu (D.4.a=Tidak). [COBIT MEA01.01]', conditionQuestionId: 'D.4', conditionAnswer: 'Ya', evidenceQuestionId: 'D.4.a', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Inkonsistensi Kebijakan' },
+  { id: 'RULE_D6_001', name: 'Audit Berkala Tanpa Jejak Audit', description: 'Klaim audit berkala (D.7=Ya) tetapi tidak ada jejak audit (D.6=Tidak). [ISO 27001 A.12.4]', conditionQuestionId: 'D.7', conditionAnswer: 'Ya', evidenceQuestionId: 'D.6', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Operasional Fiktif' },
+  { id: 'RULE_D7_001', name: 'Audit Berkala Tanpa Pedoman', description: 'Klaim audit berkala (D.7=Ya) tetapi tidak ada pedoman audit (D.9=Tidak). [ISO 27001 9.2.2]', conditionQuestionId: 'D.7', conditionAnswer: 'Ya', evidenceQuestionId: 'D.9', evidenceCondition: 'Tidak', severity: 'major', fraudType: 'Manipulasi Administratif' },
 ];
 
 export function generateRuleId(): string {
-  return `RULE${Date.now().toString(36).toUpperCase()}`;
+  return `RULE_${Date.now().toString(36).toUpperCase()}`;
 }
 
-// Helper untuk menambah aturan baru dengan mudah
-export function createFraudRule(
-  name: string,
-  description: string,
-  conditionQuestionId: string,
-  conditionAnswer: 'Ya' | 'Tidak',
-  evidenceQuestionId: string,
-  evidenceCondition: 'empty' | 'Tidak',
-  severity: 'major' | 'minor',
-  fraudType: string
-): FraudRule {
-  return {
-    id: generateRuleId(),
-    name,
-    description,
-    conditionQuestionId,
-    conditionAnswer,
-    evidenceQuestionId,
-    evidenceCondition,
-    severity,
-    fraudType: fraudType as FraudRule['fraudType'],
-  };
+export function createFraudRule(name: string, description: string, conditionQuestionId: string, conditionAnswer: 'Ya' | 'Tidak', evidenceQuestionId: string, evidenceCondition: 'empty' | 'Tidak', severity: 'major' | 'minor', fraudType: string): FraudRule {
+  return { id: generateRuleId(), name, description, conditionQuestionId, conditionAnswer, evidenceQuestionId, evidenceCondition, severity, fraudType: fraudType as FraudRule['fraudType'] };
 }

@@ -23,13 +23,14 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
           defval: ''
         });
         
-        // Parse assessor info from rows 1-5 (index 0-4)
+        // Parse assessor info from Excel rows 2-6 (array index 1-5)
+        // Row 2 = Nama Dana Pensiun, Row 3 = Nama PIC, Row 4 = No HP, Row 5 = Jabatan, Row 6 = Unit Syariah
         const assessorInfo: AssessorInfo = {
-          namaDanaPensiun: String(rawData[0]?.[3] || '').trim(),
-          namaPIC: String(rawData[1]?.[3] || '').trim(),
-          nomorHP: String(rawData[2]?.[3] || '').trim(),
-          jabatanPIC: String(rawData[3]?.[3] || '').trim(),
-          memilikiUnitSyariah: String(rawData[4]?.[3] || '').toUpperCase() === 'Y',
+          namaDanaPensiun: String(rawData[1]?.[3] || '').trim(),
+          namaPIC: String(rawData[2]?.[3] || '').trim(),
+          nomorHP: String(rawData[3]?.[3] || '').trim(),
+          jabatanPIC: String(rawData[4]?.[3] || '').trim(),
+          memilikiUnitSyariah: String(rawData[5]?.[3] || '').toUpperCase() === 'Y',
         };
         
         const questions: Question[] = [];
