@@ -1,73 +1,27 @@
-# Welcome to your Lovable project
+# Audit Insight — IT Assessment Fraud Detector
 
-## Project info
+A lightweight React + Vite application to help assess and detect inconsistencies in IT assessments for Dana Pensiun.
 
-**URL**: https://lovable.dev/projects/cc055ad1-e8be-4b79-bdc9-d1270a9b2afa
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/cc055ad1-e8be-4b79-bdc9-d1270a9b2afa) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Quick start
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+cd audit-insight
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## About
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+This tool compares claimed policies (governance) against operational evidence and reports findings using a set of fraud-detection rules derived from standards like ISO 27001, COBIT and ITIL.
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+## Technologies
 
 - Vite
-- TypeScript
-- React
-- shadcn-ui
+- React + TypeScript
 - Tailwind CSS
 
-## How can I deploy this project?
+## Notes
 
-Simply open [Lovable](https://lovable.dev/projects/cc055ad1-e8be-4b79-bdc9-d1270a9b2afa) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- This repo no longer uses external "Lovable" tooling; project files and configuration are self-contained.
+- To run locally, ensure Node.js and npm/yarn are installed.

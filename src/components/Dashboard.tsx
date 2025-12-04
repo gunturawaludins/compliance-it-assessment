@@ -3,6 +3,7 @@ import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, Shie
 import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
+import FraudRulesPanel from './FraudRulesPanel';
 
 interface DashboardProps {
   questions: Question[];
@@ -205,6 +206,11 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
             </div>
           );
         })}
+      </div>
+
+      {/* Rules Panel */}
+      <div className="space-y-4">
+        <FraudRulesPanel rules={rules} findings={result.findings} />
       </div>
 
       {/* Findings List */}
