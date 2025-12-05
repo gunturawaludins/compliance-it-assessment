@@ -23,8 +23,13 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
           defval: ''
         });
         
-        // Parse assessor info from Excel rows 2-6 (array index 1-5)
-        // Row 2 = Nama Dana Pensiun, Row 3 = Nama PIC, Row 4 = No HP, Row 5 = Jabatan, Row 6 = Unit Syariah
+        // Parse assessor info from Excel:
+        // Row 1 (index 0) = Header
+        // Row 2 (index 1) = Nama Dana Pensiun (column D = index 3)
+        // Row 3 (index 2) = Nama PIC (column D = index 3)
+        // Row 4 (index 3) = Nomor HP (column D = index 3)
+        // Row 5 (index 4) = Jabatan PIC (column D = index 3)
+        // Row 6 (index 5) = Memiliki Unit Syariah (column D = index 3)
         const assessorInfo: AssessorInfo = {
           namaDanaPensiun: String(rawData[1]?.[3] || '').trim(),
           namaPIC: String(rawData[2]?.[3] || '').trim(),
@@ -36,30 +41,36 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
         const questions: Question[] = [];
         let currentCategory: AspectCategory = 'A';
         let currentMainId = '';
+        let currentSubPrefix = '';
         
-        // Start from row 6 (index 5) onwards
-        for (let i = 5; i < rawData.length; i++) {
+        // Start from row 7 (index 6) onwards - after assessor info and aspect header
+        for (let i = 6; i < rawData.length; i++) {
           const row = rawData[i];
           if (!row || row.length === 0) continue;
           
           const colA = String(row[0] || '').trim();
           const colB = String(row[1] || '').trim();
+          const colC = String(row[2] || '').trim();
           const colD = String(row[3] || '').trim();
           
           // Skip empty rows
           if (!colA && !colB) continue;
           
-          // Check if this is a category header (A, B, C, D)
+          // Check if this is an aspect category header (A, B, C, D)
           if (['A', 'B', 'C', 'D'].includes(colA) && colB.includes('ASPEK')) {
             currentCategory = colA as AspectCategory;
+            currentMainId = '';
             continue;
           }
           
-          // Check if this is a main question (has number in column A)
+          // Check if this is a main question number
           const isMainQuestion = /^\d+$/.test(colA);
           
-          // Check if this is a sub-question (empty column A, has letter prefix in column B)
+          // Check if this is a sub-question (empty colA, has content in colB starting with letter)
           const isSubQuestion = !colA && colB && /^[a-z][\.\)]/.test(colB);
+          
+          // Check if it's a numbered sub-item like "1)", "2)"
+          const isNumberedSubItem = !colA && colB && /^\d+\)/.test(colB);
           
           let questionId = '';
           let questionText = colB;
@@ -68,6 +79,7 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
           
           if (isMainQuestion) {
             currentMainId = colA;
+            currentSubPrefix = '';
             questionId = `${currentCategory}.${colA}`;
             questionText = colB;
             isSubQ = false;
@@ -76,13 +88,24 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
             const match = colB.match(/^([a-z])[\.\)]\s*/);
             if (match) {
               const subLetter = match[1];
+              currentSubPrefix = subLetter;
               questionId = `${currentCategory}.${currentMainId}.${subLetter}`;
               questionText = colB.replace(/^[a-z][\.\)]\s*/, '');
               isSubQ = true;
               subLevel = 1;
             }
+          } else if (isNumberedSubItem) {
+            // Extract numbered sub-item like "1)", "2)"
+            const match = colB.match(/^(\d+)\)\s*/);
+            if (match) {
+              const subNum = match[1];
+              questionId = `${currentCategory}.${currentMainId}.${currentSubPrefix}.${subNum}`;
+              questionText = colB.replace(/^\d+\)\s*/, '');
+              isSubQ = true;
+              subLevel = 2;
+            }
           } else if (colA && !isMainQuestion) {
-            // Could be a continuation or special row
+            // Could be a special row or continuation
             questionId = `${currentCategory}.${colA}`;
             questionText = colB;
             isSubQ = false;
@@ -92,7 +115,7 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
           
           if (!questionText) continue;
           
-          // Parse answer (Y/T)
+          // Parse answer (Y/T) from column D
           let parsedAnswer: 'Ya' | 'Tidak' | null = null;
           const answerStr = colD.toUpperCase().trim();
           if (answerStr === 'Y' || answerStr === 'YA' || answerStr === 'YES' || answerStr === '1') {
@@ -104,6 +127,7 @@ export function parseExcelFile(file: File): Promise<ParsedExcelData> {
           questions.push({
             id: questionId,
             category: currentCategory,
+            parentId: isSubQ ? `${currentCategory}.${currentMainId}` : undefined,
             text: questionText,
             isSubQuestion: isSubQ,
             subLevel: isSubQ ? subLevel : undefined,
@@ -134,6 +158,7 @@ export function exportToExcel(questions: Question[], assessorInfo?: AssessorInfo
     Pertanyaan: q.text,
     Jawaban: q.answer === 'Ya' ? 'Y' : q.answer === 'Tidak' ? 'T' : '',
     'Bukti Dokumen': q.evidence || '',
+    'COBIT Ref': q.cobitRef || '',
   }));
   
   const worksheet = XLSX.utils.json_to_sheet(exportData);

@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
-import { QuestionEditor } from '@/components/QuestionEditor';
+import { Questionnaire } from '@/components/Questionnaire';
 import { ExcelUploader } from '@/components/ExcelUploader';
 import { Dashboard } from '@/components/Dashboard';
 import { Question, FraudRule, AssessorInfo } from '@/types/assessment';
-import { defaultQuestions } from '@/data/defaultQuestions';
 import { defaultFraudRules } from '@/data/fraudRules';
 import { useToast } from '@/hooks/use-toast';
 
@@ -20,7 +19,6 @@ export default function Index() {
   const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
 
-  // Load from localStorage
   useEffect(() => {
     const savedQuestions = localStorage.getItem(STORAGE_KEY);
     const savedRules = localStorage.getItem(RULES_KEY);
@@ -30,10 +28,8 @@ export default function Index() {
       try {
         setQuestions(JSON.parse(savedQuestions));
       } catch {
-        setQuestions(defaultQuestions);
+        setQuestions([]);
       }
-    } else {
-      setQuestions(defaultQuestions);
     }
     
     if (savedRules) {
@@ -57,7 +53,6 @@ export default function Index() {
     setIsLoaded(true);
   }, []);
 
-  // Save to localStorage
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(questions));
@@ -76,6 +71,11 @@ export default function Index() {
     }
   }, [assessorInfo, isLoaded]);
 
+  const handleQuestionnaireSubmit = (submittedQuestions: Question[]) => {
+    setQuestions(submittedQuestions);
+    setActiveTab('dashboard');
+  };
+
   const handleImportQuestions = (importedQuestions: Question[], importedAssessorInfo?: AssessorInfo) => {
     setQuestions(importedQuestions);
     if (importedAssessorInfo) {
@@ -92,10 +92,11 @@ export default function Index() {
   };
 
   const handleResetData = () => {
-    setQuestions(defaultQuestions);
+    setQuestions([]);
     setRules(defaultFraudRules);
     setAssessorInfo(undefined);
     localStorage.removeItem(ASSESSOR_KEY);
+    localStorage.removeItem(STORAGE_KEY);
     toast({
       title: 'Data Direset',
       description: 'Semua data telah dikembalikan ke default',
@@ -111,13 +112,13 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-background grid-pattern">
+    <div className="min-h-screen bg-background">
       <Header activeTab={activeTab} onTabChange={setActiveTab} />
       
       <main className="container mx-auto px-4 py-6 max-w-6xl">
         {activeTab === 'editor' && (
           <div className="animate-fade-in">
-            <QuestionEditor questions={questions} onUpdate={setQuestions} />
+            <Questionnaire onSubmit={handleQuestionnaireSubmit} initialQuestions={questions} />
           </div>
         )}
         
@@ -134,7 +135,6 @@ export default function Index() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-border/50 py-4 mt-8">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-sm text-muted-foreground">
