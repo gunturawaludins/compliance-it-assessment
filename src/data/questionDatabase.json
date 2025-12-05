@@ -1,0 +1,678 @@
+[
+  {
+    "id": "A.1",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Apakah Dana Pensiun telah menetapkan wewenang dan tanggung jawab Pengurus, Dewan Pengawas, dan pejabat terkait TI?",
+    "cobit_ref": "EDM01 - Ensured Governance Framework Setting",
+    "breakdown": [
+      "Apakah terdapat dokumen struktur organisasi TI yang disahkan (SK Direksi) yang memisahkan fungsi strategis dan operasional?",
+      "Apakah uraian jabatan (Job Description) mendefinisikan tanggung jawab spesifik terkait risiko TI dan kepatuhan?",
+      "Apakah ada matriks pendelegasian wewenang (RACI Chart) untuk keputusan-keputusan TI yang krusial?",
+      "Apakah peran Dewan Pengawas dalam mengawasi strategi TI tertulis secara eksplisit dalam piagam pengawasan?"
+    ],
+    "deep_dive": {
+      "focus": "Kejelasan akuntabilitas dan tanggung jawab tata kelola.",
+      "evaluate": "Evaluasi apakah pembagian peran governance memadai untuk mencegah konflik kepentingan.",
+      "monitor": "Pantau apakah wewenang yang diberikan dilaksanakan secara konsisten dalam notulen rapat direksi."
+    }
+  },
+  {
+    "id": "A.2.a",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Apakah wewenang Pengurus mencakup penetapan rencana pengembangan Teknologi Informasi dan kebijakan terkait?",
+    "cobit_ref": "APO02 - Managed Strategy",
+    "breakdown": [
+      "Apakah Rencana Induk TI (IT Master Plan) telah disetujui dan ditandatangani oleh seluruh Direksi?",
+      "Apakah ada bukti keselarasan (alignment) antara tujuan TI dalam dokumen rencana dengan tujuan strategis bisnis Dana Pensiun?",
+      "Apakah kebijakan TI utama direview dan disahkan ulang oleh Pengurus minimal setahun sekali?"
+    ],
+    "deep_dive": {
+      "focus": "Penyelarasan strategi TI dengan strategi bisnis.",
+      "evaluate": "Evaluasi apakah rencana TI mendukung pencapaian target bisnis jangka panjang.",
+      "monitor": "Pantau realisasi pencapaian milestone dalam IT Master Plan secara berkala."
+    }
+  },
+  {
+    "id": "A.2.c",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Memastikan TI mendukung perkembangan usaha, pencapaian tujuan bisnis dan kelangsungan pelayanan?",
+    "cobit_ref": "EDM02 - Ensured Benefits Delivery",
+    "breakdown": [
+      "Apakah setiap inisiatif proyek TI memiliki dokumen 'Business Case' yang menjelaskan manfaat bisnisnya?",
+      "Apakah ada laporan pengukuran nilai (Value Realization) setelah proyek TI selesai diimplementasikan?",
+      "Apakah keluhan peserta terkait layanan TI dibahas dalam rapat manajemen sebagai indikator kinerja?"
+    ],
+    "deep_dive": {
+      "focus": "Realisasi nilai investasi TI bagi organisasi.",
+      "evaluate": "Evaluasi apakah investasi TI memberikan ROI atau manfaat non-finansial yang dijanjikan.",
+      "monitor": "Pantau kepuasan pengguna dan pemangku kepentingan terhadap layanan TI."
+    }
+  },
+  {
+    "id": "A.2.d",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Memastikan kecukupan dan peningkatan kompetensi sumber daya manusia terkait TI?",
+    "cobit_ref": "APO07 - Managed Human Resources",
+    "breakdown": [
+      "Apakah ada analisis beban kerja (Workload Analysis) untuk menentukan jumlah staf TI yang ideal?",
+      "Apakah tersedia matriks kompetensi (Skill Matrix) staf TI dan rencana pengembangannya?",
+      "Apakah anggaran pelatihan TI terealisasi sesuai dengan kebutuhan teknologi yang digunakan?",
+      "Apakah ada rencana suksesi untuk posisi kunci di departemen TI?"
+    ],
+    "deep_dive": {
+      "focus": "Ketersediaan dan kapabilitas SDM TI.",
+      "evaluate": "Evaluasi kesenjangan (gap) antara keahlian yang dimiliki saat ini dengan kebutuhan masa depan.",
+      "monitor": "Pantau tingkat turnover staf TI dan efektivitas program pelatihan."
+    }
+  },
+  {
+    "id": "A.2.f",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Memastikan proses manajemen risiko dalam penggunaan Teknologi Informasi dilaksanakan secara memadai?",
+    "cobit_ref": "EDM03 - Ensured Risk Optimization",
+    "breakdown": [
+      "Apakah Direksi menetapkan 'Risk Appetite' (selera risiko) TI secara tertulis?",
+      "Apakah laporan profil risiko TI dibahas dalam rapat Direksi minimal setiap triwulan?",
+      "Apakah Direksi memberikan arahan mitigasi untuk risiko TI dengan level 'High' atau 'Critical'?"
+    ],
+    "deep_dive": {
+      "focus": "Pengawasan risiko TI oleh manajemen puncak.",
+      "evaluate": "Evaluasi apakah toleransi risiko TI selaras dengan kapasitas risiko organisasi.",
+      "monitor": "Pantau status mitigasi risiko strategis yang dilaporkan ke Direksi."
+    }
+  },
+  {
+    "id": "A.5",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Apakah Dana Pensiun sudah memiliki Komite Pengarah TI (IT Steering Committee)?",
+    "cobit_ref": "EDM05 - Ensured Stakeholder Engagement",
+    "breakdown": [
+      "Apakah Komite Pengarah TI telah dibentuk secara formal melalui Surat Keputusan?",
+      "Apakah anggota komite mencakup perwakilan dari unit bisnis (User), Manajemen Risiko, dan Kepatuhan?",
+      "Apakah komite memiliki piagam (charter) yang mengatur tugas dan wewenangnya?"
+    ],
+    "deep_dive": {
+      "focus": "Keterlibatan pemangku kepentingan dalam keputusan TI.",
+      "evaluate": "Evaluasi komposisi komite untuk memastikan representasi bisnis yang memadai.",
+      "monitor": "Pantau keaktifan komite dalam memberikan arahan strategis."
+    }
+  },
+  {
+    "id": "A.8",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Apakah pelaksanaan tugas Komite TI diwujudkan dengan pertemuan berkala dan terdokumentasi?",
+    "cobit_ref": "APO01 - Managed I&T Management Framework",
+    "breakdown": [
+      "Apakah rapat Komite Pengarah TI dilakukan rutin (minimal triwulan atau semester)?",
+      "Apakah setiap rapat memiliki notulen (risalah) yang mencatat keputusan dan tindak lanjut?",
+      "Apakah status tindak lanjut (Action Plan) dari rapat sebelumnya direview pada rapat berikutnya?"
+    ],
+    "deep_dive": {
+      "focus": "Efektivitas mekanisme pengawasan komite.",
+      "evaluate": "Evaluasi kualitas keputusan yang dihasilkan dalam rapat komite.",
+      "monitor": "Pantau tingkat kehadiran anggota komite dan penyelesaian action plan."
+    }
+  },
+  {
+    "id": "B.1",
+    "aspect": "B",
+    "aspect_name": "KEBIJAKAN & PROSEDUR",
+    "ojk_question": "Apakah Dana Pensiun memiliki kebijakan dan prosedur penggunaan Teknologi Informasi?",
+    "cobit_ref": "APO01.03 - Maintain the Enablers of the Management System",
+    "breakdown": [
+      "Apakah terdapat dokumen induk Kebijakan TI yang mencakup seluruh domain operasional?",
+      "Apakah kebijakan tersebut telah disahkan oleh pejabat berwenang dan diberi nomor kontrol dokumen?",
+      "Apakah kebijakan mudah diakses oleh seluruh staf yang berkepentingan?"
+    ],
+    "deep_dive": {
+      "focus": "Kerangka kerja kebijakan yang komprehensif.",
+      "evaluate": "Evaluasi kelengkapan arsitektur kebijakan terhadap standar praktik terbaik.",
+      "monitor": "Pantau siklus hidup dokumen kebijakan (pembuatan, pengesahan, distribusi)."
+    }
+  },
+  {
+    "id": "B.2",
+    "aspect": "B",
+    "aspect_name": "KEBIJAKAN & PROSEDUR",
+    "ojk_question": "Apakah dilakukan kaji ulang dan pengkinian atas kebijakan dan prosedur secara berkala?",
+    "cobit_ref": "MEA01 - Managed Performance and Conformance",
+    "breakdown": [
+      "Apakah ada log review yang menunjukkan tanggal terakhir kebijakan diperbarui?",
+      "Apakah kebijakan diperbarui saat terjadi perubahan regulasi, teknologi, atau proses bisnis?",
+      "Apakah versi kebijakan yang kadaluarsa ditarik dari peredaran untuk mencegah kebingungan?"
+    ],
+    "deep_dive": {
+      "focus": "Relevansi kebijakan terhadap perubahan lingkungan.",
+      "evaluate": "Evaluasi apakah kebijakan masih relevan dengan kondisi operasional saat ini.",
+      "monitor": "Pantau kepatuhan terhadap jadwal review kebijakan tahunan."
+    }
+  },
+  {
+    "id": "B.6.1",
+    "aspect": "B",
+    "aspect_name": "PENGEMBANGAN (SDLC)",
+    "ojk_question": "Tahap Inisiasi dan Perencanaan: Apakah mencakup studi kelayakan dan persetujuan manajemen?",
+    "cobit_ref": "BAI01 - Managed Programs",
+    "breakdown": [
+      "Apakah setiap proyek pengembangan memiliki dokumen Project Charter atau Proposal Bisnis?",
+      "Apakah dilakukan studi kelayakan (Feasibility Study) dari aspek teknis, finansial, dan operasional?",
+      "Apakah persetujuan dimulainya proyek didokumentasikan secara formal?"
+    ],
+    "deep_dive": {
+      "focus": "Perencanaan investasi TI yang matang.",
+      "evaluate": "Evaluasi kualitas analisis biaya-manfaat dalam proposal proyek.",
+      "monitor": "Pantau persetujuan proyek baru terhadap anggaran yang tersedia."
+    }
+  },
+  {
+    "id": "B.6.2",
+    "aspect": "B",
+    "aspect_name": "PENGEMBANGAN (SDLC)",
+    "ojk_question": "Tahap Pendefinisian Kebutuhan: Apakah kebutuhan pengguna didefinisikan dengan jelas?",
+    "cobit_ref": "BAI02 - Managed Requirements Definition",
+    "breakdown": [
+      "Apakah dokumen Kebutuhan Pengguna (User Requirement Specification) ditandatangani oleh User?",
+      "Apakah kebutuhan fungsional dan non-fungsional (keamanan, performa) didefinisikan detil?",
+      "Apakah ada persetujuan formal (Sign-off) atas dokumen kebutuhan sebelum masuk tahap desain?"
+    ],
+    "deep_dive": {
+      "focus": "Akurasi definisi kebutuhan bisnis.",
+      "evaluate": "Evaluasi keterlibatan pengguna dalam proses definisi kebutuhan.",
+      "monitor": "Pantau perubahan kebutuhan (Change Request) selama fase pengembangan."
+    }
+  },
+  {
+    "id": "B.6.5",
+    "aspect": "B",
+    "aspect_name": "PENGEMBANGAN (SDLC)",
+    "ojk_question": "Tahap Pengujian: Apakah mencakup Unit Test, SIT, dan User Acceptance Test (UAT)?",
+    "cobit_ref": "BAI03.07 - Prepare for Solution Testing",
+    "breakdown": [
+      "Apakah tersedia skenario pengujian (Test Case) yang mencakup kondisi normal dan error?",
+      "Apakah UAT dilakukan oleh pengguna akhir yang sebenarnya, bukan oleh tim proyek/developer?",
+      "Apakah Berita Acara UAT ditandatangani dan melampirkan hasil pengujian?",
+      "Apakah bug/issue yang ditemukan saat UAT telah diselesaikan sebelum Go-Live?"
+    ],
+    "deep_dive": {
+      "focus": "Validasi fungsionalitas solusi.",
+      "evaluate": "Evaluasi cakupan pengujian terhadap risiko kegagalan sistem.",
+      "monitor": "Pantau jumlah cacat (defect) yang lolos ke lingkungan produksi."
+    }
+  },
+  {
+    "id": "B.6.6",
+    "aspect": "B",
+    "aspect_name": "PENGEMBANGAN (SDLC)",
+    "ojk_question": "Tahap Implementasi: Apakah ada prosedur migrasi data dan konversi sistem?",
+    "cobit_ref": "BAI07 - Managed IT Change Acceptance and Transition",
+    "breakdown": [
+      "Apakah ada rencana migrasi data yang rinci termasuk prosedur rollback jika gagal?",
+      "Apakah integritas data hasil migrasi divalidasi (rekonsiliasi data lama vs baru)?",
+      "Apakah lingkungan Produksi dipastikan bersih dari data/akun dummy sisa pengujian?"
+    ],
+    "deep_dive": {
+      "focus": "Transisi sistem yang aman dan lancar.",
+      "evaluate": "Evaluasi kesiapan operasional dan pendukung sebelum Go-Live.",
+      "monitor": "Pantau insiden yang terjadi segera setelah implementasi (Hypercare Period)."
+    }
+  },
+  {
+    "id": "B.20",
+    "aspect": "B",
+    "aspect_name": "PENGADAAN & VENDOR",
+    "ojk_question": "Apakah kebijakan pengadaan TI mencakup pedoman seleksi dan manajemen vendor?",
+    "cobit_ref": "APO10 - Managed Vendors",
+    "breakdown": [
+      "Apakah proses seleksi vendor menggunakan kriteria yang objektif (teknis, harga, risiko)?",
+      "Apakah dilakukan Due Diligence terhadap kapabilitas dan reputasi vendor?",
+      "Apakah risiko ketergantungan pada satu vendor (Vendor Lock-in) dievaluasi?"
+    ],
+    "deep_dive": {
+      "focus": "Efisiensi dan transparansi pengadaan.",
+      "evaluate": "Evaluasi kewajaran harga dan kualitas layanan vendor terpilih.",
+      "monitor": "Pantau kepatuhan proses pengadaan terhadap kebijakan internal."
+    }
+  },
+  {
+    "id": "B.22",
+    "aspect": "B",
+    "aspect_name": "PENGADAAN & VENDOR",
+    "ojk_question": "Apakah kontrak pembelian/lisensi memperhatikan aspek legal dan kepemilikan?",
+    "cobit_ref": "APO10.02 - Select Vendors",
+    "breakdown": [
+      "Apakah kontrak menegaskan kepemilikan data ada pada Dana Pensiun, bukan vendor?",
+      "Apakah lisensi software dikelola untuk memastikan kepatuhan hukum (jumlah user/device)?",
+      "Apakah ada klausul kerahasiaan (NDA) dalam kontrak kerja sama?"
+    ],
+    "deep_dive": {
+      "focus": "Perlindungan hukum dan kepatuhan lisensi.",
+      "evaluate": "Evaluasi risiko hukum dari kontrak yang tidak memadai.",
+      "monitor": "Pantau masa berlaku lisensi dan kontrak untuk perpanjangan tepat waktu."
+    }
+  },
+  {
+    "id": "B.23",
+    "aspect": "B",
+    "aspect_name": "PENGADAAN & VENDOR",
+    "ojk_question": "Apakah kontrak pemeliharaan mencakup SLA dan akses kode sumber?",
+    "cobit_ref": "APO10.03 - Manage Vendor Relationships",
+    "breakdown": [
+      "Apakah kontrak SLA (Service Level Agreement) mendefinisikan target kinerja yang terukur?",
+      "Apakah ada klausul penalti jika vendor gagal memenuhi SLA?",
+      "Apakah ada kesepakatan Escrow Account untuk source code aplikasi kritikal?"
+    ],
+    "deep_dive": {
+      "focus": "Jaminan kinerja layanan vendor.",
+      "evaluate": "Evaluasi efektivitas SLA dalam mendorong kinerja vendor.",
+      "monitor": "Pantau pencapaian SLA vendor secara bulanan."
+    }
+  },
+  {
+    "id": "B.29",
+    "aspect": "B",
+    "aspect_name": "OPERASIONAL TI",
+    "ojk_question": "Apakah ada kebijakan dan prosedur pengelolaan operasional data center?",
+    "cobit_ref": "DSS01 - Managed Operations",
+    "breakdown": [
+      "Apakah ada Standard Operating Procedure (SOP) untuk aktivitas harian (Start/End of Day)?",
+      "Apakah jadwal proses batch (Job Scheduling) didokumentasikan dan dipantau?",
+      "Apakah ada log book atau catatan shift operator data center?"
+    ],
+    "deep_dive": {
+      "focus": "Stabilitas dan konsistensi operasional harian.",
+      "evaluate": "Evaluasi kedisiplinan eksekusi prosedur operasional.",
+      "monitor": "Pantau kegagalan proses batch dan dampaknya terhadap layanan."
+    }
+  },
+  {
+    "id": "B.31",
+    "aspect": "B",
+    "aspect_name": "OPERASIONAL TI",
+    "ojk_question": "Pengelolaan Pusat Data: Apakah aspek fisik dan lingkungan dikendalikan?",
+    "cobit_ref": "DSS01.04 - Manage the Environment",
+    "breakdown": [
+      "Apakah akses fisik ke ruang server dibatasi hanya untuk personil berwenang (Log/Kartu Akses)?",
+      "Apakah suhu dan kelembaban ruang server dipantau dan dikendalikan?",
+      "Apakah tersedia perangkat pemadam api (APAR/FM200) dan detektor asap di ruang server?",
+      "Apakah pasokan listrik didukung oleh UPS dan Genset yang terawat?"
+    ],
+    "deep_dive": {
+      "focus": "Keamanan fisik dan lingkungan infrastruktur.",
+      "evaluate": "Evaluasi kecukupan fasilitas pendukung data center.",
+      "monitor": "Pantau log akses fisik dan kondisi lingkungan (suhu/power) secara real-time."
+    }
+  },
+  {
+    "id": "B.35",
+    "aspect": "B",
+    "aspect_name": "OPERASIONAL TI",
+    "ojk_question": "Apakah mekanisme rekam cadang (backup) dilakukan dan diuji?",
+    "cobit_ref": "DSS04.03 - Develop and Implement a Business Continuity Response",
+    "breakdown": [
+      "Apakah backup dilakukan secara berkala (Harian/Mingguan) sesuai jadwal?",
+      "Apakah menerapkan prinsip 3-2-1 (3 copy, 2 media, 1 offsite)?",
+      "Apakah uji coba pemulihan data (Restore Test) dilakukan secara rutin (misal: bulanan/triwulanan)?",
+      "Apakah media backup dilindungi dengan enkripsi saat disimpan atau dipindahkan?"
+    ],
+    "deep_dive": {
+      "focus": "Ketersediaan dan integritas data cadangan.",
+      "evaluate": "Evaluasi keberhasilan uji restore untuk memastikan data bisa digunakan.",
+      "monitor": "Pantau log keberhasilan backup harian dan tindak lanjut jika gagal."
+    }
+  },
+  {
+    "id": "B.37",
+    "aspect": "B",
+    "aspect_name": "OPERASIONAL TI",
+    "ojk_question": "Apakah ada penanganan kejadian/insiden (Helpdesk) yang memadai?",
+    "cobit_ref": "DSS02 - Managed Service Requests and Incidents",
+    "breakdown": [
+      "Apakah tersedia saluran komunikasi (Helpdesk) bagi pengguna untuk melaporkan masalah?",
+      "Apakah setiap insiden dicatat dalam sistem tiket dan diberi nomor referensi?",
+      "Apakah ada kategorisasi dan prioritas insiden (Low, Medium, High, Critical)?",
+      "Apakah ada prosedur eskalasi jika insiden tidak dapat diselesaikan di level 1?"
+    ],
+    "deep_dive": {
+      "focus": "Responsivitas terhadap gangguan layanan.",
+      "evaluate": "Evaluasi waktu penyelesaian insiden rata-rata (MTTR).",
+      "monitor": "Pantau status tiket insiden yang belum selesai (Open Tickets)."
+    }
+  },
+  {
+    "id": "B.42",
+    "aspect": "B",
+    "aspect_name": "KEAMANAN INFORMASI",
+    "ojk_question": "Apakah prosedur pengamanan informasi mencakup pengelolaan aset, akses, dan lingkungan?",
+    "cobit_ref": "APO13 - Managed Security",
+    "breakdown": [
+      "Apakah inventaris aset informasi (Hardware, Software, Data) selalu diperbarui?",
+      "Apakah aset diklasifikasikan berdasarkan tingkat kerahasiaannya (Public, Internal, Confidential)?",
+      "Apakah ada penanggung jawab (Owner) untuk setiap aset informasi?"
+    ],
+    "deep_dive": {
+      "focus": "Tata kelola aset informasi.",
+      "evaluate": "Evaluasi akurasi daftar inventaris aset.",
+      "monitor": "Pantau perubahan aset dan kepemilikannya."
+    }
+  },
+  {
+    "id": "B.46",
+    "aspect": "B",
+    "aspect_name": "KEAMANAN INFORMASI",
+    "ojk_question": "Apakah pengendalian akses (Access Control) diterapkan dengan ketat?",
+    "cobit_ref": "DSS05 - Managed Security Services",
+    "breakdown": [
+      "Apakah pemberian hak akses didasarkan pada prinsip 'Need-to-Know' dan 'Least Privilege'?",
+      "Apakah ada formulir persetujuan formal untuk setiap penambahan/perubahan akses user?",
+      "Apakah hak akses user direview secara berkala (User Access Review) minimal 6 bulan sekali?",
+      "Apakah akses user yang resign atau mutasi segera dicabut/disesuaikan?"
+    ],
+    "deep_dive": {
+      "focus": "Pencegahan akses tidak sah.",
+      "evaluate": "Evaluasi ketepatan hak akses user terhadap peran kerjanya.",
+      "monitor": "Pantau akun-akun dorman (tidak aktif) dan upaya login yang gagal."
+    }
+  },
+  {
+    "id": "B.47",
+    "aspect": "B",
+    "aspect_name": "KEAMANAN INFORMASI",
+    "ojk_question": "Apakah pengelolaan password menerapkan standar keamanan yang memadai?",
+    "cobit_ref": "DSS05.04 - Manage User Identity and Access",
+    "breakdown": [
+      "Apakah password awal (default) wajib diganti saat login pertama kali?",
+      "Apakah kebijakan password mengharuskan kompleksitas (panjang, karakter) dan rotasi berkala?",
+      "Apakah password disimpan dalam bentuk terenkripsi (hashing) di database?",
+      "Apakah sistem mengunci akun setelah beberapa kali kesalahan login (Account Lockout)?"
+    ],
+    "deep_dive": {
+      "focus": "Kekuatan autentikasi pengguna.",
+      "evaluate": "Evaluasi kepatuhan pengguna terhadap kebijakan password.",
+      "monitor": "Pantau insiden keamanan yang disebabkan oleh lemahnya password."
+    }
+  },
+  {
+    "id": "B.49",
+    "aspect": "B",
+    "aspect_name": "KEAMANAN INFORMASI",
+    "ojk_question": "Pengamanan Operasional: Apakah ada antisipasi terhadap serangan siber (Virus, Malware)?",
+    "cobit_ref": "DSS05.01 - Protect Against Malware",
+    "breakdown": [
+      "Apakah perangkat lunak Antivirus/Anti-malware terinstal di seluruh PC dan Server?",
+      "Apakah definisi virus diperbarui secara otomatis dan berkala?",
+      "Apakah ada firewall yang aktif untuk membatasi lalu lintas jaringan yang tidak sah?",
+      "Apakah sistem operasi dan aplikasi ditambal (patching) secara rutin untuk menutup celah keamanan?"
+    ],
+    "deep_dive": {
+      "focus": "Ketahanan terhadap ancaman siber teknis.",
+      "evaluate": "Evaluasi cakupan perlindungan antivirus pada seluruh endpoint.",
+      "monitor": "Pantau alert/notifikasi dari sistem keamanan (IDS/IPS/Antivirus)."
+    }
+  },
+  {
+    "id": "B.52",
+    "aspect": "B",
+    "aspect_name": "RENCANA PEMULIHAN BENCANA (DRP)",
+    "ojk_question": "Apakah kebijakan DRP mencakup analisis risiko bencana dan strategi pemulihan?",
+    "cobit_ref": "DSS04 - Managed Continuity",
+    "breakdown": [
+      "Apakah telah dilakukan Business Impact Analysis (BIA) untuk mengidentifikasi proses bisnis kritis?",
+      "Apakah RTO (Recovery Time Objective) dan RPO (Recovery Point Objective) telah ditetapkan?",
+      "Apakah strategi pemulihan mencakup skenario bencana alam, teknis, dan siber?",
+      "Apakah tersedia lokasi pemulihan alternatif (DRC) yang siap digunakan?"
+    ],
+    "deep_dive": {
+      "focus": "Kesiapan menghadapi gangguan mayor.",
+      "evaluate": "Evaluasi kesesuaian RTO/RPO dengan kebutuhan bisnis.",
+      "monitor": "Pantau kesiapan infrastruktur di lokasi DRC."
+    }
+  },
+  {
+    "id": "B.59",
+    "aspect": "B",
+    "aspect_name": "RENCANA PEMULIHAN BENCANA (DRP)",
+    "ojk_question": "Apakah uji coba DRP dilakukan secara berkala dan didokumentasikan?",
+    "cobit_ref": "DSS04.05 - Review, Maintain and Improve the Continuity Plan",
+    "breakdown": [
+      "Apakah uji coba DRP dilakukan minimal satu kali dalam setahun?",
+      "Apakah uji coba melibatkan pengguna bisnis untuk memverifikasi fungsionalitas sistem?",
+      "Apakah hasil uji coba didokumentasikan dalam Berita Acara?",
+      "Apakah prosedur DRP diperbarui berdasarkan evaluasi hasil uji coba?"
+    ],
+    "deep_dive": {
+      "focus": "Validasi efektivitas rencana pemulihan.",
+      "evaluate": "Evaluasi keberhasilan uji coba terhadap target RTO/RPO.",
+      "monitor": "Pantau tindak lanjut perbaikan dari temuan saat uji coba."
+    }
+  },
+  {
+    "id": "C.1",
+    "aspect": "C",
+    "aspect_name": "MANAJEMEN RISIKO",
+    "ojk_question": "Apakah Dana Pensiun memiliki kebijakan dan prosedur manajemen risiko TI?",
+    "cobit_ref": "APO12 - Managed Risk",
+    "breakdown": [
+      "Apakah ada pedoman manajemen risiko TI yang terintegrasi dengan manajemen risiko korporasi?",
+      "Apakah peran dan tanggung jawab pengelolaan risiko TI didefinisikan dengan jelas?",
+      "Apakah proses identifikasi risiko dilakukan secara proaktif, bukan hanya reaktif?"
+    ],
+    "deep_dive": {
+      "focus": "Kerangka kerja pengelolaan risiko TI.",
+      "evaluate": "Evaluasi budaya sadar risiko di lingkungan TI.",
+      "monitor": "Pantau kelengkapan dokumen Risk Register."
+    }
+  },
+  {
+    "id": "C.4",
+    "aspect": "C",
+    "aspect_name": "MANAJEMEN RISIKO",
+    "ojk_question": "Apakah proses identifikasi risiko mencakup pengumpulan data dan analisis dampak?",
+    "cobit_ref": "APO12.02 - Analyze Risk",
+    "breakdown": [
+      "Apakah Risk Register mencakup risiko operasional, proyek, dan keamanan siber?",
+      "Apakah setiap risiko dinilai dampak (impact) dan kemungkinannya (likelihood)?",
+      "Apakah sumber data risiko berasal dari audit, insiden, dan perubahan sistem?",
+      "Apakah pemilik risiko (Risk Owner) ditetapkan untuk setiap risiko utama?"
+    ],
+    "deep_dive": {
+      "focus": "Akurasi peta risiko TI.",
+      "evaluate": "Evaluasi konsistensi metodologi penilaian risiko.",
+      "monitor": "Pantau perubahan profil risiko seiring perubahan teknologi."
+    }
+  },
+  {
+    "id": "C.8",
+    "aspect": "C",
+    "aspect_name": "MANAJEMEN RISIKO",
+    "ojk_question": "Apakah proses pengendalian risiko memperhatikan kategori accept, control, avoid, transfer?",
+    "cobit_ref": "APO12.06 - Respond to Risk",
+    "breakdown": [
+      "Apakah ada rencana mitigasi (Risk Treatment Plan) untuk risiko di atas batas toleransi?",
+      "Apakah keputusan menerima risiko (Risk Acceptance) disetujui oleh level manajemen yang tepat?",
+      "Apakah efektivitas kontrol mitigasi dipantau perkembangannya?"
+    ],
+    "deep_dive": {
+      "focus": "Tindak lanjut penanganan risiko.",
+      "evaluate": "Evaluasi kecukupan rencana mitigasi untuk menurunkan risiko.",
+      "monitor": "Pantau status penyelesaian rencana aksi mitigasi (Open/Closed)."
+    }
+  },
+  {
+    "id": "D.1",
+    "aspect": "D",
+    "aspect_name": "PENGENDALIAN INTERNAL",
+    "ojk_question": "Apakah sistem pengendalian internal dilaksanakan secara efektif terhadap aspek TI?",
+    "cobit_ref": "MEA02 - Managed System of Internal Control",
+    "breakdown": [
+      "Apakah terdapat matriks kontrol (Risk Control Matrix) untuk proses-proses TI kritis?",
+      "Apakah dilakukan evaluasi mandiri (Control Self-Assessment) oleh pemilik proses secara berkala?",
+      "Apakah ada pemisahan tugas (Segregation of Duties) yang memadai dalam operasional TI?"
+    ],
+    "deep_dive": {
+      "focus": "Kesehatan lingkungan pengendalian internal.",
+      "evaluate": "Evaluasi apakah kontrol internal dirancang dan berjalan efektif.",
+      "monitor": "Pantau kelemahan kontrol (defisiensi) yang teridentifikasi."
+    }
+  },
+  {
+    "id": "D.4",
+    "aspect": "D",
+    "aspect_name": "PENGENDALIAN INTERNAL",
+    "ojk_question": "Apakah kegiatan pemantauan mencakup audit internal yang efektif?",
+    "cobit_ref": "MEA02.04 - Review Business Process Controls Effectiveness",
+    "breakdown": [
+      "Apakah fungsi audit internal memiliki independensi dari operasional TI?",
+      "Apakah auditor memiliki akses penuh terhadap data dan sistem yang diaudit?",
+      "Apakah temuan audit ditindaklanjuti dengan perbaikan yang nyata?"
+    ],
+    "deep_dive": {
+      "focus": "Mekanisme pengawasan lapis ketiga (Third Line of Defense).",
+      "evaluate": "Evaluasi objektivitas dan kualitas temuan audit.",
+      "monitor": "Pantau status perbaikan temuan audit internal."
+    }
+  },
+  {
+    "id": "D.7",
+    "aspect": "D",
+    "aspect_name": "AUDIT INTERNAL",
+    "ojk_question": "Apakah audit internal TI dilaksanakan secara berkala sesuai risiko?",
+    "cobit_ref": "MEA04 - Managed Assurance",
+    "breakdown": [
+      "Apakah rencana audit tahunan disusun berbasis risiko (Risk-Based Audit)?",
+      "Apakah audit TI dilakukan minimal setahun sekali atau sesuai urgensi?",
+      "Apakah auditor memiliki kompetensi yang memadai di bidang TI?",
+      "Apakah laporan audit disampaikan langsung kepada Direktur Utama/Komite Audit?"
+    ],
+    "deep_dive": {
+      "focus": "Pelaksanaan fungsi assurance.",
+      "evaluate": "Evaluasi cakupan audit terhadap area berisiko tinggi.",
+      "monitor": "Pantau realisasi rencana audit tahunan."
+    }
+  },
+  {
+    "id": "D.10",
+    "aspect": "D",
+    "aspect_name": "AUDIT INTERNAL",
+    "ojk_question": "Apakah dilakukan kaji ulang fungsi audit internal TI secara berkala?",
+    "cobit_ref": "MEA04.05 - Review the Assurance Provider",
+    "breakdown": [
+      "Apakah ada evaluasi kualitas (Quality Assurance Review) terhadap fungsi audit internal?",
+      "Apakah metodologi audit diperbarui sesuai standar profesional terkini?",
+      "Apakah ada umpan balik dari manajemen auditee mengenai kinerja auditor?"
+    ],
+    "deep_dive": {
+      "focus": "Peningkatan kualitas fungsi audit.",
+      "evaluate": "Evaluasi kompetensi dan profesionalisme tim audit.",
+      "monitor": "Pantau program pengembangan berkelanjutan bagi auditor."
+    }
+  },
+  {
+    "id": "A.1.Extra",
+    "aspect": "A",
+    "aspect_name": "TATA KELOLA (GOVERNANCE)",
+    "ojk_question": "Apakah prinsip transparansi diterapkan dalam tata kelola TI?",
+    "cobit_ref": "EDM01.03 - Monitor the Governance System",
+    "breakdown": [
+      "Apakah keputusan strategis TI dikomunikasikan kepada pemangku kepentingan?",
+      "Apakah proses pengadaan TI transparan dan akuntabel?",
+      "Apakah ada mekanisme pelaporan pelanggaran (Whistleblowing) terkait TI?"
+    ],
+    "deep_dive": {
+      "focus": "Keterbukaan dalam pengelolaan TI.",
+      "evaluate": "Evaluasi aksesibilitas informasi kinerja TI bagi stakeholder.",
+      "monitor": "Pantau keluhan terkait transparansi proses TI."
+    }
+  },
+  {
+    "id": "B.29.Extra",
+    "aspect": "B",
+    "aspect_name": "OPERASIONAL TI",
+    "ojk_question": "Apakah manajemen perubahan (Change Management) dikendalikan?",
+    "cobit_ref": "BAI06 - Managed IT Changes",
+    "breakdown": [
+      "Apakah setiap perubahan sistem di produksi harus melalui Request for Change (RFC)?",
+      "Apakah ada persetujuan CAB (Change Advisory Board) untuk perubahan berisiko tinggi?",
+      "Apakah ada prosedur 'Emergency Change' yang terdokumentasi dan direview pasca-implementasi?"
+    ],
+    "deep_dive": {
+      "focus": "Stabilitas sistem akibat perubahan.",
+      "evaluate": "Evaluasi dampak insiden yang disebabkan oleh perubahan (Change Failure Rate).",
+      "monitor": "Pantau perubahan yang dilakukan tanpa otorisasi (Unauthorized Change)."
+    }
+  },
+  {
+    "id": "B.30",
+    "aspect": "B",
+    "aspect_name": "OPERASIONAL TI",
+    "ojk_question": "Apakah manajemen kapasitas infrastruktur dikelola?",
+    "cobit_ref": "BAI04 - Managed Availability and Capacity",
+    "breakdown": [
+      "Apakah penggunaan sumber daya (CPU, Disk, Memory) dipantau trennya?",
+      "Apakah ada perencanaan kapasitas (Capacity Planning) untuk kebutuhan masa depan?",
+      "Apakah ada alert/notifikasi jika kapasitas mendekati batas kritis?"
+    ],
+    "deep_dive": {
+      "focus": "Ketersediaan sumber daya TI.",
+      "evaluate": "Evaluasi akurasi prediksi kebutuhan kapasitas.",
+      "monitor": "Pantau insiden downtime akibat kehabisan kapasitas."
+    }
+  },
+  {
+    "id": "B.42.Extra",
+    "aspect": "B",
+    "aspect_name": "KEAMANAN INFORMASI",
+    "ojk_question": "Apakah keamanan fisik perangkat mobile dan media penyimpanan dikelola?",
+    "cobit_ref": "DSS05.05 - Manage Physical Security",
+    "breakdown": [
+      "Apakah laptop dinas dienkripsi (misal: Bitlocker) untuk melindungi data jika hilang?",
+      "Apakah port USB pada PC diblokir atau dikendalikan penggunaannya?",
+      "Apakah ada prosedur pemusnahan data (Secure Wipe) untuk media penyimpanan yang rusak/dibuang?"
+    ],
+    "deep_dive": {
+      "focus": "Perlindungan data pada perangkat portabel.",
+      "evaluate": "Evaluasi kepatuhan terhadap kebijakan penggunaan perangkat mobile.",
+      "monitor": "Pantau laporan kehilangan perangkat dan tindak lanjutnya."
+    }
+  },
+  {
+    "id": "B.41.Extra",
+    "aspect": "B",
+    "aspect_name": "KEAMANAN INFORMASI",
+    "ojk_question": "Apakah kesadaran keamanan informasi (Security Awareness) dibangun?",
+    "cobit_ref": "APO07.03 - Maintain the Skills and Competencies",
+    "breakdown": [
+      "Apakah program sosialisasi keamanan informasi dilakukan rutin untuk seluruh karyawan?",
+      "Apakah dilakukan simulasi Phishing untuk menguji kewaspadaan karyawan?",
+      "Apakah materi sosialisasi mencakup tren ancaman terbaru (misal: Social Engineering)?"
+    ],
+    "deep_dive": {
+      "focus": "Budaya keamanan manusia (Human Firewall).",
+      "evaluate": "Evaluasi tingkat pemahaman karyawan melalui kuis atau survei.",
+      "monitor": "Pantau tingkat kegagalan user dalam simulasi phishing."
+    }
+  },
+  {
+    "id": "C.24.Extra",
+    "aspect": "C",
+    "aspect_name": "MANAJEMEN RISIKO",
+    "ojk_question": "Apakah manajemen insiden keamanan siber dikelola efektif?",
+    "cobit_ref": "DSS02 - Managed Service Requests and Incidents",
+    "breakdown": [
+      "Apakah ada tim respon insiden (CSIRT) atau personil yang ditunjuk khusus?",
+      "Apakah ada prosedur penanganan insiden siber (Incident Response Plan)?",
+      "Apakah dilakukan analisis akar masalah (Root Cause Analysis) pasca insiden siber?"
+    ],
+    "deep_dive": {
+      "focus": "Resiliensi terhadap serangan siber.",
+      "evaluate": "Evaluasi kecepatan deteksi dan respon terhadap insiden.",
+      "monitor": "Pantau tren jenis serangan yang masuk."
+    }
+  }
+]
