@@ -1,4 +1,4 @@
-import { Shield, Upload, Edit3, BarChart3 } from 'lucide-react';
+import { Shield, Upload, ClipboardList, BarChart3 } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: 'editor' | 'upload' | 'dashboard';
@@ -20,7 +20,7 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
                 IT Audit Fraud Detector
               </h1>
               <p className="text-xs text-muted-foreground">
-                Dana Pensiun Assessment Tool
+                Dana Pensiun Assessment Tool - COBIT Framework
               </p>
             </div>
           </div>
@@ -30,8 +30,8 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
             <TabButton
               active={activeTab === 'editor'}
               onClick={() => onTabChange('editor')}
-              icon={<Edit3 className="w-4 h-4" />}
-              label="Editor Manual"
+              icon={<ClipboardList className="w-4 h-4" />}
+              label="Pertanyaan IT Assessment"
             />
             <TabButton
               active={activeTab === 'upload'}
