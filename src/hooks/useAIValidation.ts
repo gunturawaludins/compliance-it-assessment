@@ -15,19 +15,22 @@ export interface AIFinding {
 export interface COBITComplianceScore {
   score: number;
   issues: string[];
+  summary?: string;
 }
 
 export interface AIValidationResult {
   findings: AIFinding[];
-  overall_risk_level: 'low' | 'medium' | 'high' | 'critical';
+  overall_risk_level: 'low' | 'medium' | 'high' | 'critical' | 'unknown';
   consistency_score: number;
-  cobit_compliance_summary: {
+  analysis_summary?: string;
+  cobit_compliance_summary?: {
     edm: COBITComplianceScore;
     apo: COBITComplianceScore;
     bai: COBITComplianceScore;
     dss: COBITComplianceScore;
     mea: COBITComplianceScore;
   };
+  parse_warning?: boolean;
 }
 
 export function useAIValidation() {
