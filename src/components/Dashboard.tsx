@@ -12,13 +12,24 @@ import {
   Briefcase, 
   Calendar, 
   Brain, 
-  Loader2 
+  Loader2,
+  BookOpen,
+  TrendingUp,
+  TrendingDown,
+  Minus
 } from 'lucide-react';
 import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo, COBIT_DOMAINS, COBITDomain } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
-import { useAIValidation } from '@/hooks/useAIValidation';
+import { useAIValidation, AIFinding } from '@/hooks/useAIValidation';
 import FraudRulesPanel from './FraudRulesPanel';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { useState } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 interface DashboardProps {
   questions: Question[];
@@ -30,6 +41,7 @@ interface DashboardProps {
 export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: DashboardProps) {
   const result = useMemo(() => analyzeFraud(questions, rules), [questions, rules]);
   const { validateWithAI, isValidating, aiResult, resetAIResult } = useAIValidation();
+  const [aiDetailsOpen, setAiDetailsOpen] = useState(true);
 
   // Reset AI result when questions change (new submission)
   useEffect(() => {
@@ -56,6 +68,50 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
     
     return stats;
   }, [questions]);
+
+  const getRiskLevelColor = (level: string) => {
+    switch (level) {
+      case 'critical': return 'text-destructive bg-destructive/20';
+      case 'high': return 'text-destructive bg-destructive/10';
+      case 'medium': return 'text-warning bg-warning/20';
+      case 'low': return 'text-success bg-success/20';
+      default: return 'text-muted-foreground bg-muted';
+    }
+  };
+
+  const getRiskLevelIcon = (level: string) => {
+    switch (level) {
+      case 'critical':
+      case 'high':
+        return <TrendingDown className="w-4 h-4" />;
+      case 'medium':
+        return <Minus className="w-4 h-4" />;
+      case 'low':
+        return <TrendingUp className="w-4 h-4" />;
+      default:
+        return <Minus className="w-4 h-4" />;
+    }
+  };
+
+  const getFindingTypeLabel = (type: string) => {
+    switch (type) {
+      case 'logic_inconsistency': return 'Inkonsistensi Logika';
+      case 'manipulation_pattern': return 'Pola Manipulasi';
+      case 'insufficient_evidence': return 'Bukti Tidak Memadai';
+      case 'cobit_violation': return 'Pelanggaran COBIT';
+      default: return type;
+    }
+  };
+
+  const getFindingTypeColor = (type: string) => {
+    switch (type) {
+      case 'logic_inconsistency': return 'bg-destructive/20 text-destructive';
+      case 'manipulation_pattern': return 'bg-warning/20 text-warning';
+      case 'insufficient_evidence': return 'bg-accent/20 text-accent';
+      case 'cobit_violation': return 'bg-primary/20 text-primary';
+      default: return 'bg-muted text-muted-foreground';
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -150,60 +206,170 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       </div>
 
-      {/* AI Result Card */}
+      {/* AI Result Card - Enhanced */}
       {aiResult && (
         <div className="glass-card rounded-xl p-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Brain className="w-5 h-5 text-primary" />
-            Hasil AI Cross-Validation
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="p-3 rounded-lg bg-background/50 text-center">
-              <div className={`text-2xl font-bold ${
-                aiResult.overall_risk_level === 'critical' ? 'text-destructive' :
-                aiResult.overall_risk_level === 'high' ? 'text-destructive' :
-                aiResult.overall_risk_level === 'medium' ? 'text-warning' : 'text-success'
-              }`}>
-                {aiResult.overall_risk_level?.toUpperCase() || 'N/A'}
+          <Collapsible open={aiDetailsOpen} onOpenChange={setAiDetailsOpen}>
+            <CollapsibleTrigger asChild>
+              <div className="flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-primary" />
+                  Hasil AI Cross-Validation
+                </h3>
+                <Button variant="ghost" size="sm">
+                  {aiDetailsOpen ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+                </Button>
               </div>
-              <div className="text-xs text-muted-foreground">Risk Level</div>
-            </div>
-            <div className="p-3 rounded-lg bg-background/50 text-center">
-              <div className="text-2xl font-bold text-primary">{aiResult.consistency_score || 0}%</div>
-              <div className="text-xs text-muted-foreground">Konsistensi</div>
-            </div>
-            <div className="p-3 rounded-lg bg-background/50 text-center">
-              <div className="text-2xl font-bold text-destructive">{aiResult.findings?.length || 0}</div>
-              <div className="text-xs text-muted-foreground">AI Findings</div>
-            </div>
-            <div className="p-3 rounded-lg bg-background/50 text-center">
-              <div className="text-2xl font-bold text-warning">
-                {aiResult.findings?.filter(f => f.severity === 'major').length || 0}
+            </CollapsibleTrigger>
+
+            <CollapsibleContent className="mt-4 space-y-6">
+              {/* Summary Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-4 rounded-xl bg-background/50 text-center border">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold mb-2 ${getRiskLevelColor(aiResult.overall_risk_level || 'unknown')}`}>
+                    {getRiskLevelIcon(aiResult.overall_risk_level || 'unknown')}
+                    {(aiResult.overall_risk_level || 'N/A').toUpperCase()}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Risk Level</div>
+                </div>
+                <div className="p-4 rounded-xl bg-background/50 text-center border">
+                  <div className={`text-3xl font-bold ${
+                    (aiResult.consistency_score || 0) >= 80 ? 'text-success' : 
+                    (aiResult.consistency_score || 0) >= 60 ? 'text-warning' : 'text-destructive'
+                  }`}>
+                    {aiResult.consistency_score || 0}%
+                  </div>
+                  <div className="text-xs text-muted-foreground">Konsistensi</div>
+                </div>
+                <div className="p-4 rounded-xl bg-background/50 text-center border">
+                  <div className="text-3xl font-bold text-destructive">{aiResult.findings?.length || 0}</div>
+                  <div className="text-xs text-muted-foreground">AI Findings</div>
+                </div>
+                <div className="p-4 rounded-xl bg-background/50 text-center border">
+                  <div className="text-3xl font-bold text-warning">
+                    {aiResult.findings?.filter((f: AIFinding) => f.severity === 'major').length || 0}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Major Issues</div>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground">Major Issues</div>
-            </div>
-          </div>
-          
-          {/* COBIT Compliance Summary */}
-          {aiResult.cobit_compliance_summary && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium">COBIT 2019 Domain Compliance:</h4>
-              <div className="grid grid-cols-5 gap-2">
-                {(['edm', 'apo', 'bai', 'dss', 'mea'] as const).map(domain => {
-                  const score = aiResult.cobit_compliance_summary?.[domain]?.score || 0;
-                  const domainKey = domain.toUpperCase() as COBITDomain;
-                  return (
-                    <div key={domain} className="text-center p-2 rounded bg-background/50">
-                      <div className={`text-lg font-bold ${score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive'}`}>
-                        {score}%
+
+              {/* Analysis Summary - Written Explanation */}
+              {aiResult.analysis_summary && (
+                <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                  <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-primary" />
+                    Ringkasan Analisis AI
+                  </h4>
+                  <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                    {aiResult.analysis_summary}
+                  </p>
+                </div>
+              )}
+              
+              {/* COBIT Compliance Summary */}
+              {aiResult.cobit_compliance_summary && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-primary" />
+                    COBIT 2019 Domain Compliance
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    {(['edm', 'apo', 'bai', 'dss', 'mea'] as const).map(domain => {
+                      const domainData = aiResult.cobit_compliance_summary?.[domain];
+                      const score = domainData?.score || 0;
+                      const summary = domainData?.summary || '';
+                      const domainKey = domain.toUpperCase() as COBITDomain;
+                      const domainInfo = COBIT_DOMAINS[domainKey];
+                      
+                      return (
+                        <div key={domain} className="p-3 rounded-xl bg-background/50 border space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-muted-foreground">{domainKey}</span>
+                            <span className={`text-lg font-bold ${
+                              score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive'
+                            }`}>
+                              {score}%
+                            </span>
+                          </div>
+                          <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full transition-all duration-500 rounded-full ${
+                                score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-destructive'
+                              }`}
+                              style={{ width: `${score}%` }}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground">{domainInfo?.name}</p>
+                          {summary && (
+                            <p className="text-xs text-foreground/80 mt-1">{summary}</p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* AI Findings Detail */}
+              {aiResult.findings && aiResult.findings.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-semibold flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-warning" />
+                    Detail Temuan AI ({aiResult.findings.length})
+                  </h4>
+                  <div className="space-y-3">
+                    {aiResult.findings.map((finding: AIFinding, idx: number) => (
+                      <div 
+                        key={idx}
+                        className={`p-4 rounded-xl border-l-4 bg-background/50 ${
+                          finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'
+                        }`}
+                      >
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                            finding.severity === 'major' 
+                              ? 'bg-destructive/20 text-destructive' 
+                              : 'bg-warning/20 text-warning'
+                          }`}>
+                            {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
+                          </span>
+                          <span className={`px-2 py-0.5 rounded text-xs font-medium ${getFindingTypeColor(finding.finding_type)}`}>
+                            {getFindingTypeLabel(finding.finding_type)}
+                          </span>
+                          {finding.cobit_reference && finding.cobit_reference !== 'N/A' && (
+                            <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
+                              {finding.cobit_reference}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <p className="text-sm text-foreground mb-2">{finding.description}</p>
+                        
+                        {finding.question_ids && finding.question_ids.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            <span className="text-xs text-muted-foreground">Soal terkait:</span>
+                            {finding.question_ids.map((qId: string) => (
+                              <span key={qId} className="px-2 py-0.5 rounded bg-secondary text-xs font-mono">
+                                {qId}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {finding.recommendation && (
+                          <div className="p-2 rounded bg-success/10 border border-success/20 mt-2">
+                            <p className="text-xs text-success">
+                              <strong>Rekomendasi:</strong> {finding.recommendation}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <div className="text-xs text-muted-foreground">{domainKey}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       )}
 
@@ -303,16 +469,14 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         })}
       </div>
 
-      {/* Rules Panel */}
-      <div className="space-y-4">
-        <FraudRulesPanel rules={rules} findings={result.findings} />
-      </div>
+      {/* Rules Panel - Now Collapsible */}
+      <FraudRulesPanel rules={rules} findings={result.findings} />
 
       {/* Findings List */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-warning" />
-          Temuan Kecurangan ({result.findings.length})
+          Temuan Rule-Based ({result.findings.length})
         </h3>
 
         {result.findings.length === 0 ? (
@@ -326,7 +490,6 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         ) : (
           <div className="space-y-3">
             {result.findings.map((finding, idx) => {
-              // Extract standard reference from description
               const standardMatch = finding.description.match(/\[(.*?)\]/);
               const standardRef = standardMatch ? standardMatch[1] : null;
               
@@ -412,12 +575,10 @@ function StatBadge({
   };
 
   return (
-    <div className={`px-4 py-3 rounded-xl ${colorClasses[color]}`}>
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-2xl font-bold">{value}</span>
-      </div>
-      <p className="text-xs opacity-80 mt-1">{label}</p>
+    <div className={`flex flex-col items-center gap-1 p-3 rounded-xl ${colorClasses[color]}`}>
+      {icon}
+      <span className="text-2xl font-bold">{value}</span>
+      <span className="text-xs">{label}</span>
     </div>
   );
 }
