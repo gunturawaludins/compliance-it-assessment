@@ -1,5 +1,19 @@
 import { useMemo, useEffect } from 'react';
-import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, ShieldCheck, Building, User, Phone, Briefcase, Calendar, Brain, Loader2 } from 'lucide-react';
+import { 
+  AlertTriangle, 
+  AlertCircle, 
+  CheckCircle2, 
+  FileSearch, 
+  ShieldAlert, 
+  ShieldCheck, 
+  Building, 
+  User, 
+  Phone, 
+  Briefcase, 
+  Calendar, 
+  Brain, 
+  Loader2 
+} from 'lucide-react';
 import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo, COBIT_DOMAINS, COBITDomain } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
