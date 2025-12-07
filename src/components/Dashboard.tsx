@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
-import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, ShieldCheck, Building, User, Phone, Briefcase, Calendar, BookOpen, Scale, Shield } from 'lucide-react';
-import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo } from '@/types/assessment';
+import { useMemo, useEffect } from 'react';
+import { AlertTriangle, AlertCircle, CheckCircle2, FileSearch, ShieldAlert, ShieldCheck, Building, User, Phone, Briefcase, Calendar, Brain, Loader2 } from 'lucide-react';
+import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo, COBIT_DOMAINS, COBITDomain } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
+import { useAIValidation } from '@/hooks/useAIValidation';
 import FraudRulesPanel from './FraudRulesPanel';
 
 interface DashboardProps {
@@ -14,6 +15,12 @@ interface DashboardProps {
 
 export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: DashboardProps) {
   const result = useMemo(() => analyzeFraud(questions, rules), [questions, rules]);
+  const { validateWithAI, isValidating, aiResult, resetAIResult } = useAIValidation();
+
+  // Reset AI result when questions change (new submission)
+  useEffect(() => {
+    resetAIResult();
+  }, [questions, resetAIResult]);
 
   const categoryStats = useMemo(() => {
     const stats: Record<AspectCategory, { total: number; answered: number; yesCount: number }> = {
@@ -98,19 +105,93 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       )}
 
-      {/* Analyze Button */}
-      <div className="glass-card rounded-xl p-4 flex items-center justify-between">
+      {/* AI Analysis Button */}
+      <div className="glass-card rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">Analisis Fraud Detection</h2>
+          <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+            <Brain className="w-5 h-5 text-primary" />
+            AI Cross-Validation (COBIT 2019)
+          </h2>
           <p className="text-sm text-muted-foreground">
             {result.answeredQuestions} dari {result.totalQuestions} pertanyaan terjawab
           </p>
         </div>
-        <Button variant="glow" onClick={onAnalyze}>
-          <FileSearch className="w-4 h-4" />
-          Jalankan Analisis
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onAnalyze}>
+            <FileSearch className="w-4 h-4" />
+            Rule-Based
+          </Button>
+          <Button 
+            variant="glow" 
+            onClick={() => validateWithAI(questions)}
+            disabled={isValidating || questions.length === 0}
+          >
+            {isValidating ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Brain className="w-4 h-4" />
+            )}
+            {isValidating ? 'Analyzing...' : 'AI Validation'}
+          </Button>
+        </div>
       </div>
+
+      {/* AI Result Card */}
+      {aiResult && (
+        <div className="glass-card rounded-xl p-6 border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-primary" />
+            Hasil AI Cross-Validation
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="p-3 rounded-lg bg-background/50 text-center">
+              <div className={`text-2xl font-bold ${
+                aiResult.overall_risk_level === 'critical' ? 'text-destructive' :
+                aiResult.overall_risk_level === 'high' ? 'text-destructive' :
+                aiResult.overall_risk_level === 'medium' ? 'text-warning' : 'text-success'
+              }`}>
+                {aiResult.overall_risk_level?.toUpperCase() || 'N/A'}
+              </div>
+              <div className="text-xs text-muted-foreground">Risk Level</div>
+            </div>
+            <div className="p-3 rounded-lg bg-background/50 text-center">
+              <div className="text-2xl font-bold text-primary">{aiResult.consistency_score || 0}%</div>
+              <div className="text-xs text-muted-foreground">Konsistensi</div>
+            </div>
+            <div className="p-3 rounded-lg bg-background/50 text-center">
+              <div className="text-2xl font-bold text-destructive">{aiResult.findings?.length || 0}</div>
+              <div className="text-xs text-muted-foreground">AI Findings</div>
+            </div>
+            <div className="p-3 rounded-lg bg-background/50 text-center">
+              <div className="text-2xl font-bold text-warning">
+                {aiResult.findings?.filter(f => f.severity === 'major').length || 0}
+              </div>
+              <div className="text-xs text-muted-foreground">Major Issues</div>
+            </div>
+          </div>
+          
+          {/* COBIT Compliance Summary */}
+          {aiResult.cobit_compliance_summary && (
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium">COBIT 2019 Domain Compliance:</h4>
+              <div className="grid grid-cols-5 gap-2">
+                {(['edm', 'apo', 'bai', 'dss', 'mea'] as const).map(domain => {
+                  const score = aiResult.cobit_compliance_summary?.[domain]?.score || 0;
+                  const domainKey = domain.toUpperCase() as COBITDomain;
+                  return (
+                    <div key={domain} className="text-center p-2 rounded bg-background/50">
+                      <div className={`text-lg font-bold ${score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive'}`}>
+                        {score}%
+                      </div>
+                      <div className="text-xs text-muted-foreground">{domainKey}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Score Card */}
       <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
@@ -261,7 +342,7 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                         </span>
                         {standardRef && (
                           <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary flex items-center gap-1">
-                            <BookOpen className="w-3 h-3" />
+                            <Brain className="w-3 h-3" />
                             {standardRef}
                           </span>
                         )}

@@ -1,5 +1,8 @@
 export type AspectCategory = 'A' | 'B' | 'C' | 'D';
 
+// COBIT 2019 Domain Types
+export type COBITDomain = 'EDM' | 'APO' | 'BAI' | 'DSS' | 'MEA';
+
 export interface AssessorInfo {
   namaDanaPensiun: string;
   namaPIC: string;
@@ -22,6 +25,7 @@ export interface DatabaseQuestion {
   cobit_ref: string;
   breakdown: string[];
   deep_dive: DeepDive;
+  requires_document?: boolean;
 }
 
 export interface Question {
@@ -56,7 +60,6 @@ export interface FraudRule {
   severity: 'major' | 'minor';
   fraudType: 'Manipulasi Administratif' | 'Operasional Fiktif' | 'Inkonsistensi Kebijakan' | 'Bukti Tidak Memadai';
   cobitRef?: string;
-  standardRef?: string;
 }
 
 export interface FraudFinding {
@@ -71,7 +74,6 @@ export interface FraudFinding {
   fraudType: string;
   description: string;
   cobitRef?: string;
-  standardRef?: string;
 }
 
 export interface AspectScore {
@@ -97,6 +99,35 @@ export interface AssessmentResult {
   aspectScores: AspectScore[];
 }
 
+// COBIT 2019 Domain Information
+export const COBIT_DOMAINS: Record<COBITDomain, { name: string; description: string; color: string }> = {
+  EDM: { 
+    name: 'Evaluate, Direct and Monitor', 
+    description: 'Governance objectives ensuring stakeholder needs are evaluated',
+    color: 'bg-purple-500'
+  },
+  APO: { 
+    name: 'Align, Plan and Organize', 
+    description: 'Management objectives for IT alignment with business strategy',
+    color: 'bg-blue-500'
+  },
+  BAI: { 
+    name: 'Build, Acquire and Implement', 
+    description: 'Solution delivery and change management',
+    color: 'bg-green-500'
+  },
+  DSS: { 
+    name: 'Deliver, Service and Support', 
+    description: 'Service delivery and support operations',
+    color: 'bg-orange-500'
+  },
+  MEA: { 
+    name: 'Monitor, Evaluate and Assess', 
+    description: 'Performance monitoring and compliance',
+    color: 'bg-red-500'
+  }
+};
+
 export const ASPECT_LABELS: Record<AspectCategory, string> = {
   A: 'Pengawasan Aktif Direksi & Dewan Komisaris',
   B: 'Kecukupan Kebijakan & Prosedur TI',
@@ -112,8 +143,16 @@ export const ASPECT_SHORT_LABELS: Record<AspectCategory, string> = {
 };
 
 export const ASPECT_ICONS: Record<AspectCategory, string> = {
-  A: '👥',
+  A: '🏛️',
   B: '📋',
   C: '⚠️',
   D: '🔍',
+};
+
+// COBIT Process mapping for each aspect
+export const ASPECT_COBIT_MAPPING: Record<AspectCategory, COBITDomain[]> = {
+  A: ['EDM', 'APO'], // Governance maps to EDM and APO domains
+  B: ['BAI', 'DSS'], // Policies & Procedures maps to BAI and DSS domains
+  C: ['APO', 'DSS'], // Risk Management maps to APO12 and DSS domains
+  D: ['MEA']         // Audit maps to MEA domain
 };

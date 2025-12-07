@@ -71,12 +71,27 @@ export default function Index() {
     }
   }, [assessorInfo, isLoaded]);
 
+  // CRITICAL: Reset all cache and previous data when submitting new assessment
   const handleQuestionnaireSubmit = (submittedQuestions: Question[]) => {
+    // Clear all previous assessment data
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('it_audit_ai_result');
+    
+    // Set fresh questions data
     setQuestions(submittedQuestions);
     setActiveTab('dashboard');
+    
+    toast({
+      title: 'Assessment Submitted',
+      description: 'Data baru telah disubmit. Dashboard telah direset.',
+    });
   };
 
   const handleImportQuestions = (importedQuestions: Question[], importedAssessorInfo?: AssessorInfo) => {
+    // Clear previous data when importing
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('it_audit_ai_result');
+    
     setQuestions(importedQuestions);
     if (importedAssessorInfo) {
       setAssessorInfo(importedAssessorInfo);
@@ -86,8 +101,8 @@ export default function Index() {
 
   const handleAnalyze = () => {
     toast({
-      title: 'Analisis Selesai',
-      description: 'Hasil deteksi fraud telah diperbarui',
+      title: 'Analisis COBIT Selesai',
+      description: 'Hasil deteksi fraud berdasarkan framework COBIT 2019 telah diperbarui',
     });
   };
 
@@ -97,9 +112,10 @@ export default function Index() {
     setAssessorInfo(undefined);
     localStorage.removeItem(ASSESSOR_KEY);
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem('it_audit_ai_result');
     toast({
       title: 'Data Direset',
-      description: 'Semua data telah dikembalikan ke default',
+      description: 'Semua data assessment telah dikembalikan ke default',
     });
   };
 
@@ -138,13 +154,13 @@ export default function Index() {
       <footer className="border-t border-border/50 py-4 mt-8">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-sm text-muted-foreground">
-            IT Audit Fraud Assessment Detector &copy; {new Date().getFullYear()}
+            IT Audit Fraud Detector - COBIT 2019 Framework &copy; {new Date().getFullYear()}
           </p>
           <button
             onClick={handleResetData}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            Reset ke Data Default
+            Reset Data Assessment
           </button>
         </div>
       </footer>

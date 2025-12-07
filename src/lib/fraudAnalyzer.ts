@@ -43,7 +43,6 @@ export function analyzeFraud(
           fraudType: rule.fraudType,
           description: rule.description,
           cobitRef: rule.cobitRef,
-          standardRef: rule.standardRef,
         });
       }
     }
