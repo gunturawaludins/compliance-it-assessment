@@ -286,6 +286,24 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     });
   }, [questions, toast]);
 
+  // Save draft explicitly
+  const handleSaveDraft = useCallback(() => {
+    try {
+      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(responses));
+      const answeredCount = Object.values(responses).filter(r => r.mainAnswer !== null).length;
+      toast({
+        title: 'Jawaban Tersimpan',
+        description: `${answeredCount} jawaban berhasil disimpan. Progress Anda aman.`
+      });
+    } catch (e) {
+      toast({
+        title: 'Gagal Menyimpan',
+        description: 'Terjadi kesalahan saat menyimpan jawaban',
+        variant: 'destructive'
+      });
+    }
+  }, [responses, toast]);
+
   // Clear all responses
   const handleClearResponses = useCallback(() => {
     setResponses({});
@@ -724,7 +742,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
               </Button>
             ))}
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button 
               variant="outline" 
               size="sm"
@@ -740,7 +758,16 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
               onClick={handleAutoRandomAnswer}
             >
               <Shuffle className="h-4 w-4 mr-1" />
-              Random (Uji)
+              Random
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleSaveDraft}
+              className="text-primary border-primary hover:bg-primary/10"
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              Simpan Sementara
             </Button>
             <Button onClick={handleSubmit} className="gap-2">
               <Send className="h-4 w-4" />
