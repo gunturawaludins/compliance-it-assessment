@@ -107,9 +107,9 @@ export function parseGeneratedExcel(file: File): Promise<DanaPensiunComplianceDa
         const aspectStats: DanaPensiunComplianceData['aspectStats'] = [];
         const aspects = ['A', 'B', 'C', 'D'] as const;
         
-        // Parse each aspect row
+        // Parse each aspect row (skip header row which also contains "Aspek")
         for (let i = 0; i < 4; i++) {
-          const row = rawData[statsStartRow + i];
+          const row = rawData[statsStartRow + 1 + i]; // +1 to skip the header row
           if (!row) continue;
           
           const aspectLabel = String(row[0] || '');
@@ -164,8 +164,8 @@ export function parseGeneratedExcel(file: File): Promise<DanaPensiunComplianceDa
           });
         }
         
-        // Find grand total row (after aspect rows, skip empty row)
-        const grandTotalRow = rawData[statsStartRow + 5];
+        // Find grand total row (header + 4 aspects + empty row)
+        const grandTotalRow = rawData[statsStartRow + 6];
         const grandTotal = {
           mainTotal: Number(grandTotalRow?.[1]) || 0,
           mainAnswered: Number(grandTotalRow?.[2]) || 0,
