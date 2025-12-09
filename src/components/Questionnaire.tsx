@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,12 +16,15 @@ import {
   BookOpen,
   Target,
   Eye,
-  Send
+  Send,
+  Shuffle
 } from 'lucide-react';
 import { DatabaseQuestion, AspectCategory, Question, ASPECT_LABELS, ASPECT_ICONS } from '@/types/assessment';
 import questionDatabase from '@/data/questionDatabase.json';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+
+const RESPONSES_STORAGE_KEY = 'questionnaire_responses';
 
 interface QuestionnaireProps {
   onSubmit: (questions: Question[]) => void;
@@ -41,6 +44,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
   const [currentAspect, setCurrentAspect] = useState<AspectCategory>('A');
   const [responses, setResponses] = useState<Record<string, QuestionResponse>>({});
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
 
   const questions = questionDatabase as DatabaseQuestion[];
@@ -52,25 +56,45 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     return acc;
   }, {} as Record<AspectCategory, DatabaseQuestion[]>);
 
-  // Initialize responses from initial questions
+  // Load responses from localStorage on mount
   useEffect(() => {
-    if (initialQuestions && initialQuestions.length > 0) {
-      const newResponses: Record<string, QuestionResponse> = {};
-      initialQuestions.forEach(q => {
-        if (!newResponses[q.id]) {
-          newResponses[q.id] = {
-            mainAnswer: q.answer || null,
-            breakdownAnswers: [],
-            subQuestionAnswers: {},
-            subBreakdownAnswers: {},
-            evidenceFiles: q.evidenceFile ? [q.evidenceFile] : [],
-            notes: q.evidence || ''
-          };
-        }
-      });
-      setResponses(newResponses);
+    try {
+      const savedResponses = localStorage.getItem(RESPONSES_STORAGE_KEY);
+      if (savedResponses) {
+        const parsed = JSON.parse(savedResponses);
+        setResponses(parsed);
+      } else if (initialQuestions && initialQuestions.length > 0) {
+        const newResponses: Record<string, QuestionResponse> = {};
+        initialQuestions.forEach(q => {
+          if (!newResponses[q.id]) {
+            newResponses[q.id] = {
+              mainAnswer: q.answer || null,
+              breakdownAnswers: [],
+              subQuestionAnswers: {},
+              subBreakdownAnswers: {},
+              evidenceFiles: q.evidenceFile ? [q.evidenceFile] : [],
+              notes: q.evidence || ''
+            };
+          }
+        });
+        setResponses(newResponses);
+      }
+    } catch (e) {
+      console.error('Failed to load saved responses:', e);
     }
-  }, [initialQuestions]);
+    setIsLoaded(true);
+  }, []);
+
+  // Save responses to localStorage whenever they change
+  useEffect(() => {
+    if (isLoaded && Object.keys(responses).length > 0) {
+      try {
+        localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(responses));
+      } catch (e) {
+        console.error('Failed to save responses:', e);
+      }
+    }
+  }, [responses, isLoaded]);
 
   const getResponse = (questionId: string): QuestionResponse => {
     return responses[questionId] || {
@@ -146,6 +170,55 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     return Math.round((answered / total) * 100);
   };
 
+  // Auto random answer for testing
+  const handleAutoRandomAnswer = useCallback(() => {
+    const newResponses: Record<string, QuestionResponse> = {};
+    
+    questions.forEach(dbQ => {
+      const randomMain = Math.random() > 0.5 ? 'Ya' : 'Tidak';
+      const breakdownAnswers = dbQ.breakdown.map(() => 
+        Math.random() > 0.5 ? 'Ya' as const : 'Tidak' as const
+      );
+      
+      const subQuestionAnswers: Record<string, 'Ya' | 'Tidak' | null> = {};
+      const subBreakdownAnswers: Record<string, ('Ya' | 'Tidak' | null)[]> = {};
+      
+      if (dbQ.sub_questions) {
+        dbQ.sub_questions.forEach(subQ => {
+          subQuestionAnswers[subQ.id] = Math.random() > 0.5 ? 'Ya' : 'Tidak';
+          subBreakdownAnswers[subQ.id] = subQ.breakdown.map(() => 
+            Math.random() > 0.5 ? 'Ya' as const : 'Tidak' as const
+          );
+        });
+      }
+      
+      newResponses[dbQ.id] = {
+        mainAnswer: randomMain,
+        breakdownAnswers,
+        subQuestionAnswers,
+        subBreakdownAnswers,
+        evidenceFiles: [],
+        notes: ''
+      };
+    });
+    
+    setResponses(newResponses);
+    toast({
+      title: 'Auto Random Answer',
+      description: 'Semua pertanyaan telah dijawab secara random untuk uji coba'
+    });
+  }, [questions, toast]);
+
+  // Clear all responses
+  const handleClearResponses = useCallback(() => {
+    setResponses({});
+    localStorage.removeItem(RESPONSES_STORAGE_KEY);
+    toast({
+      title: 'Data Dihapus',
+      description: 'Semua jawaban telah direset'
+    });
+  }, [toast]);
+
   const handleSubmit = () => {
     const answeredQuestions = questions.filter(q => getResponse(q.id).mainAnswer !== null);
     
@@ -191,9 +264,48 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
             });
           }
         });
+
+        // Sub questions
+        if (dbQ.sub_questions) {
+          dbQ.sub_questions.forEach(subQ => {
+            const subAnswer = response.subQuestionAnswers[subQ.id];
+            if (subAnswer) {
+              result.push({
+                id: subQ.id,
+                category: dbQ.aspect,
+                parentId: dbQ.id,
+                text: subQ.text,
+                isSubQuestion: true,
+                subLevel: 1,
+                answer: subAnswer,
+                cobitRef: subQ.cobit_ref
+              });
+
+              // Sub breakdowns
+              const subBreakdowns = response.subBreakdownAnswers[subQ.id] || [];
+              subQ.breakdown.forEach((sbq, sbIdx) => {
+                if (subBreakdowns[sbIdx]) {
+                  result.push({
+                    id: `${subQ.id}.BD.${sbIdx + 1}`,
+                    category: dbQ.aspect,
+                    parentId: subQ.id,
+                    text: sbq,
+                    isSubQuestion: true,
+                    subLevel: 2,
+                    answer: subBreakdowns[sbIdx],
+                    cobitRef: subQ.cobit_ref
+                  });
+                }
+              });
+            }
+          });
+        }
       }
     });
 
+    // Clear localStorage after successful submit
+    localStorage.removeItem(RESPONSES_STORAGE_KEY);
+    
     onSubmit(result);
     toast({
       title: 'Assessment Berhasil Disubmit',
@@ -539,7 +651,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
 
       {/* Navigation and Submit */}
       <Card className="sticky bottom-4 bg-background/95 backdrop-blur shadow-lg">
-        <CardContent className="flex items-center justify-between py-4">
+        <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-3 py-4">
           <div className="flex gap-2">
             {aspects.map(aspect => (
               <Button
@@ -552,10 +664,29 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
               </Button>
             ))}
           </div>
-          <Button onClick={handleSubmit} className="gap-2">
-            <Send className="h-4 w-4" />
-            Submit Assessment
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleClearResponses}
+              className="text-destructive hover:text-destructive"
+            >
+              <XCircle className="h-4 w-4 mr-1" />
+              Reset
+            </Button>
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={handleAutoRandomAnswer}
+            >
+              <Shuffle className="h-4 w-4 mr-1" />
+              Random (Uji)
+            </Button>
+            <Button onClick={handleSubmit} className="gap-2">
+              <Send className="h-4 w-4" />
+              Submit
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
