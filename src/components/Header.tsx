@@ -17,10 +17,10 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
             </div>
             <div>
               <h1 className="text-lg md:text-xl font-bold gradient-text">
-                IT Audit Fraud Detector
+                IT Compliance Assessments
               </h1>
               <p className="text-xs text-muted-foreground">
-                Dana Pensiun Assessment Tool - COBIT Framework
+                COBIT Framework
               </p>
             </div>
           </div>
