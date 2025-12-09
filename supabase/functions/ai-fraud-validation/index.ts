@@ -33,6 +33,36 @@ function extractJSON(content: string): string {
   return cleaned.trim();
 }
 
+// COBIT Reference mapping for semantic analysis
+const COBIT_SEMANTIC_GROUPS = {
+  governance: ['EDM01', 'EDM02', 'EDM03', 'EDM04', 'EDM05'],
+  planning: ['APO01', 'APO02', 'APO03', 'APO04', 'APO05', 'APO06', 'APO07'],
+  security: ['APO13', 'DSS05'],
+  operations: ['DSS01', 'DSS02', 'DSS03', 'DSS04', 'DSS06'],
+  monitoring: ['MEA01', 'MEA02', 'MEA03', 'MEA04'],
+  implementation: ['BAI01', 'BAI02', 'BAI03', 'BAI04', 'BAI05', 'BAI06', 'BAI07', 'BAI08', 'BAI09', 'BAI10', 'BAI11'],
+};
+
+// Semantic keywords for NLP-based relationship detection
+const SEMANTIC_RELATIONSHIPS = {
+  policy_implementation: {
+    keywords: ['kebijakan', 'prosedur', 'SOP', 'standar', 'pedoman'],
+    relatedTo: ['implementasi', 'pelaksanaan', 'monitoring', 'review', 'evaluasi', 'audit']
+  },
+  governance_evidence: {
+    keywords: ['struktur', 'tata kelola', 'governance', 'komite', 'dewan'],
+    relatedTo: ['keputusan', 'rapat', 'notulen', 'laporan', 'dokumentasi']
+  },
+  risk_control: {
+    keywords: ['risiko', 'risk', 'ancaman', 'kerentanan'],
+    relatedTo: ['mitigasi', 'kontrol', 'pengendalian', 'monitoring', 'assessment']
+  },
+  security_compliance: {
+    keywords: ['keamanan', 'security', 'akses', 'otentikasi', 'otorisasi'],
+    relatedTo: ['kebijakan', 'prosedur', 'audit', 'monitoring', 'log']
+  }
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -46,15 +76,16 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Prepare questions summary for AI analysis
-    const answeredQuestions = questions.filter(q => q.answer !== null);
+    // Filter to focus on Aspect B (Kebijakan dan Prosedur)
+    const aspectBQuestions = questions.filter(q => q.category === 'B' || q.id.startsWith('B.'));
+    const answeredQuestions = aspectBQuestions.filter(q => q.answer !== null);
     
     if (answeredQuestions.length === 0) {
       return new Response(JSON.stringify({
         findings: [],
         overall_risk_level: "low",
         consistency_score: 100,
-        analysis_summary: "Tidak ada pertanyaan yang dijawab untuk dianalisis.",
+        analysis_summary: "Tidak ada pertanyaan Aspek B yang dijawab untuk dianalisis.",
         cobit_compliance_summary: {
           edm: { score: 100, issues: [], summary: "Tidak ada data" },
           apo: { score: 100, issues: [], summary: "Tidak ada data" },
@@ -67,22 +98,143 @@ serve(async (req) => {
       });
     }
 
-    // Group questions by parent-child relationship for better analysis
+    // Build comprehensive relationship map
     const mainQuestions = answeredQuestions.filter(q => !q.parentId);
     const subQuestions = answeredQuestions.filter(q => q.parentId);
     
-    // Build relationship map
-    const relationshipMap: Record<string, { main: QuestionData, subs: QuestionData[] }> = {};
+    // Enhanced relationship mapping with semantic analysis
+    const relationshipMap: Record<string, { 
+      main: QuestionData, 
+      subs: QuestionData[],
+      semanticLinks: string[]
+    }> = {};
+    
     mainQuestions.forEach(mq => {
       const subs = subQuestions.filter(sq => sq.parentId === mq.id);
+      const semanticLinks: string[] = [];
+      
+      // Find semantic relationships based on question text
+      Object.entries(SEMANTIC_RELATIONSHIPS).forEach(([relType, { keywords, relatedTo }]) => {
+        const hasKeyword = keywords.some(kw => mq.text.toLowerCase().includes(kw.toLowerCase()));
+        if (hasKeyword) {
+          // Find other questions that should be related
+          mainQuestions.forEach(otherQ => {
+            if (otherQ.id !== mq.id) {
+              const hasRelated = relatedTo.some(rel => 
+                otherQ.text.toLowerCase().includes(rel.toLowerCase())
+              );
+              if (hasRelated) {
+                semanticLinks.push(`${mq.id} <-> ${otherQ.id} (${relType})`);
+              }
+            }
+          });
+        }
+      });
+      
+      relationshipMap[mq.id] = { main: mq, subs, semanticLinks };
+    });
+
+    // Advanced NLP-based pre-analysis
+    const preAnalysis: { type: string; description: string; relatedQuestions: string[]; severity: string }[] = [];
+    
+    // Pattern 1: Main = Ya, ALL subs = Tidak
+    Object.entries(relationshipMap).forEach(([mainId, { main, subs }]) => {
       if (subs.length > 0) {
-        relationshipMap[mq.id] = { main: mq, subs };
+        const allSubsNo = subs.every(s => s.answer === 'Tidak');
+        const allSubsYes = subs.every(s => s.answer === 'Ya');
+        const someSubsYes = subs.some(s => s.answer === 'Ya');
+        
+        if (main.answer === 'Ya' && allSubsNo) {
+          preAnalysis.push({
+            type: 'logic_inconsistency',
+            description: `INKONSISTENSI MAYOR: Pertanyaan ${mainId} ("${main.text.substring(0, 100)}...") dijawab "Ya", namun SEMUA sub-pertanyaan (${subs.map(s => s.id).join(', ')}) dijawab "Tidak". Ini menunjukkan klaim yang tidak didukung bukti implementasi.`,
+            relatedQuestions: [mainId, ...subs.map(s => s.id)],
+            severity: 'major'
+          });
+        }
+        
+        if (main.answer === 'Tidak' && someSubsYes) {
+          const yesSubIds = subs.filter(s => s.answer === 'Ya').map(s => s.id);
+          preAnalysis.push({
+            type: 'logic_inconsistency',
+            description: `INKONSISTENSI: Pertanyaan ${mainId} ("${main.text.substring(0, 100)}...") dijawab "Tidak", tetapi sub-pertanyaan ${yesSubIds.join(', ')} dijawab "Ya". Ini menunjukkan ketidaksesuaian antara deklarasi utama dan detail implementasi.`,
+            relatedQuestions: [mainId, ...yesSubIds],
+            severity: 'major'
+          });
+        }
       }
     });
 
+    // Pattern 2: Cross-question semantic inconsistency
+    const policyQuestions = answeredQuestions.filter(q => 
+      q.text.toLowerCase().includes('kebijakan') || 
+      q.text.toLowerCase().includes('prosedur') ||
+      q.text.toLowerCase().includes('standar')
+    );
+    
+    const implementationQuestions = answeredQuestions.filter(q =>
+      q.text.toLowerCase().includes('implementasi') ||
+      q.text.toLowerCase().includes('pelaksanaan') ||
+      q.text.toLowerCase().includes('dilakukan')
+    );
+    
+    const reviewQuestions = answeredQuestions.filter(q =>
+      q.text.toLowerCase().includes('review') ||
+      q.text.toLowerCase().includes('evaluasi') ||
+      q.text.toLowerCase().includes('audit') ||
+      q.text.toLowerCase().includes('monitoring')
+    );
+
+    // Check: Policy claimed but no review/monitoring
+    policyQuestions.forEach(pq => {
+      if (pq.answer === 'Ya') {
+        const hasRelatedReview = reviewQuestions.some(rq => 
+          rq.answer === 'Ya' && 
+          (rq.text.toLowerCase().includes(pq.text.substring(0, 30).toLowerCase()) ||
+           rq.parentId === pq.id ||
+           pq.parentId === rq.id)
+        );
+        
+        if (!hasRelatedReview && reviewQuestions.length > 0) {
+          const noReviewIds = reviewQuestions.filter(r => r.answer === 'Tidak').map(r => r.id);
+          if (noReviewIds.length > 0) {
+            preAnalysis.push({
+              type: 'insufficient_evidence',
+              description: `KETERKAITAN TERDETEKSI: Pertanyaan ${pq.id} mengklaim adanya kebijakan/prosedur ("${pq.text.substring(0, 80)}..."), namun pertanyaan terkait review/monitoring (${noReviewIds.slice(0, 3).join(', ')}) dijawab "Tidak". Kebijakan tanpa mekanisme review menunjukkan potensi lack of governance.`,
+              relatedQuestions: [pq.id, ...noReviewIds.slice(0, 3)],
+              severity: 'minor'
+            });
+          }
+        }
+      }
+    });
+
+    // Pattern 3: Perfect pattern detection (all Yes or all No)
+    const yesCount = answeredQuestions.filter(q => q.answer === 'Ya').length;
+    const noCount = answeredQuestions.filter(q => q.answer === 'Tidak').length;
+    const totalAnswered = answeredQuestions.length;
+    
+    if (yesCount === totalAnswered && totalAnswered >= 5) {
+      preAnalysis.push({
+        type: 'manipulation_pattern',
+        description: `POLA MENCURIGAKAN: Semua ${totalAnswered} pertanyaan Aspek B dijawab "Ya" (100%). Pola jawaban sempurna ini sangat tidak realistis dan mengindikasikan potensi manipulasi atau pengisian tanpa assessment yang proper.`,
+        relatedQuestions: answeredQuestions.map(q => q.id).slice(0, 5),
+        severity: 'major'
+      });
+    }
+    
+    if (noCount === totalAnswered && totalAnswered >= 5) {
+      preAnalysis.push({
+        type: 'cobit_violation',
+        description: `KEPATUHAN KRITIS: Semua ${totalAnswered} pertanyaan Aspek B dijawab "Tidak" (0% compliance). Ini menunjukkan tidak adanya kebijakan dan prosedur TI yang fundamental, melanggar prinsip dasar COBIT 2019 domain APO.`,
+        relatedQuestions: answeredQuestions.map(q => q.id).slice(0, 5),
+        severity: 'major'
+      });
+    }
+
     const questionsSummary = answeredQuestions.map(q => ({
       id: q.id,
-      text: q.text.substring(0, 300),
+      text: q.text,
       answer: q.answer,
       category: q.category,
       cobitRef: q.cobitRef || 'N/A',
@@ -90,107 +242,111 @@ serve(async (req) => {
       isSubQuestion: q.isSubQuestion || false,
     }));
 
-    // Pre-analyze for obvious inconsistencies to guide AI
-    const preAnalysis: string[] = [];
-    Object.entries(relationshipMap).forEach(([mainId, { main, subs }]) => {
-      // Pattern 1: Main = Ya, but ALL subs = Tidak
-      const allSubsNo = subs.every(s => s.answer === 'Tidak');
-      if (main.answer === 'Ya' && subs.length > 0 && allSubsNo) {
-        preAnalysis.push(`INKONSISTENSI: ${mainId} dijawab "Ya" tapi SEMUA sub-pertanyaan dijawab "Tidak"`);
-      }
-      
-      // Pattern 2: Main = Tidak, but some subs = Ya
-      const someSubsYes = subs.some(s => s.answer === 'Ya');
-      if (main.answer === 'Tidak' && someSubsYes) {
-        const yesSubIds = subs.filter(s => s.answer === 'Ya').map(s => s.id).join(', ');
-        preAnalysis.push(`INKONSISTENSI: ${mainId} dijawab "Tidak" tapi sub-pertanyaan ${yesSubIds} dijawab "Ya"`);
-      }
-    });
-
     const systemPrompt = `Anda adalah AI auditor profesional yang SANGAT KRITIS dalam menganalisis IT Assessment berdasarkan COBIT 2019.
 
-DOMAIN COBIT 2019:
-- EDM (Evaluate, Direct, Monitor): EDM01-EDM05 - Tata kelola TI
-- APO (Align, Plan, Organize): APO01-APO14 - Perencanaan dan penyelarasan TI
-- BAI (Build, Acquire, Implement): BAI01-BAI11 - Pengembangan dan implementasi
-- DSS (Deliver, Service, Support): DSS01-DSS06 - Operasional dan dukungan layanan
-- MEA (Monitor, Evaluate, Assess): MEA01-MEA04 - Pemantauan dan evaluasi
+FOKUS ANALISIS: ASPEK B - Kecukupan Kebijakan dan Prosedur Penggunaan Teknologi Informasi
 
-TUGAS ANDA - WAJIB DIJALANKAN DENGAN TELITI:
+DOMAIN COBIT 2019 RELEVAN UNTUK ASPEK B:
+- APO01: Managed I&T Management Framework - Kebijakan pengelolaan TI
+- APO02: Managed Strategy - Strategi TI
+- APO03: Managed Enterprise Architecture - Arsitektur enterprise
+- APO13: Managed Security - Kebijakan keamanan informasi
+- BAI01: Managed Programs - Pengelolaan program TI
+- DSS05: Managed Security Services - Layanan keamanan
 
-1. DETEKSI INKONSISTENSI LOGIKA (logic_inconsistency):
-   - Jika pertanyaan utama dijawab "Ya" tapi SEMUA sub-pertanyaan "Tidak" = MAYOR
-   - Jika pertanyaan utama dijawab "Tidak" tapi ada sub-pertanyaan "Ya" = MAYOR
-   - Jawaban yang saling bertentangan dalam satu domain COBIT
+METODOLOGI ANALISIS NLP:
 
-2. DETEKSI POLA MANIPULASI (manipulation_pattern):
-   - Pola jawaban terlalu sempurna (semua "Ya" tanpa variasi)
-   - Pola jawaban acak yang tidak logis
-   - Ketidaksesuaian antara klaim governance dan implementasi
+1. ANALISIS SEMANTIK KETERKAITAN:
+   - Identifikasi hubungan logis antar pertanyaan berdasarkan KONTEKS dan KATA KUNCI
+   - Pertanyaan tentang "kebijakan" HARUS memiliki keterkaitan dengan "implementasi" dan "review"
+   - Pertanyaan tentang "prosedur" HARUS memiliki keterkaitan dengan "pelaksanaan" dan "monitoring"
+   - Jelaskan MENGAPA pertanyaan tersebut saling terkait
 
-3. BUKTI TIDAK MEMADAI (insufficient_evidence):
-   - Klaim memiliki kebijakan tapi tidak ada bukti review/update
-   - Klaim memiliki prosedur tapi tidak ada bukti pelaksanaan
-   - Gap antara pernyataan dan bukti pendukung
+2. DETEKSI INKONSISTENSI BERBASIS KETERKAITAN:
+   - Jika ada kebijakan (Ya) tapi tidak ada review (Tidak) = INKONSISTEN
+   - Jika ada prosedur (Ya) tapi tidak ada pelaksanaan (Tidak) = INKONSISTEN
+   - Jika utama Ya tapi semua sub Tidak = INKONSISTEN MAYOR
+   - Jelaskan KETERKAITAN LOGIS antara pertanyaan yang inkonsisten
 
-4. PELANGGARAN COBIT (cobit_violation):
-   - Proses tidak sesuai dengan domain COBIT yang relevan
-   - Tidak ada continuous improvement (MEA)
-   - Tidak ada monitoring (EDM, MEA)
+3. FORMAT PENJELASAN KETERKAITAN:
+   Setiap finding HARUS menjelaskan:
+   - Pertanyaan A terkait dengan Pertanyaan B karena [alasan semantik]
+   - Jawaban A adalah [X] sedangkan jawaban B adalah [Y]
+   - Ini inkonsisten karena [penjelasan logis]
+   - Dampak: [implikasi pada governance/compliance]
 
-SANGAT PENTING:
-- HARUS menemukan inkonsistensi jika ada, jangan toleransi
-- Setiap pertanyaan utama dengan sub-pertanyaan WAJIB dicek konsistensinya
-- Berikan penjelasan detail dalam bahasa Indonesia
-- Berikan rekomendasi konkret
-
-FORMAT OUTPUT (HANYA JSON, TANPA MARKDOWN, TANPA TEKS LAIN):
+OUTPUT FORMAT (HANYA JSON MURNI):
 {
   "findings": [
     {
       "finding_type": "logic_inconsistency|manipulation_pattern|insufficient_evidence|cobit_violation",
       "severity": "major|minor",
       "question_ids": ["ID1", "ID2"],
-      "cobit_reference": "EDM01.01",
-      "description": "Penjelasan detail inkonsistensi",
+      "cobit_reference": "APO01.01",
+      "relationship_explanation": "Penjelasan detail MENGAPA pertanyaan-pertanyaan ini saling terkait dan BAGAIMANA keterkaitan ini menunjukkan inkonsistensi",
+      "description": "Deskripsi temuan dengan konteks keterkaitan",
       "recommendation": "Rekomendasi perbaikan konkret"
     }
   ],
   "overall_risk_level": "low|medium|high|critical",
   "consistency_score": 0-100,
-  "analysis_summary": "Penjelasan tertulis 2-3 paragraf tentang hasil analisis keseluruhan, temuan utama, dan rekomendasi",
+  "analysis_summary": "Penjelasan 3-4 paragraf tentang: (1) Ringkasan hasil assessment Aspek B, (2) Pola keterkaitan antar pertanyaan yang ditemukan, (3) Inkonsistensi utama dan dampaknya, (4) Rekomendasi perbaikan prioritas",
   "cobit_compliance_summary": {
-    "edm": { "score": 0-100, "issues": [], "summary": "Penjelasan singkat status EDM" },
-    "apo": { "score": 0-100, "issues": [], "summary": "Penjelasan singkat status APO" },
-    "bai": { "score": 0-100, "issues": [], "summary": "Penjelasan singkat status BAI" },
-    "dss": { "score": 0-100, "issues": [], "summary": "Penjelasan singkat status DSS" },
-    "mea": { "score": 0-100, "issues": [], "summary": "Penjelasan singkat status MEA" }
-  }
+    "edm": { "score": 0-100, "issues": [], "summary": "Status EDM berdasarkan jawaban" },
+    "apo": { "score": 0-100, "issues": [], "summary": "Status APO - PALING RELEVAN untuk Aspek B" },
+    "bai": { "score": 0-100, "issues": [], "summary": "Status BAI" },
+    "dss": { "score": 0-100, "issues": [], "summary": "Status DSS" },
+    "mea": { "score": 0-100, "issues": [], "summary": "Status MEA" }
+  },
+  "semantic_relationships_found": [
+    {
+      "question_pair": ["ID1", "ID2"],
+      "relationship_type": "policy-implementation|policy-review|process-monitoring",
+      "consistency": "consistent|inconsistent",
+      "explanation": "Penjelasan hubungan semantik"
+    }
+  ]
 }`;
 
-    const userPrompt = `Analisis KRITIS jawaban IT Assessment berikut. Anda WAJIB menemukan semua inkonsistensi.
+    const userPrompt = `Analisis KRITIS dengan pendekatan NLP untuk Aspek B (Kebijakan dan Prosedur TI).
 
-POLA INKONSISTENSI YANG SUDAH TERDETEKSI (WAJIB DIMASUKKAN KE FINDINGS):
-${preAnalysis.length > 0 ? preAnalysis.join('\n') : 'Belum ada pre-analysis'}
+PRE-ANALYSIS INKONSISTENSI TERDETEKSI (WAJIB DIMASUKKAN):
+${preAnalysis.length > 0 ? preAnalysis.map(p => `
+[${p.severity.toUpperCase()}] ${p.type}
+Pertanyaan Terkait: ${p.relatedQuestions.join(', ')}
+Detail: ${p.description}
+`).join('\n') : 'Belum ada inkonsistensi yang terdeteksi oleh pre-analysis.'}
 
-HUBUNGAN PERTANYAAN UTAMA - SUB-PERTANYAAN:
+HUBUNGAN SEMANTIK ANTAR PERTANYAAN:
+${Object.entries(relationshipMap)
+  .filter(([_, { semanticLinks }]) => semanticLinks.length > 0)
+  .map(([id, { semanticLinks }]) => `${id}: ${semanticLinks.join('; ')}`)
+  .join('\n') || 'Tidak ada hubungan semantik yang terdeteksi.'}
+
+STRUKTUR PERTANYAAN UTAMA - SUB-PERTANYAAN:
 ${JSON.stringify(Object.entries(relationshipMap).map(([id, { main, subs }]) => ({
   mainId: id,
+  mainText: main.text.substring(0, 150),
   mainAnswer: main.answer,
-  subAnswers: subs.map(s => ({ id: s.id, answer: s.answer }))
+  subQuestions: subs.map(s => ({ 
+    id: s.id, 
+    text: s.text.substring(0, 100),
+    answer: s.answer 
+  }))
 })), null, 2)}
 
-DATA LENGKAP (${answeredQuestions.length} pertanyaan terjawab):
+DATA LENGKAP ASPEK B (${answeredQuestions.length} pertanyaan terjawab):
 ${JSON.stringify(questionsSummary, null, 2)}
 
-INSTRUKSI KRITIS:
-1. SEMUA inkonsistensi di atas WAJIB masuk ke findings
-2. Cari inkonsistensi tambahan berdasarkan logika COBIT
-3. Berikan analysis_summary yang komprehensif
-4. Jika ada inkonsistensi, consistency_score HARUS < 80
-5. OUTPUT HANYA JSON MURNI, TANPA MARKDOWN, TANPA PENJELASAN SEBELUM/SESUDAH JSON`;
+INSTRUKSI ANALISIS:
+1. SEMUA inkonsistensi dari pre-analysis WAJIB dimasukkan ke findings dengan penjelasan keterkaitan
+2. Cari inkonsistensi TAMBAHAN berdasarkan hubungan semantik antar pertanyaan
+3. Untuk SETIAP finding, jelaskan KETERKAITAN LOGIS dengan jelas
+4. Berikan analysis_summary yang KOMPREHENSIF menjelaskan pola dan keterkaitan
+5. Jika ada inkonsistensi mayor, consistency_score HARUS < 70
+6. OUTPUT HANYA JSON MURNI, TANPA MARKDOWN`;
 
-    console.log(`Processing AI validation for ${answeredQuestions.length} questions`);
+    console.log(`Processing AI NLP validation for ${answeredQuestions.length} Aspect B questions`);
     console.log(`Pre-analysis found ${preAnalysis.length} potential inconsistencies`);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -251,48 +407,78 @@ INSTRUKSI KRITIS:
       console.error("Failed to parse AI response:", parseError);
       console.log("Raw content preview:", content.substring(0, 500));
       
-      // If AI found pre-analyzed inconsistencies, include them even if parsing fails
-      const fallbackFindings = preAnalysis.map((desc, idx) => ({
-        finding_type: 'logic_inconsistency',
-        severity: 'major',
-        question_ids: desc.match(/[A-Z]\.\d+(?:\.\d+)?(?:\.[a-z])?/g) || [],
-        cobit_reference: 'N/A',
-        description: desc,
-        recommendation: 'Periksa dan koreksi inkonsistensi antara pertanyaan utama dan sub-pertanyaan'
+      // If AI fails, use pre-analyzed inconsistencies with detailed descriptions
+      const fallbackFindings = preAnalysis.map((item) => ({
+        finding_type: item.type,
+        severity: item.severity,
+        question_ids: item.relatedQuestions,
+        cobit_reference: 'APO01',
+        relationship_explanation: `Keterkaitan terdeteksi melalui analisis logika jawaban: ${item.description}`,
+        description: item.description,
+        recommendation: 'Periksa dan koreksi inkonsistensi antara pertanyaan terkait untuk memastikan konsistensi jawaban assessment.'
       }));
 
+      const majorCount = fallbackFindings.filter(f => f.severity === 'major').length;
+      
       parsedResult = {
         findings: fallbackFindings,
-        overall_risk_level: fallbackFindings.length > 0 ? "medium" : "low",
-        consistency_score: Math.max(0, 100 - (fallbackFindings.length * 10)),
-        analysis_summary: `Analisis AI mengalami kendala parsing, namun ditemukan ${fallbackFindings.length} inkonsistensi logika berdasarkan pre-analysis. Inkonsistensi ini terkait dengan ketidaksesuaian antara jawaban pertanyaan utama dan sub-pertanyaan. Diperlukan review manual untuk memastikan akurasi jawaban.`,
+        overall_risk_level: majorCount >= 2 ? "high" : majorCount >= 1 ? "medium" : "low",
+        consistency_score: Math.max(0, 100 - (majorCount * 15) - (fallbackFindings.length - majorCount) * 5),
+        analysis_summary: `Analisis Aspek B (Kebijakan dan Prosedur TI) mengidentifikasi ${fallbackFindings.length} inkonsistensi melalui pre-analysis berbasis logika.
+
+${majorCount > 0 ? `Ditemukan ${majorCount} inkonsistensi MAYOR yang menunjukkan ketidaksesuaian signifikan antara klaim kebijakan dan bukti implementasi. Pola ini mengindikasikan potensi pengisian assessment yang tidak akurat atau kurangnya pemahaman terhadap kondisi aktual organisasi.` : ''}
+
+Rekomendasi: Lakukan review ulang terhadap jawaban yang teridentifikasi inkonsisten. Pastikan setiap klaim adanya kebijakan didukung oleh bukti review, monitoring, dan implementasi yang sesuai.`,
         cobit_compliance_summary: {
-          edm: { score: 70, issues: [], summary: "Perlu review manual" },
-          apo: { score: 70, issues: [], summary: "Perlu review manual" },
-          bai: { score: 70, issues: [], summary: "Perlu review manual" },
-          dss: { score: 70, issues: [], summary: "Perlu review manual" },
-          mea: { score: 70, issues: [], summary: "Perlu review manual" }
+          edm: { score: 70, issues: [], summary: "Perlu verifikasi governance" },
+          apo: { score: Math.max(0, 100 - (majorCount * 20)), issues: preAnalysis.map(p => p.description.substring(0, 100)), summary: "Domain paling relevan untuk Aspek B - ditemukan inkonsistensi" },
+          bai: { score: 75, issues: [], summary: "Perlu verifikasi implementasi" },
+          dss: { score: 75, issues: [], summary: "Perlu verifikasi operasional" },
+          mea: { score: 70, issues: [], summary: "Perlu verifikasi monitoring" }
         },
         parse_warning: true
       };
     }
 
-    // Ensure findings array exists
+    // Ensure findings array exists and has relationship explanations
     if (!parsedResult.findings) {
       parsedResult.findings = [];
     }
-
-    // Ensure analysis_summary exists
-    if (!parsedResult.analysis_summary) {
-      const findingsCount = parsedResult.findings.length;
-      if (findingsCount > 0) {
-        parsedResult.analysis_summary = `Ditemukan ${findingsCount} inkonsistensi dalam jawaban assessment. Risk level: ${parsedResult.overall_risk_level}. Diperlukan tindakan perbaikan untuk memastikan kesesuaian antara klaim dan bukti yang tersedia.`;
-      } else {
-        parsedResult.analysis_summary = `Tidak ditemukan inkonsistensi signifikan dalam jawaban assessment. Jawaban menunjukkan konsistensi yang baik dengan skor ${parsedResult.consistency_score}%.`;
+    
+    // Add pre-analysis findings if not already included
+    preAnalysis.forEach(preItem => {
+      const exists = parsedResult.findings.some((f: any) => 
+        f.question_ids?.some((id: string) => preItem.relatedQuestions.includes(id))
+      );
+      
+      if (!exists) {
+        parsedResult.findings.push({
+          finding_type: preItem.type,
+          severity: preItem.severity,
+          question_ids: preItem.relatedQuestions,
+          cobit_reference: 'APO01',
+          relationship_explanation: `Hubungan logis terdeteksi: ${preItem.description}`,
+          description: preItem.description,
+          recommendation: 'Review dan perbaiki inkonsistensi untuk memastikan jawaban mencerminkan kondisi aktual.'
+        });
       }
+    });
+
+    // Ensure analysis_summary exists and is comprehensive
+    if (!parsedResult.analysis_summary || parsedResult.analysis_summary.length < 100) {
+      const findingsCount = parsedResult.findings.length;
+      const majorFindings = parsedResult.findings.filter((f: any) => f.severity === 'major').length;
+      
+      parsedResult.analysis_summary = `Hasil Analisis AI Cross-Validation untuk Aspek B (Kebijakan dan Prosedur TI):
+
+Dari ${answeredQuestions.length} pertanyaan Aspek B yang terjawab, ditemukan ${findingsCount} inkonsistensi melalui analisis NLP dan deteksi pola. ${majorFindings > 0 ? `Terdapat ${majorFindings} temuan MAYOR yang memerlukan perhatian segera.` : 'Tidak ditemukan temuan mayor yang kritis.'}
+
+${findingsCount > 0 ? `Pola inkonsistensi yang ditemukan menunjukkan ketidaksesuaian antara klaim adanya kebijakan dengan bukti implementasi atau mekanisme review yang memadai. Hal ini perlu ditindaklanjuti dengan verifikasi dokumentasi dan bukti pelaksanaan.` : 'Secara keseluruhan jawaban menunjukkan konsistensi yang baik antara klaim kebijakan dan bukti pendukung.'}
+
+Rekomendasi: ${majorFindings >= 2 ? 'Lakukan audit menyeluruh terhadap dokumentasi kebijakan dan prosedur TI. Pastikan setiap kebijakan memiliki mekanisme review dan bukti implementasi yang terdokumentasi.' : 'Pertahankan konsistensi jawaban dan pastikan dokumentasi pendukung tersedia untuk setiap klaim kebijakan.'}`;
     }
 
-    console.log(`AI validation completed. Findings: ${parsedResult.findings?.length || 0}`);
+    console.log(`AI NLP validation completed. Findings: ${parsedResult.findings?.length || 0}`);
 
     return new Response(JSON.stringify(parsedResult), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

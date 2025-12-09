@@ -10,6 +10,14 @@ export interface AIFinding {
   cobit_reference: string;
   description: string;
   recommendation: string;
+  relationship_explanation?: string; // New: explains WHY questions are related
+}
+
+export interface SemanticRelationship {
+  question_pair: string[];
+  relationship_type: 'policy-implementation' | 'policy-review' | 'process-monitoring' | string;
+  consistency: 'consistent' | 'inconsistent';
+  explanation: string;
 }
 
 export interface COBITComplianceScore {
@@ -30,6 +38,7 @@ export interface AIValidationResult {
     dss: COBITComplianceScore;
     mea: COBITComplianceScore;
   };
+  semantic_relationships_found?: SemanticRelationship[];
   parse_warning?: boolean;
 }
 
