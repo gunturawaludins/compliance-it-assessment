@@ -7,10 +7,10 @@
     "cobit_ref": "APO01",
     "cobit_process": "APO01 - Managed I&T Management Framework",
     "breakdown": [
-      "[APO01.01] Verifikasi keberadaan dokumen kebijakan TI yang disahkan manajemen",
-      "[APO01.02] Periksa kelengkapan prosedur operasional TI secara tertulis",
-      "[APO01.03] Konfirmasi mekanisme distribusi dan sosialisasi kebijakan",
-      "[APO01.04] Evaluasi kesesuaian kebijakan dengan standar COBIT framework"
+      "[APO01.01] Apakah terdapat dokumen kebijakan TI yang telah disahkan manajemen?",
+      "[APO01.02] Apakah prosedur operasional TI telah terdokumentasi secara tertulis dan lengkap?",
+      "[APO01.03] Apakah terdapat mekanisme distribusi dan sosialisasi kebijakan yang efektif?",
+      "[APO01.04] Apakah kebijakan telah sesuai dengan standar COBIT framework?"
     ],
     "requires_document": true
   },
@@ -22,10 +22,10 @@
     "cobit_ref": "MEA01",
     "cobit_process": "MEA01 - Managed Performance and Conformance Monitoring",
     "breakdown": [
-      "[MEA01.01] Verifikasi jadwal review berkala kebijakan TI",
-      "[MEA01.02] Periksa dokumentasi hasil review dan perubahan yang dilakukan",
-      "[MEA01.03] Konfirmasi approval manajemen atas perubahan kebijakan",
-      "[MEA01.04] Evaluasi kesesuaian dengan MEA01 Performance Monitoring"
+      "[MEA01.01] Apakah terdapat jadwal review berkala untuk kebijakan TI?",
+      "[MEA01.02] Apakah hasil review dan perubahan kebijakan telah terdokumentasi dengan baik?",
+      "[MEA01.03] Apakah perubahan kebijakan telah mendapat approval dari manajemen?",
+      "[MEA01.04] Apakah proses review telah sesuai dengan MEA01 Performance Monitoring?"
     ],
     "requires_document": true
   },
@@ -37,10 +37,10 @@
     "cobit_ref": "APO01",
     "cobit_process": "APO01.06 - Define Information and System Owners",
     "breakdown": [
-      "[APO01.06] Verifikasi penetapan periode review minimum dalam dokumen kebijakan",
-      "[APO01.04] Periksa konsistensi pelaksanaan sesuai periode yang ditetapkan",
-      "[MEA03.01] Konfirmasi penanggung jawab pelaksanaan review",
-      "[APO01.05] Evaluasi dokumentasi timeline dan milestone review"
+      "[APO01.06] Apakah periode review minimum telah ditetapkan dalam dokumen kebijakan?",
+      "[APO01.04] Apakah pelaksanaan review telah konsisten sesuai periode yang ditetapkan?",
+      "[MEA03.01] Apakah terdapat penanggung jawab yang jelas untuk pelaksanaan review?",
+      "[APO01.05] Apakah timeline dan milestone review telah terdokumentasi?"
     ],
     "requires_document": true
   },
@@ -52,10 +52,10 @@
     "cobit_ref": "APO01",
     "cobit_process": "APO01.01 - Design the Management System for Enterprise I&T",
     "breakdown": [
-      "[APO01.01] Verifikasi cakupan aspek manajemen dalam kebijakan",
-      "[DSS06.01] Periksa kelengkapan aspek pengembangan dan pengadaan",
-      "[DSS01.01] Konfirmasi cakupan operasional dan jaringan komunikasi",
-      "[MEA02.01] Evaluasi aspek keamanan, DRP, vendor, dan layanan elektronik"
+      "[APO01.01] Apakah aspek manajemen telah tercakup dalam kebijakan?",
+      "[DSS06.01] Apakah aspek pengembangan dan pengadaan telah lengkap?",
+      "[DSS01.01] Apakah cakupan operasional dan jaringan komunikasi telah memadai?",
+      "[MEA02.01] Apakah aspek keamanan, DRP, vendor, dan layanan elektronik telah dievaluasi?"
     ],
     "sub_questions": [
       {
@@ -64,10 +64,10 @@
         "cobit_ref": "APO01",
         "cobit_process": "APO01.02 - Communicate Management Objectives and Direction",
         "breakdown": [
-          "[EDM01.01] Verifikasi struktur governance TI dalam kebijakan manajemen",
-          "[APO01.02] Periksa penetapan roles dan responsibilities manajemen TI",
-          "[EDM01.03] Konfirmasi mekanisme pelaporan dan eskalasi",
-          "[APO01.05] Evaluasi keselarasan dengan EDM01 Governance Framework"
+          "[EDM01.01] Apakah struktur governance TI telah tercantum dalam kebijakan manajemen?",
+          "[APO01.02] Apakah roles dan responsibilities manajemen TI telah ditetapkan dengan jelas?",
+          "[EDM01.03] Apakah mekanisme pelaporan dan eskalasi telah berjalan efektif?",
+          "[APO01.05] Apakah kebijakan telah selaras dengan EDM01 Governance Framework?"
         ]
       },
       {
@@ -76,10 +76,10 @@
         "cobit_ref": "BAI01",
         "cobit_process": "BAI01 - Managed Programs",
         "breakdown": [
-          "[BAI01.01] Verifikasi metodologi pengembangan sistem yang diadopsi",
-          "[BAI02.01] Periksa prosedur pengadaan TI yang terdokumentasi",
-          "[BAI03.01] Konfirmasi mekanisme approval dan quality gate",
-          "[BAI01.02] Evaluasi kesesuaian dengan BAI01-BAI03 framework"
+          "[BAI01.01] Apakah metodologi pengembangan sistem telah diadopsi dan diterapkan?",
+          "[BAI02.01] Apakah prosedur pengadaan TI telah terdokumentasi dengan baik?",
+          "[BAI03.01] Apakah terdapat mekanisme approval dan quality gate yang jelas?",
+          "[BAI01.02] Apakah prosedur telah sesuai dengan BAI01-BAI03 framework?"
         ]
       },
       {
@@ -88,10 +88,10 @@
         "cobit_ref": "DSS01",
         "cobit_process": "DSS01 - Managed Operations",
         "breakdown": [
-          "[DSS01.01] Verifikasi prosedur operasional harian TI",
-          "[DSS01.02] Periksa dokumentasi standar operasional prosedur (SOP)",
-          "[DSS01.03] Konfirmasi mekanisme monitoring operasional",
-          "[DSS01.05] Evaluasi kesesuaian dengan DSS01-DSS06 framework"
+          "[DSS01.01] Apakah prosedur operasional harian TI telah tersedia?",
+          "[DSS01.02] Apakah standar operasional prosedur (SOP) telah terdokumentasi?",
+          "[DSS01.03] Apakah mekanisme monitoring operasional telah berjalan?",
+          "[DSS01.05] Apakah operasional telah sesuai dengan DSS01-DSS06 framework?"
         ]
       },
       {
@@ -100,10 +100,10 @@
         "cobit_ref": "DSS05",
         "cobit_process": "DSS05.02 - Manage Network and Connectivity Security",
         "breakdown": [
-          "[DSS05.02] Verifikasi arsitektur jaringan yang terdokumentasi",
-          "[DSS01.04] Periksa prosedur keamanan jaringan dan akses",
-          "[DSS05.07] Konfirmasi mekanisme monitoring jaringan",
-          "[DSS05.01] Evaluasi kesesuaian dengan DSS05 Network Security"
+          "[DSS05.02] Apakah arsitektur jaringan telah terdokumentasi dengan lengkap?",
+          "[DSS01.04] Apakah prosedur keamanan jaringan dan akses telah ditetapkan?",
+          "[DSS05.07] Apakah mekanisme monitoring jaringan telah berjalan efektif?",
+          "[DSS05.01] Apakah keamanan jaringan telah sesuai dengan DSS05 Network Security?"
         ]
       },
       {
@@ -112,10 +112,10 @@
         "cobit_ref": "APO13",
         "cobit_process": "APO13 - Managed Security",
         "breakdown": [
-          "[APO13.01] Verifikasi kebijakan keamanan informasi yang komprehensif",
-          "[APO13.02] Periksa prosedur klasifikasi dan penanganan informasi",
-          "[DSS05.04] Konfirmasi mekanisme access control dan identity management",
-          "[APO13.03] Evaluasi kesesuaian dengan APO13 dan DSS05"
+          "[APO13.01] Apakah kebijakan keamanan informasi telah komprehensif?",
+          "[APO13.02] Apakah prosedur klasifikasi dan penanganan informasi telah ada?",
+          "[DSS05.04] Apakah mekanisme access control dan identity management telah diterapkan?",
+          "[APO13.03] Apakah keamanan telah sesuai dengan APO13 dan DSS05?"
         ]
       },
       {
@@ -124,10 +124,10 @@
         "cobit_ref": "DSS04",
         "cobit_process": "DSS04 - Managed Continuity",
         "breakdown": [
-          "[DSS04.01] Verifikasi dokumen DRP yang disahkan manajemen",
-          "[DSS04.03] Periksa kelengkapan skenario dan prosedur recovery",
-          "[DSS04.05] Konfirmasi jadwal dan hasil testing DRP",
-          "[DSS04.07] Evaluasi kesesuaian dengan DSS04 Continuity Framework"
+          "[DSS04.01] Apakah dokumen DRP telah disahkan oleh manajemen?",
+          "[DSS04.03] Apakah skenario dan prosedur recovery telah lengkap?",
+          "[DSS04.05] Apakah jadwal dan hasil testing DRP telah tersedia?",
+          "[DSS04.07] Apakah DRP telah sesuai dengan DSS04 Continuity Framework?"
         ]
       },
       {
@@ -136,10 +136,10 @@
         "cobit_ref": "APO10",
         "cobit_process": "APO10 - Managed Vendors",
         "breakdown": [
-          "[APO10.01] Verifikasi kebijakan vendor management yang terdokumentasi",
-          "[APO10.02] Periksa prosedur seleksi dan evaluasi vendor",
-          "[APO10.04] Konfirmasi mekanisme SLA dan contract management",
-          "[APO10.05] Evaluasi kesesuaian dengan APO10 Vendor Management"
+          "[APO10.01] Apakah kebijakan vendor management telah terdokumentasi?",
+          "[APO10.02] Apakah prosedur seleksi dan evaluasi vendor telah tersedia?",
+          "[APO10.04] Apakah mekanisme SLA dan contract management telah berjalan?",
+          "[APO10.05] Apakah pengelolaan vendor telah sesuai dengan APO10 Vendor Management?"
         ]
       },
       {
@@ -148,10 +148,10 @@
         "cobit_ref": "DSS06",
         "cobit_process": "DSS06 - Managed Business Process Controls",
         "breakdown": [
-          "[DSS06.01] Verifikasi kebijakan layanan keuangan elektronik",
-          "[DSS06.03] Periksa prosedur transaksi elektronik dan security",
-          "[DSS06.06] Konfirmasi mekanisme customer authentication",
-          "[DSS06.02] Evaluasi kesesuaian dengan DSS06 Business Process Controls"
+          "[DSS06.01] Apakah kebijakan layanan keuangan elektronik telah tersedia?",
+          "[DSS06.03] Apakah prosedur transaksi elektronik dan security telah ditetapkan?",
+          "[DSS06.06] Apakah mekanisme customer authentication telah diterapkan?",
+          "[DSS06.02] Apakah layanan telah sesuai dengan DSS06 Business Process Controls?"
         ]
       }
     ],
@@ -165,10 +165,10 @@
     "cobit_ref": "APO12",
     "cobit_process": "APO12 - Managed Risk",
     "breakdown": [
-      "[APO12.01] Verifikasi program risk awareness dalam organisasi",
-      "[APO12.02] Periksa dokumentasi risk appetite dan risk tolerance",
-      "[MEA03.01] Konfirmasi pemahaman regulasi TI yang berlaku",
-      "[EDM05.01] Evaluasi mekanisme transparansi risiko TI"
+      "[APO12.01] Apakah program risk awareness telah diterapkan dalam organisasi?",
+      "[APO12.02] Apakah risk appetite dan risk tolerance telah terdokumentasi?",
+      "[MEA03.01] Apakah terdapat pemahaman yang baik terhadap regulasi TI yang berlaku?",
+      "[EDM05.01] Apakah mekanisme transparansi risiko TI telah berjalan?"
     ],
     "sub_questions": [
       {
@@ -177,10 +177,10 @@
         "cobit_ref": "EDM03",
         "cobit_process": "EDM03.01 - Evaluate Risk Management",
         "breakdown": [
-          "[EDM03.01] Verifikasi program risk awareness untuk manajemen",
-          "[APO12.01] Periksa pelatihan dan sosialisasi risiko TI",
-          "[EDM03.03] Konfirmasi keterlibatan manajemen dalam risk assessment",
-          "[APO12.06] Evaluasi budaya risiko di tingkat leadership"
+          "[EDM03.01] Apakah program risk awareness untuk manajemen telah tersedia?",
+          "[APO12.01] Apakah pelatihan dan sosialisasi risiko TI telah dilaksanakan?",
+          "[EDM03.03] Apakah manajemen terlibat aktif dalam risk assessment?",
+          "[APO12.06] Apakah budaya risiko di tingkat leadership telah terbangun?"
         ]
       },
       {
@@ -189,10 +189,10 @@
         "cobit_ref": "EDM03",
         "cobit_process": "EDM03.02 - Direct Risk Management",
         "breakdown": [
-          "[EDM03.02] Verifikasi dokumentasi risk appetite statement",
-          "[APO12.03] Periksa penetapan risk tolerance per kategori risiko",
-          "[APO12.06] Konfirmasi risk limit yang terukur dan terdokumentasi",
-          "[EDM03.03] Evaluasi konsistensi penerapan risk parameters"
+          "[EDM03.02] Apakah risk appetite statement telah terdokumentasi?",
+          "[APO12.03] Apakah risk tolerance per kategori risiko telah ditetapkan?",
+          "[APO12.06] Apakah risk limit yang terukur telah terdokumentasi?",
+          "[EDM03.03] Apakah penerapan risk parameters telah konsisten?"
         ]
       },
       {
@@ -201,10 +201,10 @@
         "cobit_ref": "MEA03",
         "cobit_process": "MEA03 - Managed Compliance with External Requirements",
         "breakdown": [
-          "[MEA03.01] Verifikasi inventory regulasi TI yang relevan",
-          "[MEA03.02] Periksa gap analysis kepatuhan regulasi",
-          "[MEA03.03] Konfirmasi mekanisme monitoring perubahan regulasi",
-          "[MEA03.04] Evaluasi compliance reporting dan remediation"
+          "[MEA03.01] Apakah inventory regulasi TI yang relevan telah tersedia?",
+          "[MEA03.02] Apakah gap analysis kepatuhan regulasi telah dilakukan?",
+          "[MEA03.03] Apakah mekanisme monitoring perubahan regulasi telah berjalan?",
+          "[MEA03.04] Apakah compliance reporting dan remediation telah dilaksanakan?"
         ]
       },
       {
@@ -213,10 +213,10 @@
         "cobit_ref": "EDM05",
         "cobit_process": "EDM05 - Ensured Stakeholder Engagement",
         "breakdown": [
-          "[EDM05.01] Verifikasi mekanisme pelaporan risiko ke stakeholder",
-          "[EDM05.02] Periksa dokumentasi risk owner dan accountability",
-          "[EDM05.03] Konfirmasi transparansi risk reporting",
-          "[APO12.06] Evaluasi stakeholder engagement dalam risk governance"
+          "[EDM05.01] Apakah mekanisme pelaporan risiko ke stakeholder telah tersedia?",
+          "[EDM05.02] Apakah risk owner dan accountability telah terdokumentasi?",
+          "[EDM05.03] Apakah transparansi risk reporting telah berjalan?",
+          "[APO12.06] Apakah stakeholder engagement dalam risk governance telah efektif?"
         ]
       }
     ],
@@ -230,10 +230,10 @@
     "cobit_ref": "BAI01",
     "cobit_process": "BAI01-BAI03 - Solutions Development Lifecycle",
     "breakdown": [
-      "[BAI01.01] Verifikasi SDLC methodology yang diadopsi",
-      "[BAI02.01] Periksa kelengkapan tahapan dalam prosedur",
-      "[BAI03.01] Konfirmasi dokumentasi setiap tahapan SDLC",
-      "[BAI03.11] Evaluasi quality gates antar tahapan"
+      "[BAI01.01] Apakah SDLC methodology telah diadopsi dan diterapkan?",
+      "[BAI02.01] Apakah semua tahapan pengembangan telah tercakup dalam prosedur?",
+      "[BAI03.01] Apakah dokumentasi untuk setiap tahapan SDLC telah tersedia?",
+      "[BAI03.11] Apakah quality gates antar tahapan telah ditetapkan?"
     ],
     "sub_questions": [
       {
@@ -242,10 +242,10 @@
         "cobit_ref": "BAI01",
         "cobit_process": "BAI01.02 - Initiate a Program",
         "breakdown": [
-          "[BAI01.02] Verifikasi prosedur inisiasi proyek TI",
-          "[BAI01.03] Periksa template project charter dan proposal",
-          "[BAI01.05] Konfirmasi mekanisme approval inisiasi",
-          "[BAI01.04] Evaluasi kesesuaian dengan BAI01.02"
+          "[BAI01.02] Apakah prosedur inisiasi proyek TI telah tersedia?",
+          "[BAI01.03] Apakah template project charter dan proposal telah dibuat?",
+          "[BAI01.05] Apakah mekanisme approval inisiasi telah berjalan?",
+          "[BAI01.04] Apakah prosedur telah sesuai dengan BAI01.02?"
         ]
       },
       {
@@ -254,10 +254,10 @@
         "cobit_ref": "BAI02",
         "cobit_process": "BAI02.01 - Define and Maintain Business Functional Requirements",
         "breakdown": [
-          "[BAI02.01] Verifikasi prosedur requirements gathering",
-          "[BAI02.02] Periksa template requirements specification",
-          "[BAI02.04] Konfirmasi mekanisme sign-off requirements",
-          "[BAI02.03] Evaluasi requirements traceability"
+          "[BAI02.01] Apakah prosedur requirements gathering telah tersedia?",
+          "[BAI02.02] Apakah template requirements specification telah dibuat?",
+          "[BAI02.04] Apakah mekanisme sign-off requirements telah berjalan?",
+          "[BAI02.03] Apakah requirements traceability telah diterapkan?"
         ]
       },
       {
@@ -266,10 +266,10 @@
         "cobit_ref": "BAI03",
         "cobit_process": "BAI03.01 - Design High-Level Solutions",
         "breakdown": [
-          "[BAI03.01] Verifikasi dokumentasi system design",
-          "[BAI03.02] Periksa architecture dan technical specifications",
-          "[BAI03.03] Konfirmasi design review dan approval process",
-          "[BAI03.04] Evaluasi kesesuaian design dengan requirements"
+          "[BAI03.01] Apakah dokumentasi system design telah tersedia?",
+          "[BAI03.02] Apakah architecture dan technical specifications telah dibuat?",
+          "[BAI03.03] Apakah design review dan approval process telah berjalan?",
+          "[BAI03.04] Apakah design telah sesuai dengan requirements?"
         ]
       },
       {
@@ -278,10 +278,10 @@
         "cobit_ref": "BAI03",
         "cobit_process": "BAI03.03 - Develop Solution Components",
         "breakdown": [
-          "[BAI03.03] Verifikasi coding standards yang ditetapkan",
-          "[BAI03.04] Periksa source code management dan version control",
-          "[BAI03.05] Konfirmasi code review process",
-          "[BAI03.06] Evaluasi programming documentation"
+          "[BAI03.03] Apakah coding standards telah ditetapkan dan diterapkan?",
+          "[BAI03.04] Apakah source code management dan version control telah digunakan?",
+          "[BAI03.05] Apakah code review process telah berjalan?",
+          "[BAI03.06] Apakah programming documentation telah tersedia?"
         ]
       },
       {
@@ -290,10 +290,10 @@
         "cobit_ref": "BAI03",
         "cobit_process": "BAI03.07 - Prepare for Solution Testing",
         "breakdown": [
-          "[BAI03.07] Verifikasi test strategy dan test plan",
-          "[BAI03.08] Periksa test cases dan test scripts",
-          "[BAI07.05] Konfirmasi test execution dan defect tracking",
-          "[BAI03.09] Evaluasi test coverage dan acceptance criteria"
+          "[BAI03.07] Apakah test strategy dan test plan telah dibuat?",
+          "[BAI03.08] Apakah test cases dan test scripts telah tersedia?",
+          "[BAI07.05] Apakah test execution dan defect tracking telah berjalan?",
+          "[BAI03.09] Apakah test coverage dan acceptance criteria telah terpenuhi?"
         ]
       },
       {
@@ -302,10 +302,10 @@
         "cobit_ref": "BAI07",
         "cobit_process": "BAI07 - Managed IT Change Acceptance and Transitioning",
         "breakdown": [
-          "[BAI07.01] Verifikasi implementation plan dan rollout strategy",
-          "[BAI07.03] Periksa deployment procedures dan checklist",
-          "[BAI07.06] Konfirmasi go-live criteria dan sign-off",
-          "[BAI07.04] Evaluasi rollback procedures"
+          "[BAI07.01] Apakah implementation plan dan rollout strategy telah dibuat?",
+          "[BAI07.03] Apakah deployment procedures dan checklist telah tersedia?",
+          "[BAI07.06] Apakah go-live criteria dan sign-off telah terpenuhi?",
+          "[BAI07.04] Apakah rollback procedures telah disiapkan?"
         ]
       },
       {
@@ -314,10 +314,10 @@
         "cobit_ref": "BAI07",
         "cobit_process": "BAI07.07 - Perform a Post-Implementation Review",
         "breakdown": [
-          "[BAI07.07] Verifikasi prosedur post-implementation review (PIR)",
-          "[BAI01.14] Periksa lessons learned documentation",
-          "[EDM02.03] Konfirmasi benefits realization tracking",
-          "[BAI07.08] Evaluasi closure dan knowledge transfer"
+          "[BAI07.07] Apakah prosedur post-implementation review (PIR) telah tersedia?",
+          "[BAI01.14] Apakah lessons learned telah terdokumentasi?",
+          "[EDM02.03] Apakah benefits realization tracking telah berjalan?",
+          "[BAI07.08] Apakah closure dan knowledge transfer telah dilakukan?"
         ]
       },
       {
@@ -326,10 +326,10 @@
         "cobit_ref": "BAI06",
         "cobit_process": "BAI06 - Managed IT Changes",
         "breakdown": [
-          "[BAI06.01] Verifikasi maintenance policy dan procedures",
-          "[BAI06.02] Periksa change management process",
-          "[BAI06.04] Konfirmasi patch management procedures",
-          "[BAI06.03] Evaluasi maintenance scheduling dan tracking"
+          "[BAI06.01] Apakah maintenance policy dan procedures telah tersedia?",
+          "[BAI06.02] Apakah change management process telah berjalan?",
+          "[BAI06.04] Apakah patch management procedures telah diterapkan?",
+          "[BAI06.03] Apakah maintenance scheduling dan tracking telah efektif?"
         ]
       },
       {
@@ -338,10 +338,10 @@
         "cobit_ref": "BAI09",
         "cobit_process": "BAI09.03 - Manage the Asset Lifecycle",
         "breakdown": [
-          "[BAI09.03] Verifikasi prosedur disposal/retirement",
-          "[DSS05.06] Periksa data sanitization procedures",
-          "[BAI09.05] Konfirmasi asset decommissioning checklist",
-          "[MEA03.02] Evaluasi compliance dengan data retention policy"
+          "[BAI09.03] Apakah prosedur disposal/retirement telah tersedia?",
+          "[DSS05.06] Apakah data sanitization procedures telah diterapkan?",
+          "[BAI09.05] Apakah asset decommissioning checklist telah dibuat?",
+          "[MEA03.02] Apakah prosedur telah sesuai dengan data retention policy?"
         ]
       }
     ],
@@ -355,10 +355,10 @@
     "cobit_ref": "BAI01",
     "cobit_process": "BAI01.02-04 - Program Initiation and Planning",
     "breakdown": [
-      "[BAI01.02] Verifikasi template dan prosedur proposal",
-      "[EDM02.01] Periksa mekanisme evaluasi dan persetujuan",
-      "[APO05.02] Konfirmasi feasibility study process",
-      "[APO05.04] Evaluasi dokumentasi approval dan sign-off"
+      "[BAI01.02] Apakah template dan prosedur proposal telah tersedia?",
+      "[EDM02.01] Apakah mekanisme evaluasi dan persetujuan telah berjalan?",
+      "[APO05.02] Apakah feasibility study process telah dilaksanakan?",
+      "[APO05.04] Apakah dokumentasi approval dan sign-off telah lengkap?"
     ],
     "sub_questions": [
       {
@@ -367,10 +367,10 @@
         "cobit_ref": "BAI01",
         "cobit_process": "BAI01.02 - Initiate a Program",
         "breakdown": [
-          "[BAI01.02] Verifikasi format dan isi proposal standar",
-          "[EDM02.01] Periksa business case dalam proposal",
-          "[APO05.03] Konfirmasi alignment dengan strategic objectives",
-          "[APO02.06] Evaluasi completeness of proposal content"
+          "[BAI01.02] Apakah format dan isi proposal standar telah tersedia?",
+          "[EDM02.01] Apakah business case dalam proposal telah lengkap?",
+          "[APO05.03] Apakah alignment dengan strategic objectives telah tercapai?",
+          "[APO02.06] Apakah completeness of proposal content telah terpenuhi?"
         ]
       },
       {
@@ -379,10 +379,10 @@
         "cobit_ref": "EDM02",
         "cobit_process": "EDM02.01 - Evaluate Value Optimization",
         "breakdown": [
-          "[EDM02.01] Verifikasi proses evaluasi oleh manajemen",
-          "[APO05.02] Periksa keterlibatan IT unit dalam evaluasi",
-          "[EDM02.03] Konfirmasi kriteria evaluasi yang digunakan",
-          "[APO05.06] Evaluasi dokumentasi hasil evaluasi"
+          "[EDM02.01] Apakah proses evaluasi oleh manajemen telah berjalan?",
+          "[APO05.02] Apakah IT unit telah terlibat dalam evaluasi?",
+          "[EDM02.03] Apakah kriteria evaluasi yang digunakan telah jelas?",
+          "[APO05.06] Apakah hasil evaluasi telah terdokumentasi?"
         ]
       },
       {
@@ -391,10 +391,10 @@
         "cobit_ref": "EDM02",
         "cobit_process": "EDM02.02 - Direct Value Optimization",
         "breakdown": [
-          "[EDM02.02] Verifikasi mekanisme persetujuan prinsip",
-          "[APO05.04] Periksa authority matrix untuk approval",
-          "[EDM01.03] Konfirmasi dokumentasi persetujuan",
-          "[APO01.05] Evaluasi kesesuaian dengan governance structure"
+          "[EDM02.02] Apakah mekanisme persetujuan prinsip telah tersedia?",
+          "[APO05.04] Apakah authority matrix untuk approval telah ditetapkan?",
+          "[EDM01.03] Apakah dokumentasi persetujuan telah lengkap?",
+          "[APO01.05] Apakah proses telah sesuai dengan governance structure?"
         ]
       },
       {
@@ -403,10 +403,10 @@
         "cobit_ref": "APO05",
         "cobit_process": "APO05.02 - Evaluate and Select Investment Options",
         "breakdown": [
-          "[APO05.02] Verifikasi prosedur feasibility study",
-          "[BAI01.03] Periksa komponen business, technical, financial feasibility",
-          "[APO05.06] Konfirmasi risk assessment dalam studi kelayakan",
-          "[APO05.04] Evaluasi completeness of feasibility analysis"
+          "[APO05.02] Apakah prosedur feasibility study telah tersedia?",
+          "[BAI01.03] Apakah komponen business, technical, financial feasibility telah lengkap?",
+          "[APO05.06] Apakah risk assessment dalam studi kelayakan telah dilakukan?",
+          "[APO05.04] Apakah completeness of feasibility analysis telah terpenuhi?"
         ]
       },
       {
@@ -415,10 +415,10 @@
         "cobit_ref": "APO05",
         "cobit_process": "APO05.04 - Make Investment Decisions",
         "breakdown": [
-          "[APO05.04] Verifikasi proses sign-off dokumen studi kelayakan",
-          "[EDM02.02] Periksa authority dan delegation of approval",
-          "[MEA02.04] Konfirmasi dokumentasi formal persetujuan",
-          "[APO05.05] Evaluasi audit trail of approvals"
+          "[APO05.04] Apakah proses sign-off dokumen studi kelayakan telah berjalan?",
+          "[EDM02.02] Apakah authority dan delegation of approval telah jelas?",
+          "[MEA02.04] Apakah dokumentasi formal persetujuan telah tersedia?",
+          "[APO05.05] Apakah audit trail of approvals telah lengkap?"
         ]
       }
     ],
@@ -432,10 +432,10 @@
     "cobit_ref": "APO05",
     "cobit_process": "APO05.02 - Evaluate and Select Investment Options",
     "breakdown": [
-      "[APO05.02] Verifikasi kelengkapan komponen proposal",
-      "[EDM02.01] Periksa business justification dan benefits",
-      "[APO12.03] Konfirmasi risk analysis dan mitigation plan",
-      "[EDM02.03] Evaluasi alignment dengan business objectives"
+      "[APO05.02] Apakah semua komponen proposal telah lengkap?",
+      "[EDM02.01] Apakah business justification dan benefits telah jelas?",
+      "[APO12.03] Apakah risk analysis dan mitigation plan telah tersedia?",
+      "[EDM02.03] Apakah alignment dengan business objectives telah tercapai?"
     ],
     "requires_document": true
   },
@@ -447,10 +447,10 @@
     "cobit_ref": "BAI02",
     "cobit_process": "BAI02 - Managed Requirements Definition",
     "breakdown": [
-      "[BAI02.01] Verifikasi prosedur requirements gathering",
-      "[BAI02.02] Periksa teknik requirements analysis",
-      "[BAI02.03] Konfirmasi format requirements specification",
-      "[BAI02.04] Evaluasi requirements management process"
+      "[BAI02.01] Apakah prosedur requirements gathering telah tersedia?",
+      "[BAI02.02] Apakah teknik requirements analysis telah diterapkan?",
+      "[BAI02.03] Apakah format requirements specification telah standar?",
+      "[BAI02.04] Apakah requirements management process telah berjalan?"
     ],
     "requires_document": true
   },
@@ -462,10 +462,10 @@
     "cobit_ref": "BAI03",
     "cobit_process": "BAI03.01-02 - Design High-Level and Detailed Solutions",
     "breakdown": [
-      "[BAI03.01] Verifikasi input validation dalam design",
-      "[BAI03.02] Periksa processing controls dalam arsitektur",
-      "[DSS06.02] Konfirmasi output security measures",
-      "[DSS06.03] Evaluasi completeness of security controls in design"
+      "[BAI03.01] Apakah input validation telah tercakup dalam design?",
+      "[BAI03.02] Apakah processing controls telah ada dalam arsitektur?",
+      "[DSS06.02] Apakah output security measures telah ditetapkan?",
+      "[DSS06.03] Apakah completeness of security controls in design telah terpenuhi?"
     ],
     "requires_document": true
   },
@@ -477,10 +477,10 @@
     "cobit_ref": "BAI03",
     "cobit_process": "BAI03.03-05 - Develop Solution Components",
     "breakdown": [
-      "[BAI03.03] Verifikasi coding standards yang ditetapkan",
-      "[BAI03.06] Periksa documentation requirements",
-      "[BAI03.05] Konfirmasi code review procedures",
-      "[BAI03.04] Evaluasi quality assurance dalam development"
+      "[BAI03.03] Apakah coding standards telah ditetapkan dan diterapkan?",
+      "[BAI03.06] Apakah documentation requirements telah terpenuhi?",
+      "[BAI03.05] Apakah code review procedures telah berjalan?",
+      "[BAI03.04] Apakah quality assurance dalam development telah diterapkan?"
     ],
     "requires_document": true
   },
@@ -492,10 +492,10 @@
     "cobit_ref": "BAI03",
     "cobit_process": "BAI03.03 - Develop Solution Components",
     "breakdown": [
-      "[BAI03.03] Verifikasi definisi roles dan responsibilities programmer",
-      "[DSS05.04] Periksa access control untuk development environment",
-      "[BAI10.03] Konfirmasi version control dan branching strategy",
-      "[DSS06.05] Evaluasi segregation of duties dalam development"
+      "[BAI03.03] Apakah definisi roles dan responsibilities programmer telah jelas?",
+      "[DSS05.04] Apakah access control untuk development environment telah diterapkan?",
+      "[BAI10.03] Apakah version control dan branching strategy telah digunakan?",
+      "[DSS06.05] Apakah segregation of duties dalam development telah diterapkan?"
     ],
     "requires_document": true
   },
@@ -507,10 +507,10 @@
     "cobit_ref": "BAI03",
     "cobit_process": "BAI03.07-08 - Prepare for and Execute Solution Testing",
     "breakdown": [
-      "[BAI03.07] Verifikasi prosedur unit testing",
-      "[BAI03.08] Periksa integration testing methodology",
-      "[BAI07.05] Konfirmasi stress/performance testing approach",
-      "[BAI07.06] Evaluasi UAT process dan acceptance criteria"
+      "[BAI03.07] Apakah prosedur unit testing telah tersedia?",
+      "[BAI03.08] Apakah integration testing methodology telah diterapkan?",
+      "[BAI07.05] Apakah stress/performance testing approach telah dilaksanakan?",
+      "[BAI07.06] Apakah UAT process dan acceptance criteria telah jelas?"
     ],
     "requires_document": true
   },
@@ -522,10 +522,10 @@
     "cobit_ref": "BAI07",
     "cobit_process": "BAI07.05 - Perform Acceptance Testing",
     "breakdown": [
-      "[BAI07.05] Verifikasi dokumentasi UAT results",
-      "[BAI03.08] Periksa formal sign-off dari user",
-      "[BAI07.06] Konfirmasi berita acara testing",
-      "[BAI07.07] Evaluasi completeness of acceptance documentation"
+      "[BAI07.05] Apakah dokumentasi UAT results telah tersedia?",
+      "[BAI03.08] Apakah formal sign-off dari user telah diperoleh?",
+      "[BAI07.06] Apakah berita acara testing telah dibuat?",
+      "[BAI07.07] Apakah completeness of acceptance documentation telah terpenuhi?"
     ],
     "requires_document": true
   },
@@ -537,10 +537,10 @@
     "cobit_ref": "BAI07",
     "cobit_process": "BAI07.03-06 - Plan and Execute Transition",
     "breakdown": [
-      "[BAI07.03] Verifikasi implementation checklist lengkap",
-      "[BAI07.04] Periksa data migration procedures",
-      "[BAI07.06] Konfirmasi parallel run approach jika applicable",
-      "[BAI07.05] Evaluasi rollback dan contingency planning"
+      "[BAI07.03] Apakah implementation checklist telah lengkap?",
+      "[BAI07.04] Apakah data migration procedures telah tersedia?",
+      "[BAI07.06] Apakah parallel run approach telah diterapkan jika applicable?",
+      "[BAI07.05] Apakah rollback dan contingency planning telah disiapkan?"
     ],
     "requires_document": true
   },
@@ -552,10 +552,10 @@
     "cobit_ref": "BAI07",
     "cobit_process": "BAI07.07 - Perform Post-Implementation Review",
     "breakdown": [
-      "[BAI07.07] Verifikasi prosedur PIR yang terdokumentasi",
-      "[BAI01.14] Periksa kriteria evaluasi efektivitas",
-      "[EDM02.03] Konfirmasi lessons learned documentation",
-      "[APO05.06] Evaluasi benefits realization assessment"
+      "[BAI07.07] Apakah prosedur PIR telah terdokumentasi?",
+      "[BAI01.14] Apakah kriteria evaluasi efektivitas telah jelas?",
+      "[EDM02.03] Apakah lessons learned telah terdokumentasi?",
+      "[APO05.06] Apakah benefits realization assessment telah dilakukan?"
     ],
     "requires_document": true
   },
@@ -567,10 +567,10 @@
     "cobit_ref": "MEA01",
     "cobit_process": "MEA01.04 - Analyze and Report Performance",
     "breakdown": [
-      "[MEA01.04] Verifikasi format laporan PIR",
-      "[EDM05.02] Periksa distribusi laporan ke manajemen",
-      "[MEA01.05] Konfirmasi action items dari PIR",
-      "[MEA02.08] Evaluasi follow-up mechanism"
+      "[MEA01.04] Apakah format laporan PIR telah tersedia?",
+      "[EDM05.02] Apakah distribusi laporan ke manajemen telah berjalan?",
+      "[MEA01.05] Apakah action items dari PIR telah ditetapkan?",
+      "[MEA02.08] Apakah follow-up mechanism telah berjalan?"
     ],
     "requires_document": true
   },
@@ -582,10 +582,10 @@
     "cobit_ref": "BAI06",
     "cobit_process": "BAI06.01 - Evaluate, Prioritize and Authorize Change Requests",
     "breakdown": [
-      "[BAI06.01] Verifikasi maintenance methodology per sistem",
-      "[APO12.03] Periksa risk-based maintenance scheduling",
-      "[DSS01.03] Konfirmasi maintenance procedures per kategori",
-      "[BAI06.04] Evaluasi preventive vs corrective maintenance balance"
+      "[BAI06.01] Apakah maintenance methodology per sistem telah tersedia?",
+      "[APO12.03] Apakah risk-based maintenance scheduling telah diterapkan?",
+      "[DSS01.03] Apakah maintenance procedures per kategori telah lengkap?",
+      "[BAI06.04] Apakah balance antara preventive vs corrective maintenance telah tercapai?"
     ],
     "requires_document": true
   },
@@ -597,10 +597,10 @@
     "cobit_ref": "BAI09",
     "cobit_process": "BAI09.03 - Manage the Asset Lifecycle",
     "breakdown": [
-      "[BAI09.03] Verifikasi prosedur system retirement",
-      "[DSS05.06] Periksa data sanitization process",
-      "[BAI09.05] Konfirmasi secure disposal methods",
-      "[MEA03.02] Evaluasi compliance dengan data protection requirements"
+      "[BAI09.03] Apakah prosedur system retirement telah tersedia?",
+      "[DSS05.06] Apakah data sanitization process telah diterapkan?",
+      "[BAI09.05] Apakah secure disposal methods telah digunakan?",
+      "[MEA03.02] Apakah prosedur telah sesuai dengan data protection requirements?"
     ],
     "requires_document": true
   },
@@ -612,10 +612,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10 - Managed Vendors",
     "breakdown": [
-      "[APO10.01] Verifikasi procurement policy lengkap",
-      "[APO10.02] Periksa contract management procedures",
-      "[APO10.04] Konfirmasi vendor lifecycle management",
-      "[APO10.05] Evaluasi completeness of procurement framework"
+      "[APO10.01] Apakah procurement policy telah lengkap?",
+      "[APO10.02] Apakah contract management procedures telah tersedia?",
+      "[APO10.04] Apakah vendor lifecycle management telah berjalan?",
+      "[APO10.05] Apakah completeness of procurement framework telah terpenuhi?"
     ],
     "requires_document": true
   },
@@ -627,10 +627,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.01 - Identify and Evaluate Vendor Relationships",
     "breakdown": [
-      "[APO10.01] Verifikasi prosedur pengajuan pengadaan",
-      "[APO10.02] Periksa vendor selection criteria",
-      "[APO10.03] Konfirmasi comparative analysis process",
-      "[APO10.04] Evaluasi vendor due diligence procedures"
+      "[APO10.01] Apakah prosedur pengajuan pengadaan telah tersedia?",
+      "[APO10.02] Apakah vendor selection criteria telah ditetapkan?",
+      "[APO10.03] Apakah comparative analysis process telah berjalan?",
+      "[APO10.04] Apakah vendor due diligence procedures telah diterapkan?"
     ],
     "requires_document": true
   },
@@ -642,10 +642,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi license terms dalam kontrak",
-      "[BAI09.01] Periksa user licensing compliance",
-      "[MEA03.02] Konfirmasi scope of usage rights",
-      "[APO10.05] Evaluasi completeness of contract terms"
+      "[APO10.02] Apakah license terms dalam kontrak telah jelas?",
+      "[BAI09.01] Apakah user licensing compliance telah dipenuhi?",
+      "[MEA03.02] Apakah scope of usage rights telah ditetapkan?",
+      "[APO10.05] Apakah completeness of contract terms telah terpenuhi?"
     ],
     "requires_document": true
   },
@@ -657,10 +657,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.04 - Manage Vendor Performance and Compliance",
     "breakdown": [
-      "[APO10.04] Verifikasi training provisions dalam kontrak",
-      "[APO07.03] Periksa documentation requirements",
-      "[APO10.05] Konfirmasi update dan maintenance SLA",
-      "[BAI09.04] Evaluasi source code escrow arrangements"
+      "[APO10.04] Apakah training provisions dalam kontrak telah tersedia?",
+      "[APO07.03] Apakah documentation requirements telah dipenuhi?",
+      "[APO10.05] Apakah update dan maintenance SLA telah jelas?",
+      "[BAI09.04] Apakah source code escrow arrangements telah dibuat?"
     ],
     "requires_document": true
   },
@@ -672,10 +672,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi warranty clauses dalam kontrak",
-      "[APO10.03] Periksa IP indemnification provisions",
-      "[APO10.04] Konfirmasi performance guarantees",
-      "[APO10.05] Evaluasi continuity provisions"
+      "[APO10.02] Apakah warranty clauses dalam kontrak telah ada?",
+      "[APO10.03] Apakah IP indemnification provisions telah tercakup?",
+      "[APO10.04] Apakah performance guarantees telah ditetapkan?",
+      "[APO10.05] Apakah continuity provisions telah tersedia?"
     ],
     "requires_document": true
   },
@@ -687,10 +687,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi dispute resolution clauses",
-      "[APO10.05] Periksa escalation procedures",
-      "[MEA03.03] Konfirmasi arbitration provisions",
-      "[APO10.03] Evaluasi governing law dan jurisdiction"
+      "[APO10.02] Apakah dispute resolution clauses telah tersedia?",
+      "[APO10.05] Apakah escalation procedures telah ditetapkan?",
+      "[MEA03.03] Apakah arbitration provisions telah tercakup?",
+      "[APO10.03] Apakah governing law dan jurisdiction telah jelas?"
     ],
     "requires_document": true
   },
@@ -702,10 +702,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi amendment clauses dalam kontrak",
-      "[BAI06.01] Periksa change control provisions",
-      "[APO10.05] Konfirmasi mutual consent requirements",
-      "[MEA02.04] Evaluasi documentation of changes"
+      "[APO10.02] Apakah amendment clauses dalam kontrak telah ada?",
+      "[BAI06.01] Apakah change control provisions telah tersedia?",
+      "[APO10.05] Apakah mutual consent requirements telah jelas?",
+      "[MEA02.04] Apakah documentation of changes telah dilakukan?"
     ],
     "requires_document": true
   },
@@ -717,10 +717,10 @@
     "cobit_ref": "APO13",
     "cobit_process": "APO13.02 - Define and Manage an Information Security Risk Treatment Plan",
     "breakdown": [
-      "[APO13.02] Verifikasi security clauses dalam vendor contracts",
-      "[DSS05.03] Periksa data protection obligations",
-      "[APO10.03] Konfirmasi security warranties",
-      "[APO10.04] Evaluasi security audit rights"
+      "[APO13.02] Apakah security clauses dalam vendor contracts telah ada?",
+      "[DSS05.03] Apakah data protection obligations telah ditetapkan?",
+      "[APO10.03] Apakah security warranties telah tersedia?",
+      "[APO10.04] Apakah security audit rights telah tercakup?"
     ],
     "requires_document": true
   },
@@ -732,10 +732,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.03 - Manage Vendor Risk",
     "breakdown": [
-      "[APO10.03] Verifikasi subcontracting clauses",
-      "[APO10.04] Periksa approval requirements untuk subkontrak",
-      "[APO10.05] Konfirmasi liability provisions",
-      "[MEA03.02] Evaluasi subcontractor compliance requirements"
+      "[APO10.03] Apakah subcontracting clauses telah tersedia?",
+      "[APO10.04] Apakah approval requirements untuk subkontrak telah jelas?",
+      "[APO10.05] Apakah liability provisions telah ditetapkan?",
+      "[MEA03.02] Apakah subcontractor compliance requirements telah dipenuhi?"
     ],
     "requires_document": true
   },
@@ -747,10 +747,10 @@
     "cobit_ref": "DSS01",
     "cobit_process": "DSS01 - Managed Operations",
     "breakdown": [
-      "[DSS01.01] Verifikasi kelengkapan kebijakan operasional",
-      "[DSS06.01] Periksa data management procedures",
-      "[BAI06.01] Konfirmasi change management process",
-      "[DSS02.01] Evaluasi incident handling dan quality control"
+      "[DSS01.01] Apakah kebijakan operasional telah lengkap?",
+      "[DSS06.01] Apakah data management procedures telah tersedia?",
+      "[BAI06.01] Apakah change management process telah berjalan?",
+      "[DSS02.01] Apakah incident handling dan quality control telah diterapkan?"
     ],
     "sub_questions": [
       {
@@ -759,10 +759,10 @@
         "cobit_ref": "DSS06",
         "cobit_process": "DSS06.01 - Align Control Activities",
         "breakdown": [
-          "[DSS06.01] Verifikasi data management policy",
-          "[DSS06.02] Periksa data classification procedures",
-          "[DSS06.03] Konfirmasi data handling standards",
-          "[BAI08.04] Evaluasi data lifecycle management"
+          "[DSS06.01] Apakah data management policy telah tersedia?",
+          "[DSS06.02] Apakah data classification procedures telah diterapkan?",
+          "[DSS06.03] Apakah data handling standards telah ditetapkan?",
+          "[BAI08.04] Apakah data lifecycle management telah berjalan?"
         ]
       },
       {
@@ -771,22 +771,22 @@
         "cobit_ref": "BAI06",
         "cobit_process": "BAI06 - Managed IT Changes",
         "breakdown": [
-          "[BAI06.01] Verifikasi change management policy",
-          "[BAI06.02] Periksa change request procedures",
-          "[BAI06.03] Konfirmasi CAB (Change Advisory Board) process",
-          "[BAI06.04] Evaluasi emergency change procedures"
+          "[BAI06.01] Apakah change management policy telah tersedia?",
+          "[BAI06.02] Apakah change request procedures telah berjalan?",
+          "[BAI06.03] Apakah change approval workflow telah diterapkan?",
+          "[BAI06.04] Apakah change documentation telah lengkap?"
         ]
       },
       {
         "id": "B.29.c",
-        "text": "Apakah kebijakan operasional mencakup penanganan kejadian atau permasalahan?",
+        "text": "Apakah kebijakan operasional mencakup kebijakan dan prosedur penanganan kejadian atau permasalahan?",
         "cobit_ref": "DSS02",
         "cobit_process": "DSS02 - Managed Service Requests and Incidents",
         "breakdown": [
-          "[DSS02.01] Verifikasi incident management procedures",
-          "[DSS02.02] Periksa incident classification dan prioritization",
-          "[DSS02.05] Konfirmasi escalation procedures",
-          "[DSS02.07] Evaluasi incident resolution tracking"
+          "[DSS02.01] Apakah incident management policy telah tersedia?",
+          "[DSS02.02] Apakah incident classification telah diterapkan?",
+          "[DSS02.03] Apakah incident resolution procedures telah berjalan?",
+          "[DSS03.01] Apakah problem management telah terintegrasi?"
         ]
       },
       {
@@ -795,10 +795,10 @@
         "cobit_ref": "DSS05",
         "cobit_process": "DSS05.02 - Manage Network and Connectivity Security",
         "breakdown": [
-          "[DSS05.02] Verifikasi information exchange policy",
-          "[DSS05.03] Periksa secure file transfer procedures",
-          "[APO13.02] Konfirmasi encryption requirements",
-          "[DSS05.07] Evaluasi data leakage prevention controls"
+          "[DSS05.02] Apakah information exchange controls telah tersedia?",
+          "[DSS06.05] Apakah secure transfer protocols telah digunakan?",
+          "[APO13.02] Apakah encryption requirements telah diterapkan?",
+          "[DSS05.07] Apakah data leakage prevention controls telah aktif?"
         ]
       },
       {
@@ -807,10 +807,10 @@
         "cobit_ref": "APO11",
         "cobit_process": "APO11 - Managed Quality",
         "breakdown": [
-          "[APO11.01] Verifikasi quality management framework",
-          "[APO11.02] Periksa quality control procedures",
-          "[APO11.06] Konfirmasi quality metrics dan KPIs",
-          "[APO11.05] Evaluasi continuous improvement process"
+          "[APO11.01] Apakah quality management framework telah tersedia?",
+          "[APO11.02] Apakah quality control procedures telah diterapkan?",
+          "[APO11.06] Apakah quality metrics dan KPIs telah ditetapkan?",
+          "[APO11.05] Apakah continuous improvement process telah berjalan?"
         ]
       },
       {
@@ -819,10 +819,10 @@
         "cobit_ref": "BAI09",
         "cobit_process": "BAI09.03 - Manage the Asset Lifecycle",
         "breakdown": [
-          "[BAI09.03] Verifikasi disposal procedures untuk hardware dan software",
-          "[DSS05.06] Periksa data sanitization standards",
-          "[MEA03.02] Konfirmasi environmental disposal requirements",
-          "[BAI09.05] Evaluasi documentation of disposal"
+          "[BAI09.03] Apakah disposal procedures untuk hardware dan software telah tersedia?",
+          "[DSS05.06] Apakah data sanitization standards telah diterapkan?",
+          "[MEA03.02] Apakah environmental disposal requirements telah dipenuhi?",
+          "[BAI09.05] Apakah documentation of disposal telah lengkap?"
         ]
       }
     ],
@@ -836,10 +836,10 @@
     "cobit_ref": "DSS01",
     "cobit_process": "DSS01.05 - Manage Facilities",
     "breakdown": [
-      "[DSS01.05] Verifikasi data center management procedures",
-      "[DSS04.03] Periksa DRC management procedures",
-      "[DSS01.04] Konfirmasi database management standards",
-      "[DSS01.01] Evaluasi completeness of data management framework"
+      "[DSS01.05] Apakah data center management procedures telah tersedia?",
+      "[DSS04.03] Apakah DRC management procedures telah lengkap?",
+      "[DSS01.04] Apakah database management standards telah ditetapkan?",
+      "[DSS01.01] Apakah completeness of data management framework telah terpenuhi?"
     ],
     "requires_document": true
   },
@@ -851,10 +851,10 @@
     "cobit_ref": "DSS01",
     "cobit_process": "DSS01.05 - Manage Facilities",
     "breakdown": [
-      "[DSS01.05] Verifikasi site selection criteria",
-      "[DSS05.05] Periksa physical access controls",
-      "[DSS01.04] Konfirmasi environmental controls",
-      "[APO10.04] Evaluasi operational procedures dan vendor agreements"
+      "[DSS01.05] Apakah site selection criteria telah dipenuhi?",
+      "[DSS05.05] Apakah physical access controls telah diterapkan?",
+      "[DSS01.04] Apakah environmental controls telah berjalan?",
+      "[APO10.04] Apakah operational procedures dan vendor agreements telah lengkap?"
     ],
     "requires_document": true
   },
@@ -866,10 +866,10 @@
     "cobit_ref": "DSS01",
     "cobit_process": "DSS01.04 - Manage the Environment",
     "breakdown": [
-      "[DSS01.04] Verifikasi power supply dan UPS provisions",
-      "[DSS01.05] Periksa fire detection dan suppression systems",
-      "[DSS04.01] Konfirmasi raised floor dan proper cooling",
-      "[DSS01.03] Evaluasi environmental monitoring systems"
+      "[DSS01.04] Apakah power supply dan UPS provisions telah memadai?",
+      "[DSS01.05] Apakah fire detection dan suppression systems telah tersedia?",
+      "[DSS04.01] Apakah raised floor dan proper cooling telah diterapkan?",
+      "[DSS01.03] Apakah environmental monitoring systems telah aktif?"
     ],
     "requires_document": true
   },
@@ -881,10 +881,10 @@
     "cobit_ref": "DSS01",
     "cobit_process": "DSS01.01 - Perform Operational Procedures",
     "breakdown": [
-      "[DSS01.01] Verifikasi job scheduling procedures",
-      "[DSS05.04] Periksa operator authorization controls",
-      "[DSS06.06] Konfirmasi output handling security",
-      "[DSS04.07] Evaluasi backup, monitoring, dan audit trail procedures"
+      "[DSS01.01] Apakah job scheduling procedures telah tersedia?",
+      "[DSS05.04] Apakah operator authorization controls telah diterapkan?",
+      "[DSS06.06] Apakah output handling security telah berjalan?",
+      "[DSS04.07] Apakah backup, monitoring, dan audit trail procedures telah lengkap?"
     ],
     "requires_document": true
   },
@@ -896,10 +896,10 @@
     "cobit_ref": "APO07",
     "cobit_process": "APO07.03 - Maintain the Skills and Competencies of Personnel",
     "breakdown": [
-      "[APO07.03] Verifikasi DBA competency requirements",
-      "[DSS04.07] Periksa database backup procedures",
-      "[DSS05.04] Konfirmasi database security standards",
-      "[DSS01.03] Evaluasi database maintenance procedures"
+      "[APO07.03] Apakah DBA competency requirements telah terpenuhi?",
+      "[DSS04.07] Apakah database backup procedures telah berjalan?",
+      "[DSS05.04] Apakah database security standards telah diterapkan?",
+      "[DSS01.03] Apakah database maintenance procedures telah lengkap?"
     ],
     "requires_document": true
   },
@@ -911,10 +911,10 @@
     "cobit_ref": "DSS04",
     "cobit_process": "DSS04.07 - Manage Backup Arrangements",
     "breakdown": [
-      "[DSS04.07] Verifikasi offsite backup storage",
-      "[DSS04.05] Periksa backup schedule dan full backup frequency",
-      "[DSS05.06] Konfirmasi backup encryption standards",
-      "[DSS04.08] Evaluasi restore testing dan media disposal"
+      "[DSS04.07] Apakah offsite backup storage telah tersedia?",
+      "[DSS04.05] Apakah backup schedule dan full backup frequency telah memadai?",
+      "[DSS05.06] Apakah backup encryption standards telah diterapkan?",
+      "[DSS04.08] Apakah restore testing dan media disposal telah berjalan?"
     ],
     "requires_document": true
   },
@@ -926,10 +926,10 @@
     "cobit_ref": "BAI06",
     "cobit_process": "BAI06 - Managed IT Changes",
     "breakdown": [
-      "[BAI06.01] Verifikasi change control procedures",
-      "[BAI06.02] Periksa software update management",
-      "[BAI06.03] Konfirmasi data migration procedures",
-      "[BAI06.04] Evaluasi change documentation requirements"
+      "[BAI06.01] Apakah change control procedures telah tersedia?",
+      "[BAI06.02] Apakah software update management telah berjalan?",
+      "[BAI06.03] Apakah data migration procedures telah lengkap?",
+      "[BAI06.04] Apakah change documentation requirements telah dipenuhi?"
     ],
     "requires_document": true
   },
@@ -941,10 +941,10 @@
     "cobit_ref": "DSS02",
     "cobit_process": "DSS02.03 - Verify, Approve and Fulfill Service Requests",
     "breakdown": [
-      "[DSS02.03] Verifikasi helpdesk function dan procedures",
-      "[DSS05.04] Periksa super user management policies",
-      "[DSS05.05] Konfirmasi privileged access controls",
-      "[DSS02.05] Evaluasi incident escalation procedures"
+      "[DSS02.03] Apakah helpdesk function dan procedures telah tersedia?",
+      "[DSS05.04] Apakah super user management policies telah diterapkan?",
+      "[DSS05.05] Apakah privileged access controls telah berjalan?",
+      "[DSS02.05] Apakah incident escalation procedures telah lengkap?"
     ],
     "requires_document": true
   },
@@ -956,10 +956,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.04 - Manage User Identity and Logical Access",
     "breakdown": [
-      "[DSS05.04] Verifikasi super user designation criteria",
-      "[DSS05.05] Periksa privileged account management",
-      "[DSS05.07] Konfirmasi password vault untuk super users",
-      "[MEA02.04] Evaluasi activity logging untuk super users"
+      "[DSS05.04] Apakah super user designation criteria telah ditetapkan?",
+      "[DSS05.05] Apakah privileged account management telah berjalan?",
+      "[DSS05.07] Apakah password vault untuk super users telah digunakan?",
+      "[MEA02.04] Apakah activity logging untuk super users telah aktif?"
     ],
     "requires_document": true
   },
@@ -971,10 +971,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.02 - Manage Network and Connectivity Security",
     "breakdown": [
-      "[DSS05.02] Verifikasi information request procedures",
-      "[DSS06.06] Periksa data classification untuk sharing",
-      "[DSS05.03] Konfirmasi secure media handling",
-      "[DSS05.07] Evaluasi data leakage prevention"
+      "[DSS05.02] Apakah information request procedures telah tersedia?",
+      "[DSS06.06] Apakah data classification untuk sharing telah diterapkan?",
+      "[DSS05.03] Apakah secure media handling telah berjalan?",
+      "[DSS05.07] Apakah data leakage prevention telah aktif?"
     ],
     "requires_document": true
   },
@@ -986,10 +986,10 @@
     "cobit_ref": "DSS01",
     "cobit_process": "DSS01.03 - Monitor IT Infrastructure",
     "breakdown": [
-      "[DSS01.03] Verifikasi network performance monitoring",
-      "[DSS05.02] Periksa network security controls",
-      "[DSS01.01] Konfirmasi network management procedures",
-      "[DSS03.01] Evaluasi network troubleshooting dan vendor SLA"
+      "[DSS01.03] Apakah network performance monitoring telah berjalan?",
+      "[DSS05.02] Apakah network security controls telah diterapkan?",
+      "[DSS01.01] Apakah network management procedures telah tersedia?",
+      "[DSS03.01] Apakah network troubleshooting dan vendor SLA telah lengkap?"
     ],
     "requires_document": true
   },
@@ -1001,10 +1001,10 @@
     "cobit_ref": "APO13",
     "cobit_process": "APO13.01 - Establish and Maintain an Information Security Management System",
     "breakdown": [
-      "[APO13.01] Verifikasi information security policy objectives",
-      "[APO13.02] Periksa management commitment statement",
-      "[APO07.03] Konfirmasi security framework dan training",
-      "[APO13.03] Evaluasi sanctions dan supporting documentation"
+      "[APO13.01] Apakah information security policy objectives telah jelas?",
+      "[APO13.02] Apakah management commitment statement telah tersedia?",
+      "[APO07.03] Apakah security framework dan training telah berjalan?",
+      "[APO13.03] Apakah sanctions dan supporting documentation telah lengkap?"
     ],
     "requires_document": true
   },
@@ -1016,10 +1016,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05 - Managed Security Services",
     "breakdown": [
-      "[BAI09.01] Verifikasi asset security procedures",
-      "[APO07.01] Periksa HR security procedures",
-      "[DSS05.05] Konfirmasi physical security dan access control",
-      "[DSS02.05] Evaluasi operational security dan incident handling"
+      "[BAI09.01] Apakah asset security procedures telah tersedia?",
+      "[APO07.01] Apakah HR security procedures telah diterapkan?",
+      "[DSS05.05] Apakah physical security dan access control telah berjalan?",
+      "[DSS02.05] Apakah operational security dan incident handling telah lengkap?"
     ],
     "requires_document": true
   },
@@ -1031,10 +1031,10 @@
     "cobit_ref": "BAI09",
     "cobit_process": "BAI09.01 - Identify and Record Current Assets",
     "breakdown": [
-      "[BAI09.01] Verifikasi asset inventory dan ownership",
-      "[BAI09.02] Periksa information classification scheme",
-      "[BAI09.03] Konfirmasi asset labeling procedures",
-      "[BAI09.05] Evaluasi asset handling procedures"
+      "[BAI09.01] Apakah asset inventory dan ownership telah lengkap?",
+      "[BAI09.02] Apakah information classification scheme telah diterapkan?",
+      "[BAI09.03] Apakah asset labeling procedures telah berjalan?",
+      "[BAI09.05] Apakah asset handling procedures telah tersedia?"
     ],
     "requires_document": true
   },
@@ -1046,10 +1046,10 @@
     "cobit_ref": "APO07",
     "cobit_process": "APO07 - Managed Human Resources",
     "breakdown": [
-      "[APO07.01] Verifikasi security responsibilities definition",
-      "[APO07.02] Periksa employment contract security clauses",
-      "[APO07.03] Konfirmasi NDA dan security training",
-      "[APO07.06] Evaluasi asset return dan segregation of duties"
+      "[APO07.01] Apakah security responsibilities definition telah jelas?",
+      "[APO07.02] Apakah employment contract security clauses telah ada?",
+      "[APO07.03] Apakah NDA dan security training telah dilaksanakan?",
+      "[APO07.06] Apakah asset return dan segregation of duties telah diterapkan?"
     ],
     "requires_document": true
   },
@@ -1061,10 +1061,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.05 - Manage Physical Access to I&T Assets",
     "breakdown": [
-      "[DSS05.05] Verifikasi physical security controls",
-      "[DSS01.05] Periksa access control systems",
-      "[DSS01.04] Konfirmasi supporting facility management",
-      "[APO10.04] Evaluasi maintenance dan vendor asset controls"
+      "[DSS05.05] Apakah physical security controls telah memadai?",
+      "[DSS01.05] Apakah access control systems telah berjalan?",
+      "[DSS01.04] Apakah supporting facility management telah tersedia?",
+      "[APO10.04] Apakah maintenance dan vendor asset controls telah diterapkan?"
     ],
     "requires_document": true
   },
@@ -1076,10 +1076,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.04 - Manage User Identity and Logical Access",
     "breakdown": [
-      "[DSS05.04] Verifikasi access control policy",
-      "[DSS05.05] Periksa user provisioning procedures",
-      "[DSS05.03] Konfirmasi authentication mechanisms",
-      "[DSS05.07] Evaluasi access review dan password policies"
+      "[DSS05.04] Apakah access control policy telah lengkap?",
+      "[DSS05.05] Apakah user provisioning procedures telah berjalan?",
+      "[DSS05.03] Apakah authentication mechanisms telah diterapkan?",
+      "[DSS05.07] Apakah access review dan password policies telah efektif?"
     ],
     "requires_document": true
   },
@@ -1091,10 +1091,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.04 - Manage User Identity and Logical Access",
     "breakdown": [
-      "[DSS05.04] Verifikasi initial password procedures",
-      "[DSS05.03] Periksa secure password delivery methods",
-      "[DSS05.07] Konfirmasi unique password requirements",
-      "[APO13.02] Evaluasi default password change policies"
+      "[DSS05.04] Apakah initial password procedures telah tersedia?",
+      "[DSS05.03] Apakah secure password delivery methods telah digunakan?",
+      "[DSS05.07] Apakah unique password requirements telah dipenuhi?",
+      "[APO13.02] Apakah default password change policies telah diterapkan?"
     ],
     "requires_document": true
   },
@@ -1106,10 +1106,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.04 - Manage User Identity and Logical Access",
     "breakdown": [
-      "[DSS05.04] Verifikasi password confidentiality requirements",
-      "[APO13.02] Periksa password complexity standards",
-      "[DSS05.07] Konfirmasi password rotation policies",
-      "[DSS05.03] Evaluasi password history requirements"
+      "[DSS05.04] Apakah password confidentiality requirements telah jelas?",
+      "[APO13.02] Apakah password complexity standards telah diterapkan?",
+      "[DSS05.07] Apakah password rotation policies telah berjalan?",
+      "[DSS05.03] Apakah password history requirements telah dipenuhi?"
     ],
     "requires_document": true
   },
@@ -1121,10 +1121,10 @@
     "cobit_ref": "DSS05",
     "cobit_process": "DSS05.01 - Protect Against Malware",
     "breakdown": [
-      "[DSS04.07] Verifikasi backup dan restore testing",
-      "[DSS05.01] Periksa malware protection controls",
-      "[DSS05.07] Konfirmasi audit log protection",
-      "[DSS01.03] Evaluasi time synchronization dan software inventory"
+      "[DSS04.07] Apakah backup dan restore testing telah dilakukan secara berkala?",
+      "[DSS05.01] Apakah malware protection controls telah aktif?",
+      "[DSS05.07] Apakah audit log protection telah diterapkan?",
+      "[DSS01.03] Apakah time synchronization dan software inventory telah berjalan?"
     ],
     "requires_document": true
   },
@@ -1136,10 +1136,10 @@
     "cobit_ref": "DSS02",
     "cobit_process": "DSS02.05 - Resolve and Recover from Incidents",
     "breakdown": [
-      "[DSS02.01] Verifikasi incident scope definition",
-      "[DSS02.02] Periksa incident reporting procedures",
-      "[DSS02.05] Konfirmasi incident resolution workflow",
-      "[DSS02.07] Evaluasi documentation dan lessons learned"
+      "[DSS02.01] Apakah incident scope definition telah jelas?",
+      "[DSS02.02] Apakah incident reporting procedures telah berjalan?",
+      "[DSS02.05] Apakah incident resolution workflow telah efektif?",
+      "[DSS02.07] Apakah documentation dan lessons learned telah lengkap?"
     ],
     "requires_document": true
   },
@@ -1151,10 +1151,10 @@
     "cobit_ref": "DSS02",
     "cobit_process": "DSS02.01 - Define Incident and Service Request Classification Schemes",
     "breakdown": [
-      "[DSS02.01] Verifikasi incident reporter identification",
-      "[DSS02.02] Periksa incident classification scheme",
-      "[DSS02.03] Konfirmasi reporting flow dan escalation",
-      "[DSS02.06] Evaluasi evidence preservation procedures"
+      "[DSS02.01] Apakah incident reporter identification telah jelas?",
+      "[DSS02.02] Apakah incident classification scheme telah diterapkan?",
+      "[DSS02.03] Apakah reporting flow dan escalation telah berjalan?",
+      "[DSS02.06] Apakah evidence preservation procedures telah tersedia?"
     ],
     "requires_document": true
   },
@@ -1162,38 +1162,38 @@
     "id": "B.52",
     "aspect": "B",
     "aspect_name": "Kecukupan Kebijakan dan Prosedur Penggunaan Teknologi Informasi (TI)",
-    "ojk_question": "Apakah kebijakan dan prosedur terkait aspek Rencana Pemulihan Bencana (DRP) meliputi: analisis faktor bencana, jenis prosedur DRP, komponen prosedur, penetapan tanggung jawab, uji coba DRP, dan pengkinian DRP?",
+    "ojk_question": "Apakah kebijakan dan prosedur terkait aspek Rencana Pemulihan Bencana (Disaster Recovery Plan/DRP) mencakup: tujuan dan ruang lingkup, kejelasan tanggung jawab, uji coba berkala, dan proses pengkinian?",
     "cobit_ref": "DSS04",
     "cobit_process": "DSS04 - Managed Continuity",
     "breakdown": [
-      "[DSS04.01] Verifikasi DRP scope dan scenarios",
-      "[DSS04.03] Periksa DRP procedures dan components",
-      "[DSS04.06] Konfirmasi roles dan responsibilities",
-      "[DSS04.05] Evaluasi testing dan update procedures"
+      "[DSS04.01] Apakah DRP objectives dan scope telah jelas?",
+      "[DSS04.03] Apakah responsibility assignments dalam DRP telah lengkap?",
+      "[DSS04.04] Apakah DRP testing telah dilakukan secara berkala?",
+      "[DSS04.05] Apakah DRP update process telah berjalan?"
     ],
     "sub_questions": [
       {
         "id": "B.52.a",
-        "text": "Apakah jenis prosedur DRP paling sedikit mencakup: prosedur tanggap darurat, prosedur pemulihan sistem, dan prosedur sinkronisasi data?",
+        "text": "Apakah penetapan tujuan dan ruang lingkup DRP mencakup sistem kritikal, waktu pemulihan maksimal (RTO), dan data yang harus dipulihkan (RPO)?",
         "cobit_ref": "DSS04",
-        "cobit_process": "DSS04.03 - Develop and Implement a Business Continuity Response",
+        "cobit_process": "DSS04.02 - Define and Maintain Critical Services",
         "breakdown": [
-          "[DSS04.03] Verifikasi emergency response procedures",
-          "[DSS04.04] Periksa system recovery procedures",
-          "[DSS04.07] Konfirmasi data synchronization procedures",
-          "[DSS04.05] Evaluasi procedure completeness"
+          "[DSS04.02] Apakah critical systems telah teridentifikasi dalam DRP?",
+          "[DSS04.01] Apakah RTO (Recovery Time Objective) telah ditetapkan?",
+          "[DSS04.03] Apakah RPO (Recovery Point Objective) telah jelas?",
+          "[BAI01.10] Apakah scope alignment dengan business requirements telah tercapai?"
         ]
       },
       {
         "id": "B.52.b",
-        "text": "Apakah komponen prosedur DRP mencakup: sumber daya manusia dengan komposisi dan tanggung jawab jelas, sumber daya TI dan aplikasi inti, dan fasilitas komunikasi?",
+        "text": "Apakah penetapan tingkat gangguan yang membutuhkan aktifasi DRP sudah jelas dalam kategori tingkat?",
         "cobit_ref": "DSS04",
-        "cobit_process": "DSS04.02 - Maintain a Continuity Strategy",
+        "cobit_process": "DSS04.02 - Define and Maintain Critical Services",
         "breakdown": [
-          "[DSS04.02] Verifikasi DRP team composition",
-          "[DSS04.06] Periksa IT resource dan application documentation",
-          "[DSS04.03] Konfirmasi communication facilities",
-          "[DSS04.08] Evaluasi resource readiness"
+          "[DSS04.02] Apakah incident severity levels untuk DRP activation telah didefinisikan?",
+          "[DSS02.01] Apakah escalation triggers telah jelas?",
+          "[DSS04.03] Apakah decision criteria untuk DRP activation telah tersedia?",
+          "[DSS04.06] Apakah communication protocols saat activasi telah ditetapkan?"
         ]
       },
       {
@@ -1202,10 +1202,10 @@
         "cobit_ref": "DSS04",
         "cobit_process": "DSS04.03 - Develop and Implement a Business Continuity Response",
         "breakdown": [
-          "[DSS04.03] Verifikasi management responsibilities dalam DRP",
-          "[APO01.05] Periksa IT unit responsibilities",
-          "[DSS04.06] Konfirmasi supporting unit responsibilities",
-          "[EDM01.02] Evaluasi clarity of role assignments"
+          "[DSS04.03] Apakah management responsibilities dalam DRP telah jelas?",
+          "[APO01.05] Apakah IT unit responsibilities telah ditetapkan?",
+          "[DSS04.06] Apakah supporting unit responsibilities telah lengkap?",
+          "[EDM01.02] Apakah clarity of role assignments telah tercapai?"
         ]
       }
     ],
@@ -1219,10 +1219,10 @@
     "cobit_ref": "EDM03",
     "cobit_process": "EDM03.02 - Direct Risk Management",
     "breakdown": [
-      "[EDM03.02] Verifikasi management DRP policy approval",
-      "[DSS04.01] Periksa DRP review dan approval process",
-      "[APO10.04] Konfirmasi vendor DRP evaluation",
-      "[DSS04.02] Evaluasi incident level classification"
+      "[EDM03.02] Apakah management DRP policy approval telah ada?",
+      "[DSS04.01] Apakah DRP review dan approval process telah berjalan?",
+      "[APO10.04] Apakah vendor DRP evaluation telah dilakukan?",
+      "[DSS04.02] Apakah incident level classification telah ditetapkan?"
     ],
     "requires_document": true
   },
@@ -1234,10 +1234,10 @@
     "cobit_ref": "DSS04",
     "cobit_process": "DSS04.04 - Exercise, Test and Review the BCP",
     "breakdown": [
-      "[DSS04.04] Verifikasi IT unit DRP responsibilities",
-      "[DSS04.03] Periksa recovery scenario planning",
-      "[DSS04.05] Konfirmasi testing evaluation procedures",
-      "[DSS04.08] Evaluasi reporting dan documentation"
+      "[DSS04.04] Apakah IT unit DRP responsibilities telah jelas?",
+      "[DSS04.03] Apakah recovery scenario planning telah lengkap?",
+      "[DSS04.05] Apakah testing evaluation procedures telah berjalan?",
+      "[DSS04.08] Apakah reporting dan documentation telah tersedia?"
     ],
     "requires_document": true
   },
@@ -1249,10 +1249,10 @@
     "cobit_ref": "DSS04",
     "cobit_process": "DSS04.03 - Develop and Implement a Business Continuity Response",
     "breakdown": [
-      "[DSS04.03] Verifikasi supporting unit DRP roles",
-      "[DSS04.06] Periksa coordination dengan IT unit",
-      "[DSS04.04] Konfirmasi logistic support procedures",
-      "[DSS04.08] Evaluasi communication protocols"
+      "[DSS04.03] Apakah supporting unit DRP roles telah ditetapkan?",
+      "[DSS04.06] Apakah coordination dengan IT unit telah berjalan?",
+      "[DSS04.04] Apakah logistic support procedures telah tersedia?",
+      "[DSS04.08] Apakah communication protocols telah jelas?"
     ],
     "requires_document": true
   },
@@ -1264,10 +1264,10 @@
     "cobit_ref": "DSS04",
     "cobit_process": "DSS04.04 - Exercise, Test and Review the BCP",
     "breakdown": [
-      "[DSS04.04] Verifikasi testing frequency",
-      "[DSS04.05] Periksa testing scope dan scenarios",
-      "[DSS04.03] Konfirmasi analysis procedures",
-      "[DSS04.08] Evaluasi documentation dan lessons learned"
+      "[DSS04.04] Apakah testing frequency telah memadai?",
+      "[DSS04.05] Apakah testing scope dan scenarios telah lengkap?",
+      "[DSS04.03] Apakah analysis procedures telah berjalan?",
+      "[DSS04.08] Apakah documentation dan lessons learned telah tersedia?"
     ],
     "requires_document": true
   },
@@ -1279,10 +1279,10 @@
     "cobit_ref": "DSS04",
     "cobit_process": "DSS04.05 - Review, Maintain and Improve the Continuity Plan",
     "breakdown": [
-      "[DSS04.05] Verifikasi DRP update schedule",
-      "[APO03.05] Periksa alignment dengan business changes",
-      "[DSS04.06] Konfirmasi resource update procedures",
-      "[MEA01.03] Evaluasi continuous improvement process"
+      "[DSS04.05] Apakah DRP update schedule telah berjalan?",
+      "[APO03.05] Apakah alignment dengan business changes telah tercapai?",
+      "[DSS04.06] Apakah resource update procedures telah dilakukan?",
+      "[MEA01.03] Apakah continuous improvement process telah efektif?"
     ],
     "requires_document": true
   },
@@ -1294,10 +1294,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.01 - Identify and Evaluate Vendor Relationships",
     "breakdown": [
-      "[APO10.01] Verifikasi vendor usage criteria",
-      "[APO10.02] Periksa vendor selection principles",
-      "[APO10.03] Konfirmasi selection mechanism",
-      "[APO10.04] Evaluasi vendor evaluation procedures"
+      "[APO10.01] Apakah vendor usage criteria telah ditetapkan?",
+      "[APO10.02] Apakah vendor selection principles telah jelas?",
+      "[APO10.03] Apakah selection mechanism telah berjalan?",
+      "[APO10.04] Apakah vendor evaluation procedures telah lengkap?"
     ],
     "requires_document": true
   },
@@ -1309,10 +1309,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi management approval requirements",
-      "[APO10.03] Periksa liability dan responsibility clarity",
-      "[MEA03.02] Konfirmasi regulatory compliance provisions",
-      "[APO10.04] Evaluasi due diligence dan cost-benefit analysis"
+      "[APO10.02] Apakah management approval requirements telah dipenuhi?",
+      "[APO10.03] Apakah liability dan responsibility clarity telah jelas?",
+      "[MEA03.02] Apakah regulatory compliance provisions telah tercakup?",
+      "[APO10.04] Apakah due diligence dan cost-benefit analysis telah dilakukan?"
     ],
     "requires_document": true
   },
@@ -1324,10 +1324,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi contract scope completeness",
-      "[APO10.04] Periksa commercial terms clarity",
-      "[APO13.02] Konfirmasi IP dan security provisions",
-      "[APO10.05] Evaluasi SLA dan penalty clauses"
+      "[APO10.02] Apakah contract scope completeness telah terpenuhi?",
+      "[APO10.04] Apakah commercial terms clarity telah jelas?",
+      "[APO13.02] Apakah IP dan security provisions telah tercakup?",
+      "[APO10.05] Apakah SLA dan penalty clauses telah lengkap?"
     ],
     "requires_document": true
   },
@@ -1339,10 +1339,10 @@
     "cobit_ref": "APO10",
     "cobit_process": "APO10.02 - Select Vendors",
     "breakdown": [
-      "[APO10.02] Verifikasi SLA continuity provisions",
-      "[APO10.05] Periksa modification dan knowledge transfer clauses",
-      "[APO10.04] Konfirmasi post-implementation support",
-      "[MEA03.03] Evaluasi termination dan regulatory audit rights"
+      "[APO10.02] Apakah SLA continuity provisions telah tersedia?",
+      "[APO10.05] Apakah modification dan knowledge transfer clauses telah lengkap?",
+      "[APO10.04] Apakah post-implementation support telah terjamin?",
+      "[MEA03.03] Apakah termination dan regulatory audit rights telah tercakup?"
     ],
     "requires_document": true
   },
@@ -1354,10 +1354,10 @@
     "cobit_ref": "DSS06",
     "cobit_process": "DSS06.01 - Align Control Activities with Business Objectives",
     "breakdown": [
-      "[DSS06.01] Verifikasi e-finance service scope",
-      "[DSS06.02] Periksa service descriptions",
-      "[DSS06.03] Konfirmasi roles dan responsibilities",
-      "[DSS06.06] Evaluasi governance structure"
+      "[DSS06.01] Apakah e-finance service scope telah jelas?",
+      "[DSS06.02] Apakah service descriptions telah lengkap?",
+      "[DSS06.03] Apakah roles dan responsibilities telah ditetapkan?",
+      "[DSS06.06] Apakah governance structure telah tersedia?"
     ],
     "requires_document": true
   },
@@ -1369,10 +1369,10 @@
     "cobit_ref": "EDM03",
     "cobit_process": "EDM03.02 - Direct Risk Management",
     "breakdown": [
-      "[EDM03.02] Verifikasi risk limit standards",
-      "[APO12.03] Periksa risk tolerance documentation",
-      "[APO12.06] Konfirmasi alignment dengan business objectives",
-      "[EDM03.03] Evaluasi monitoring mechanisms"
+      "[EDM03.02] Apakah risk limit standards telah ditetapkan?",
+      "[APO12.03] Apakah risk tolerance documentation telah tersedia?",
+      "[APO12.06] Apakah alignment dengan business objectives telah tercapai?",
+      "[EDM03.03] Apakah monitoring mechanisms telah berjalan?"
     ],
     "requires_document": true
   },
@@ -1384,10 +1384,10 @@
     "cobit_ref": "MEA03",
     "cobit_process": "MEA03.03 - Confirm External Compliance",
     "breakdown": [
-      "[MEA03.03] Verifikasi IT development plan submission",
-      "[APO02.06] Periksa alignment dengan business plan",
-      "[MEA03.04] Konfirmasi regulatory submission records",
-      "[MEA03.02] Evaluasi OJK acknowledgment"
+      "[MEA03.03] Apakah IT development plan telah disampaikan ke OJK?",
+      "[APO02.06] Apakah alignment dengan business plan telah tercapai?",
+      "[MEA03.04] Apakah regulatory submission records telah lengkap?",
+      "[MEA03.02] Apakah OJK acknowledgment telah diterima?"
     ],
     "requires_document": true
   },
@@ -1399,10 +1399,10 @@
     "cobit_ref": "APO05",
     "cobit_process": "APO05.01 - Establish the Target Investment Mix",
     "breakdown": [
-      "[APO05.01] Verifikasi IT development plan completeness",
-      "[APO05.02] Periksa cost estimations",
-      "[APO05.03] Konfirmasi major initiatives coverage",
-      "[APO12.03] Evaluasi risk considerations"
+      "[APO05.01] Apakah IT development plan telah lengkap dan komprehensif?",
+      "[APO05.02] Apakah cost estimations telah tersedia?",
+      "[APO05.03] Apakah major initiatives coverage telah tercakup?",
+      "[APO12.03] Apakah risk considerations telah dipertimbangkan?"
     ],
     "requires_document": true
   }
