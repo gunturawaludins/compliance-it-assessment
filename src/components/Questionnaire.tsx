@@ -300,23 +300,6 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     });
   }, [questions, toast]);
 
-  // Save draft explicitly
-  const handleSaveDraft = useCallback(() => {
-    try {
-      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(responses));
-      const answeredCount = Object.values(responses).filter(r => r.mainAnswer !== null).length;
-      toast({
-        title: 'Jawaban Tersimpan',
-        description: `${answeredCount} jawaban berhasil disimpan. Progress Anda aman.`
-      });
-    } catch (e) {
-      toast({
-        title: 'Gagal Menyimpan',
-        description: 'Terjadi kesalahan saat menyimpan jawaban',
-        variant: 'destructive'
-      });
-    }
-  }, [responses, toast]);
 
   // Clear all responses
   const handleClearResponses = useCallback(() => {
@@ -565,22 +548,9 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                           const breakdownAnswer = response.breakdownAnswers?.[bIndex];
                           return (
                             <div key={`${question.id}-bd-${bIndex}`} className="pl-4 border-l-2 border-muted">
-                              <div className="flex items-center gap-2 mb-2">
-                                <p className="text-sm text-muted-foreground flex-1">
-                                  {bIndex + 1}. {bq}
-                                </p>
-                                {breakdownAnswer && (
-                                  <Badge 
-                                    variant="outline" 
-                                    className={cn(
-                                      "text-xs",
-                                      breakdownAnswer === 'Ya' ? "bg-green-100 text-green-700 border-green-300" : "bg-red-100 text-red-700 border-red-300"
-                                    )}
-                                  >
-                                    ✓ Tersimpan
-                                  </Badge>
-                                )}
-                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {bIndex + 1}. {bq}
+                              </p>
                               <div className="flex gap-2">
                                 <Button
                                   size="sm"
@@ -788,15 +758,6 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
             >
               <Shuffle className="h-4 w-4 mr-1" />
               Random
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={handleSaveDraft}
-              className="text-primary border-primary hover:bg-primary/10"
-            >
-              <FileText className="h-4 w-4 mr-1" />
-              Simpan Sementara
             </Button>
             <Button onClick={handleSubmit} className="gap-2">
               <Send className="h-4 w-4" />
