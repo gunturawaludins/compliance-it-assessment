@@ -298,51 +298,6 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                 </div>
               </div>
 
-              
-              {/* COBIT Compliance Summary */}
-              {aiResult.cobit_compliance_summary && (
-                <div className="space-y-3">
-                  <h4 className="text-sm font-semibold flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-primary" />
-                    COBIT 2019 Domain Compliance
-                  </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                    {(['edm', 'apo', 'bai', 'dss', 'mea'] as const).map(domain => {
-                      const domainData = aiResult.cobit_compliance_summary?.[domain];
-                      const score = domainData?.score || 0;
-                      const summary = domainData?.summary || '';
-                      const domainKey = domain.toUpperCase() as COBITDomain;
-                      const domainInfo = COBIT_DOMAINS[domainKey];
-                      
-                      return (
-                        <div key={domain} className="p-3 rounded-xl bg-background/50 border space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-muted-foreground">{domainKey}</span>
-                            <span className={`text-lg font-bold ${
-                              score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive'
-                            }`}>
-                              {score}%
-                            </span>
-                          </div>
-                          <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full transition-all duration-500 rounded-full ${
-                                score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-destructive'
-                              }`}
-                              style={{ width: `${score}%` }}
-                            />
-                          </div>
-                          <p className="text-xs text-muted-foreground">{domainInfo?.name}</p>
-                          {summary && (
-                            <p className="text-xs text-foreground/80 mt-1">{summary}</p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
               {/* AI Findings Detail - Enhanced with Relationship Explanation */}
               {aiResult.findings && aiResult.findings.length > 0 && (
                 <div className="space-y-3">
@@ -421,67 +376,79 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       )}
 
-      {/* AI Consistency Score Card - Enhanced */}
-      <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
+      {/* Skor Indeks Compliance Card - Weighted Calculation */}
+      {(() => {
+        // Weighted compliance calculation
+        // Mayor = 3x weight (serious violations)
+        // Minor = 1x weight (minor inconsistencies)
+        const majorWeight = 3;
+        const minorWeight = 1;
+        const totalAnswered = result.answeredQuestions || 1;
+        const weightedDeduction = (result.majorFindings * majorWeight) + (result.minorFindings * minorWeight);
+        const maxPossibleDeduction = totalAnswered * majorWeight; // If all were major
+        const complianceScore = Math.max(0, Math.round(100 - (weightedDeduction / maxPossibleDeduction) * 100));
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="flex items-center gap-6">
-            <div className={`
-              w-28 h-28 rounded-2xl flex flex-col items-center justify-center
-              ${(aiResult?.consistency_score || result.honestyScore) >= 80 ? 'bg-success/20' : 
-                (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'bg-warning/20' : 'bg-destructive/20'}
-            `}>
-              <span className={`text-4xl font-bold ${
-                (aiResult?.consistency_score || result.honestyScore) >= 80 ? 'text-success' : 
-                (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'text-warning' : 'text-destructive'
-              }`}>
-                {aiResult?.consistency_score ?? result.honestyScore}%
-              </span>
-              <span className="text-xs text-muted-foreground mt-1">Skor</span>
+        return (
+          <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className={`
+                  w-28 h-28 rounded-2xl flex flex-col items-center justify-center
+                  ${complianceScore >= 80 ? 'bg-success/20' : 
+                    complianceScore >= 60 ? 'bg-warning/20' : 'bg-destructive/20'}
+                `}>
+                  <span className={`text-4xl font-bold ${
+                    complianceScore >= 80 ? 'text-success' : 
+                    complianceScore >= 60 ? 'text-warning' : 'text-destructive'
+                  }`}>
+                    {complianceScore}%
+                  </span>
+                  <span className="text-xs text-muted-foreground mt-1">Indeks</span>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground">Skor Indeks Compliance</h3>
+                  <p className={`text-lg font-medium ${
+                    complianceScore >= 80 ? 'text-success' : 
+                    complianceScore >= 60 ? 'text-warning' : 'text-destructive'
+                  }`}>
+                    {complianceScore >= 80 ? 'Compliance Baik' :
+                     complianceScore >= 60 ? 'Perlu Perbaikan' : 'Compliance Rendah'}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Pembobotan: Mayor (×3) + Minor (×1)
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-destructive/20 text-destructive">
+                  <ShieldAlert className="w-5 h-5" />
+                  <span className="text-2xl font-bold">{result.majorFindings}</span>
+                  <span className="text-xs">Mayor (×3)</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-warning/20 text-warning">
+                  <AlertCircle className="w-5 h-5" />
+                  <span className="text-2xl font-bold">{result.minorFindings}</span>
+                  <span className="text-xs">Minor (×1)</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-success/20 text-success">
+                  <ShieldCheck className="w-5 h-5" />
+                  <span className="text-2xl font-bold">{result.consistentAnswers}</span>
+                  <span className="text-xs">Konsisten</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="text-2xl font-bold text-foreground">
-                {aiResult ? 'Skor Konsistensi AI' : 'Skor Kejujuran'}
-              </h3>
-              <p className={`text-lg font-medium ${
-                (aiResult?.consistency_score || result.honestyScore) >= 80 ? 'text-success' : 
-                (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'text-warning' : 'text-destructive'
-              }`}>
-                {(aiResult?.consistency_score || result.honestyScore) >= 80 ? 'Konsistensi Baik' :
-                 (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'Perlu Perhatian' : 'Inkonsistensi Terdeteksi'}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {aiResult 
-                  ? `Analisis NLP Aspek B • ${aiResult.findings?.length || 0} temuan`
-                  : `Berdasarkan ${rules.length} aturan deteksi fraud`
-                }
-              </p>
+            
+            {/* Explanation tooltip */}
+            <div className="mt-4 p-3 rounded-lg bg-secondary/30 text-xs text-muted-foreground">
+              <p><strong>Perhitungan:</strong> 100 - ((Mayor × 3 + Minor × 1) / (Total Soal × 3) × 100)</p>
+              <p className="mt-1"><strong>Mayor:</strong> Pelanggaran serius (tidak ada kebijakan, manipulasi jelas) | <strong>Minor:</strong> Inkonsistensi ringan</p>
             </div>
           </div>
-          
-          <div className="flex gap-4">
-            <StatBadge
-              icon={<ShieldAlert className="w-5 h-5" />}
-              value={result.majorFindings}
-              label="Mayor"
-              color="destructive"
-            />
-            <StatBadge
-              icon={<AlertCircle className="w-5 h-5" />}
-              value={result.minorFindings}
-              label="Minor"
-              color="warning"
-            />
-            <StatBadge
-              icon={<ShieldCheck className="w-5 h-5" />}
-              value={result.consistentAnswers}
-              label="Konsisten"
-              color="success"
-            />
-          </div>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* Aspect Compliance Cards - Enhanced */}
       <div className="space-y-4">
