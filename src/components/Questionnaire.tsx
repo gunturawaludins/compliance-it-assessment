@@ -96,7 +96,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     }
   }, [responses, isLoaded]);
 
-  const getResponse = (questionId: string): QuestionResponse => {
+  const getResponse = useCallback((questionId: string): QuestionResponse => {
     return responses[questionId] || {
       mainAnswer: null,
       breakdownAnswers: [],
@@ -105,7 +105,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
       evidenceFiles: [],
       notes: ''
     };
-  };
+  }, [responses]);
 
   const updateResponse = (questionId: string, updates: Partial<QuestionResponse>) => {
     setResponses(prev => {
@@ -148,19 +148,33 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
         evidenceFiles: [],
         notes: ''
       };
-      // Ensure array is properly sized
-      const newBreakdown: ('Ya' | 'Tidak' | null)[] = [];
-      for (let i = 0; i <= Math.max(index, current.breakdownAnswers.length - 1); i++) {
-        newBreakdown[i] = current.breakdownAnswers[i] || null;
-      }
+      // Ensure array is properly sized - create new array with correct size
+      const maxIndex = Math.max(index, current.breakdownAnswers.length - 1);
+      const newBreakdown: ('Ya' | 'Tidak' | null)[] = Array(maxIndex + 1).fill(null);
+      
+      // Copy existing answers
+      current.breakdownAnswers.forEach((ans, i) => {
+        if (i < newBreakdown.length) {
+          newBreakdown[i] = ans;
+        }
+      });
+      
+      // Set new answer
       newBreakdown[index] = answer;
       
       const newState = {
         ...prev,
         [questionId]: { ...current, breakdownAnswers: newBreakdown }
       };
+      
       // Save immediately to localStorage
-      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+      try {
+        localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+        console.log(`Saved breakdown ${questionId}[${index}] = ${answer}`);
+      } catch (e) {
+        console.error('Failed to save breakdown:', e);
+      }
+      
       return newState;
     });
   }, []);
@@ -548,37 +562,53 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                           <BookOpen className="h-4 w-4 text-primary" />
                           Pertanyaan Pendalaman (COBIT)
                         </div>
-                        {question.breakdown.map((bq, bIndex) => (
-                          <div key={bIndex} className="pl-4 border-l-2 border-muted">
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {bIndex + 1}. {bq}
-                            </p>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant={response.breakdownAnswers[bIndex] === 'Ya' ? 'default' : 'outline'}
-                                className={cn(
-                                  "h-7 text-xs",
-                                  response.breakdownAnswers[bIndex] === 'Ya' && "bg-green-600"
+                        {question.breakdown.map((bq, bIndex) => {
+                          const breakdownAnswer = response.breakdownAnswers?.[bIndex];
+                          return (
+                            <div key={`${question.id}-bd-${bIndex}`} className="pl-4 border-l-2 border-muted">
+                              <div className="flex items-center gap-2 mb-2">
+                                <p className="text-sm text-muted-foreground flex-1">
+                                  {bIndex + 1}. {bq}
+                                </p>
+                                {breakdownAnswer && (
+                                  <Badge 
+                                    variant="outline" 
+                                    className={cn(
+                                      "text-xs",
+                                      breakdownAnswer === 'Ya' ? "bg-green-100 text-green-700 border-green-300" : "bg-red-100 text-red-700 border-red-300"
+                                    )}
+                                  >
+                                    ✓ Tersimpan
+                                  </Badge>
                                 )}
-                                onClick={() => setBreakdownAnswer(question.id, bIndex, 'Ya')}
-                              >
-                                Ya
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant={response.breakdownAnswers[bIndex] === 'Tidak' ? 'default' : 'outline'}
-                                className={cn(
-                                  "h-7 text-xs",
-                                  response.breakdownAnswers[bIndex] === 'Tidak' && "bg-red-600"
-                                )}
-                                onClick={() => setBreakdownAnswer(question.id, bIndex, 'Tidak')}
-                              >
-                                Tidak
-                              </Button>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant={breakdownAnswer === 'Ya' ? 'default' : 'outline'}
+                                  className={cn(
+                                    "h-7 text-xs",
+                                    breakdownAnswer === 'Ya' && "bg-green-600 hover:bg-green-700"
+                                  )}
+                                  onClick={() => setBreakdownAnswer(question.id, bIndex, 'Ya')}
+                                >
+                                  Ya
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant={breakdownAnswer === 'Tidak' ? 'default' : 'outline'}
+                                  className={cn(
+                                    "h-7 text-xs",
+                                    breakdownAnswer === 'Tidak' && "bg-red-600 hover:bg-red-700"
+                                  )}
+                                  onClick={() => setBreakdownAnswer(question.id, bIndex, 'Tidak')}
+                                >
+                                  Tidak
+                                </Button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
 
