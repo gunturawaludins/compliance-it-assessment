@@ -31,6 +31,8 @@ interface QuestionnaireProps {
 interface QuestionResponse {
   mainAnswer: 'Ya' | 'Tidak' | null;
   breakdownAnswers: ('Ya' | 'Tidak' | null)[];
+  subQuestionAnswers: Record<string, 'Ya' | 'Tidak' | null>;
+  subBreakdownAnswers: Record<string, ('Ya' | 'Tidak' | null)[]>;
   evidenceFiles: string[];
   notes: string;
 }
@@ -59,6 +61,8 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
           newResponses[q.id] = {
             mainAnswer: q.answer || null,
             breakdownAnswers: [],
+            subQuestionAnswers: {},
+            subBreakdownAnswers: {},
             evidenceFiles: q.evidenceFile ? [q.evidenceFile] : [],
             notes: q.evidence || ''
           };
@@ -72,6 +76,8 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     return responses[questionId] || {
       mainAnswer: null,
       breakdownAnswers: [],
+      subQuestionAnswers: {},
+      subBreakdownAnswers: {},
       evidenceFiles: [],
       notes: ''
     };
@@ -93,6 +99,23 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     const newBreakdown = [...response.breakdownAnswers];
     newBreakdown[index] = answer;
     updateResponse(questionId, { breakdownAnswers: newBreakdown });
+  };
+
+  const setSubQuestionAnswer = (questionId: string, subQuestionId: string, answer: 'Ya' | 'Tidak') => {
+    const response = getResponse(questionId);
+    updateResponse(questionId, { 
+      subQuestionAnswers: { ...response.subQuestionAnswers, [subQuestionId]: answer }
+    });
+  };
+
+  const setSubBreakdownAnswer = (questionId: string, subQuestionId: string, index: number, answer: 'Ya' | 'Tidak') => {
+    const response = getResponse(questionId);
+    const currentBreakdowns = response.subBreakdownAnswers[subQuestionId] || [];
+    const newBreakdowns = [...currentBreakdowns];
+    newBreakdowns[index] = answer;
+    updateResponse(questionId, { 
+      subBreakdownAnswers: { ...response.subBreakdownAnswers, [subQuestionId]: newBreakdowns }
+    });
   };
 
   const handleFileUpload = (questionId: string, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -372,13 +395,13 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                     {question.sub_questions && question.sub_questions.length > 0 && (
                       <div className="space-y-3 mt-4">
                         <div className="flex items-center gap-2 text-sm font-medium">
-                          <Eye className="h-4 w-4 text-amber-600" />
+                          <Eye className="h-4 w-4 text-primary" />
                           Sub-Pertanyaan
                         </div>
-                        {question.sub_questions.map((subQ, subIndex) => (
-                          <div key={subQ.id} className="pl-4 border-l-2 border-amber-300 bg-amber-50/50 dark:bg-amber-900/10 p-3 rounded-r-lg space-y-2">
+                        {question.sub_questions.map((subQ) => (
+                          <div key={subQ.id} className="pl-4 border-l-2 border-primary/30 bg-primary/5 p-3 rounded-r-lg space-y-3">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="outline" className="text-xs bg-amber-100 text-amber-800 border-amber-300">
+                              <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
                                 {subQ.id}
                               </Badge>
                               <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
@@ -386,13 +409,73 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                               </Badge>
                             </div>
                             <p className="text-sm font-medium text-foreground">{subQ.text}</p>
+                            
+                            {/* Sub Question Answer Buttons */}
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant={response.subQuestionAnswers[subQ.id] === 'Ya' ? 'default' : 'outline'}
+                                className={cn(
+                                  "h-8 gap-1",
+                                  response.subQuestionAnswers[subQ.id] === 'Ya' && "bg-green-600 hover:bg-green-700"
+                                )}
+                                onClick={() => setSubQuestionAnswer(question.id, subQ.id, 'Ya')}
+                              >
+                                <CheckCircle2 className="h-3 w-3" />
+                                Ya
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant={response.subQuestionAnswers[subQ.id] === 'Tidak' ? 'default' : 'outline'}
+                                className={cn(
+                                  "h-8 gap-1",
+                                  response.subQuestionAnswers[subQ.id] === 'Tidak' && "bg-red-600 hover:bg-red-700"
+                                )}
+                                onClick={() => setSubQuestionAnswer(question.id, subQ.id, 'Tidak')}
+                              >
+                                <XCircle className="h-3 w-3" />
+                                Tidak
+                              </Button>
+                            </div>
+                            
+                            {/* Sub Question Breakdown */}
                             {subQ.breakdown.length > 0 && (
-                              <div className="space-y-1 mt-2">
-                                {subQ.breakdown.map((bq, bIdx) => (
-                                  <p key={bIdx} className="text-xs text-muted-foreground pl-2 border-l border-muted">
-                                    {bq}
-                                  </p>
-                                ))}
+                              <div className="space-y-2 mt-2 pt-2 border-t border-primary/10">
+                                <p className="text-xs font-medium text-muted-foreground">Breakdown:</p>
+                                {subQ.breakdown.map((bq, bIdx) => {
+                                  const subBreakdowns = response.subBreakdownAnswers[subQ.id] || [];
+                                  return (
+                                    <div key={bIdx} className="pl-3 border-l border-muted space-y-2">
+                                      <p className="text-xs text-muted-foreground">
+                                        {bIdx + 1}. {bq}
+                                      </p>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          size="sm"
+                                          variant={subBreakdowns[bIdx] === 'Ya' ? 'default' : 'outline'}
+                                          className={cn(
+                                            "h-6 text-xs px-2",
+                                            subBreakdowns[bIdx] === 'Ya' && "bg-green-600 hover:bg-green-700"
+                                          )}
+                                          onClick={() => setSubBreakdownAnswer(question.id, subQ.id, bIdx, 'Ya')}
+                                        >
+                                          Ya
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant={subBreakdowns[bIdx] === 'Tidak' ? 'default' : 'outline'}
+                                          className={cn(
+                                            "h-6 text-xs px-2",
+                                            subBreakdowns[bIdx] === 'Tidak' && "bg-red-600 hover:bg-red-700"
+                                          )}
+                                          onClick={() => setSubBreakdownAnswer(question.id, subQ.id, bIdx, 'Tidak')}
+                                        >
+                                          Tidak
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             )}
                           </div>
