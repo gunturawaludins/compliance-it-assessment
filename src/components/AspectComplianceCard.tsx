@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { 
   CheckCircle2, 
   AlertTriangle, 
@@ -6,7 +6,10 @@ import {
   FileText,
   Shield,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Info,
+  Link2,
+  X
 } from 'lucide-react';
 import { Question, FraudFinding, AspectCategory, ASPECT_LABELS, ASPECT_SHORT_LABELS, ASPECT_ICONS, ASPECT_COBIT_MAPPING, COBIT_DOMAINS, COBITDomain } from '@/types/assessment';
 import {
@@ -14,8 +17,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 interface AspectComplianceCardProps {
   aspect: AspectCategory;
@@ -32,6 +43,8 @@ interface COBITDomainStat {
 
 export function AspectComplianceCard({ aspect, questions, findings }: AspectComplianceCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAllFindings, setShowAllFindings] = useState(false);
+  const [selectedFinding, setSelectedFinding] = useState<FraudFinding | null>(null);
 
   // Filter questions for this aspect
   const aspectQuestions = useMemo(() => {
@@ -56,6 +69,54 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
       return questionId.startsWith(aspect);
     });
   }, [findings, aspect]);
+
+  // Get related question for a finding
+  const getRelatedQuestion = (questionId: string): Question | undefined => {
+    return questions.find(q => q.id === questionId || questionId.startsWith(q.id));
+  };
+
+  // Generate explanation for a finding
+  const generateFindingExplanation = (finding: FraudFinding): string => {
+    const relatedQ = getRelatedQuestion(finding.questionId);
+    
+    let explanation = `Temuan ini terdeteksi berdasarkan analisis jawaban pada soal ${finding.questionId}. `;
+    
+    // Use fraudType instead of ruleType
+    const fraudType = finding.fraudType?.toLowerCase() || '';
+    
+    if (fraudType.includes('evidence') || fraudType.includes('bukti')) {
+      explanation += `Jawaban positif ("Ya") diberikan tetapi tidak disertai bukti dokumen pendukung yang memadai. Hal ini menimbulkan keraguan terhadap kebenaran klaim compliance.`;
+    } else if (fraudType.includes('inkonsistensi') || fraudType.includes('inconsisten')) {
+      explanation += `Terdeteksi inkonsistensi antara kebijakan yang diklaim dengan implementasi operasional. Jawaban pada pertanyaan terkait menunjukkan ketidaksesuaian.`;
+    } else if (fraudType.includes('gap') || fraudType.includes('kontrol')) {
+      explanation += `Terdapat kesenjangan kontrol dimana kontrol yang seharusnya ada tidak teridentifikasi atau tidak berjalan dengan baik.`;
+    } else if (fraudType.includes('violation') || fraudType.includes('pelanggaran')) {
+      explanation += `Jawaban menunjukkan pelanggaran terhadap standar compliance COBIT yang berlaku untuk domain terkait.`;
+    } else {
+      explanation += finding.description || `Pola jawaban menunjukkan potensi ketidaksesuaian dengan standar assessment yang berlaku.`;
+    }
+    
+    return explanation;
+  };
+
+  // Generate relationship explanation
+  const generateRelationshipExplanation = (finding: FraudFinding): string => {
+    const relatedQ = getRelatedQuestion(finding.questionId);
+    
+    if (!relatedQ) return '';
+    
+    let relationship = `Soal ${finding.questionId} berkaitan dengan domain COBIT ${relatedQ.cobitRef || 'N/A'}. `;
+    
+    if (finding.severity === 'major') {
+      relationship += `Sebagai temuan MAYOR, ini menunjukkan risiko signifikan terhadap integritas assessment. `;
+      relationship += `Perlu dilakukan verifikasi lebih lanjut dan perbaikan segera untuk memastikan kepatuhan.`;
+    } else {
+      relationship += `Sebagai temuan MINOR, ini perlu diperhatikan untuk perbaikan berkelanjutan. `;
+      relationship += `Meskipun tidak kritis, temuan ini tetap mempengaruhi skor compliance keseluruhan.`;
+    }
+    
+    return relationship;
+  };
 
   // Calculate COBIT domain breakdown for this aspect
   const cobitDomainStats = useMemo(() => {
@@ -235,30 +296,45 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
               </button>
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-2 space-y-2">
-              {aspectFindings.slice(0, 3).map((finding, idx) => (
-                <div 
-                  key={finding.id} 
-                  className={`p-3 rounded-lg border-l-4 bg-background/50 ${
-                    finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'
-                  }`}
-                >
-                  <div className="flex items-start gap-2">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${
-                      finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
-                    }`}>
-                      {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{finding.ruleName}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">Soal: {finding.questionId}</p>
+              {aspectFindings.slice(0, 3).map((finding) => {
+                const relatedQ = getRelatedQuestion(finding.questionId);
+                return (
+                  <div 
+                    key={finding.id} 
+                    className={`p-3 rounded-lg border-l-4 bg-background/50 cursor-pointer hover:bg-muted/50 transition-colors ${
+                      finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'
+                    }`}
+                    onClick={() => setSelectedFinding(finding)}
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${
+                        finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
+                      }`}>
+                        {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-foreground">{finding.ruleName}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Soal: {finding.questionId}</p>
+                        {relatedQ && (
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                            "{relatedQ.text}"
+                          </p>
+                        )}
+                      </div>
+                      <Info className="w-4 h-4 text-muted-foreground shrink-0" />
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {aspectFindings.length > 3 && (
-                <p className="text-xs text-muted-foreground text-center py-2">
-                  +{aspectFindings.length - 3} temuan lainnya
-                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-primary hover:text-primary"
+                  onClick={() => setShowAllFindings(true)}
+                >
+                  Lihat {aspectFindings.length - 3} temuan lainnya →
+                </Button>
               )}
             </CollapsibleContent>
           </Collapsible>
@@ -271,6 +347,178 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
           </div>
         )}
       </div>
+
+      {/* Dialog for All Findings */}
+      <Dialog open={showAllFindings} onOpenChange={setShowAllFindings}>
+        <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-destructive" />
+              Semua Temuan Aspek {aspect}
+            </DialogTitle>
+            <DialogDescription>
+              {aspectFindings.length} temuan terdeteksi pada aspek {ASPECT_SHORT_LABELS[aspect]}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] pr-4">
+            <div className="space-y-3">
+              {aspectFindings.map((finding) => {
+                const relatedQ = getRelatedQuestion(finding.questionId);
+                return (
+                  <div 
+                    key={finding.id} 
+                    className={`p-4 rounded-lg border-l-4 bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors ${
+                      finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'
+                    }`}
+                    onClick={() => {
+                      setShowAllFindings(false);
+                      setSelectedFinding(finding);
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                        finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
+                      }`}>
+                        {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
+                      </span>
+                      <span className="text-xs text-muted-foreground">Soal: {finding.questionId}</span>
+                    </div>
+                    <p className="text-sm font-medium text-foreground mb-1">{finding.ruleName}</p>
+                    {relatedQ && (
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        "{relatedQ.text}"
+                      </p>
+                    )}
+                    <p className="text-xs text-primary mt-2 flex items-center gap-1">
+                      <Info className="w-3 h-3" /> Klik untuk detail lengkap
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog for Finding Detail */}
+      <Dialog open={!!selectedFinding} onOpenChange={(open) => !open && setSelectedFinding(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh]">
+          {selectedFinding && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className={`w-5 h-5 ${
+                    selectedFinding.severity === 'major' ? 'text-destructive' : 'text-warning'
+                  }`} />
+                  Detail Temuan
+                </DialogTitle>
+                <DialogDescription>
+                  Informasi lengkap mengenai temuan yang terdeteksi
+                </DialogDescription>
+              </DialogHeader>
+              <ScrollArea className="max-h-[65vh] pr-4">
+                <div className="space-y-4">
+                  {/* Severity & ID */}
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      selectedFinding.severity === 'major' 
+                        ? 'bg-destructive/20 text-destructive' 
+                        : 'bg-warning/20 text-warning'
+                    }`}>
+                      {selectedFinding.severity === 'major' ? 'TEMUAN MAYOR' : 'TEMUAN MINOR'}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      ID: {selectedFinding.id}
+                    </span>
+                  </div>
+
+                  {/* Rule Name */}
+                  <div className="p-4 rounded-lg bg-muted/50 border">
+                    <h4 className="text-sm font-semibold text-muted-foreground mb-1">Jenis Temuan</h4>
+                    <p className="text-base font-medium text-foreground">{selectedFinding.ruleName}</p>
+                  </div>
+
+                  {/* Related Question */}
+                  <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                    <h4 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                      <FileText className="w-4 h-4" />
+                      Soal Terkait
+                    </h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-medium text-foreground">ID Soal:</span>
+                        <span className="px-2 py-0.5 bg-background rounded text-foreground">{selectedFinding.questionId}</span>
+                      </div>
+                      {(() => {
+                        const relatedQ = getRelatedQuestion(selectedFinding.questionId);
+                        return relatedQ ? (
+                          <>
+                            <div className="text-sm">
+                              <span className="font-medium text-foreground">Pertanyaan:</span>
+                              <p className="mt-1 text-muted-foreground bg-background p-2 rounded">
+                                "{relatedQ.text}"
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="font-medium text-foreground">Jawaban:</span>
+                              <span className={`px-2 py-0.5 rounded ${
+                                relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                              }`}>
+                                {relatedQ.answer || 'Tidak dijawab'}
+                              </span>
+                            </div>
+                            {relatedQ.cobitRef && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="font-medium text-foreground">Referensi COBIT:</span>
+                                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">{relatedQ.cobitRef}</span>
+                              </div>
+                            )}
+                          </>
+                        ) : null;
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* Explanation */}
+                  <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
+                    <h4 className="text-sm font-semibold text-amber-800 mb-2 flex items-center gap-2">
+                      <Info className="w-4 h-4" />
+                      Alasan Deteksi
+                    </h4>
+                    <p className="text-sm text-amber-900 leading-relaxed">
+                      {generateFindingExplanation(selectedFinding)}
+                    </p>
+                  </div>
+
+                  {/* Relationship */}
+                  <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                    <h4 className="text-sm font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                      <Link2 className="w-4 h-4" />
+                      Keterkaitan & Implikasi
+                    </h4>
+                    <p className="text-sm text-blue-900 leading-relaxed">
+                      {generateRelationshipExplanation(selectedFinding)}
+                    </p>
+                  </div>
+
+                  {/* Recommendation */}
+                  <div className="p-4 rounded-lg bg-success/10 border border-success/30">
+                    <h4 className="text-sm font-semibold text-success mb-2 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Rekomendasi
+                    </h4>
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {selectedFinding.severity === 'major' 
+                        ? 'Lakukan review ulang terhadap jawaban dan pastikan bukti dokumen pendukung tersedia. Pertimbangkan untuk melakukan audit internal terhadap area ini.'
+                        : 'Perhatikan temuan ini untuk perbaikan di periode assessment berikutnya. Dokumentasikan action plan untuk mitigasi risiko.'}
+                    </p>
+                  </div>
+                </div>
+              </ScrollArea>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
