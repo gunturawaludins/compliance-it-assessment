@@ -368,33 +368,37 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                       </div>
                     )}
 
-                    {/* Deep Dive Info */}
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="deep-dive" className="border-none">
-                        <AccordionTrigger className="text-sm py-2 hover:no-underline">
-                          <span className="flex items-center gap-2">
-                            <Eye className="h-4 w-4 text-amber-600" />
-                            Panduan Evaluasi
-                          </span>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="space-y-2 text-sm bg-amber-50 dark:bg-amber-900/20 p-3 rounded-lg">
-                            <div>
-                              <span className="font-medium text-amber-700 dark:text-amber-400">Fokus: </span>
-                              <span className="text-muted-foreground">{question.deep_dive.focus}</span>
+                    {/* Sub Questions */}
+                    {question.sub_questions && question.sub_questions.length > 0 && (
+                      <div className="space-y-3 mt-4">
+                        <div className="flex items-center gap-2 text-sm font-medium">
+                          <Eye className="h-4 w-4 text-amber-600" />
+                          Sub-Pertanyaan
+                        </div>
+                        {question.sub_questions.map((subQ, subIndex) => (
+                          <div key={subQ.id} className="pl-4 border-l-2 border-amber-300 bg-amber-50/50 dark:bg-amber-900/10 p-3 rounded-r-lg space-y-2">
+                            <div className="flex items-center gap-2 mb-1">
+                              <Badge variant="outline" className="text-xs bg-amber-100 text-amber-800 border-amber-300">
+                                {subQ.id}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                {subQ.cobit_ref}
+                              </Badge>
                             </div>
-                            <div>
-                              <span className="font-medium text-amber-700 dark:text-amber-400">Evaluasi: </span>
-                              <span className="text-muted-foreground">{question.deep_dive.evaluate}</span>
-                            </div>
-                            <div>
-                              <span className="font-medium text-amber-700 dark:text-amber-400">Monitor: </span>
-                              <span className="text-muted-foreground">{question.deep_dive.monitor}</span>
-                            </div>
+                            <p className="text-sm font-medium text-foreground">{subQ.text}</p>
+                            {subQ.breakdown.length > 0 && (
+                              <div className="space-y-1 mt-2">
+                                {subQ.breakdown.map((bq, bIdx) => (
+                                  <p key={bIdx} className="text-xs text-muted-foreground pl-2 border-l border-muted">
+                                    {bq}
+                                  </p>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Evidence Upload */}
                     <div className="space-y-2">

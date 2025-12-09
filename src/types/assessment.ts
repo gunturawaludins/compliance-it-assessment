@@ -11,10 +11,12 @@ export interface AssessorInfo {
   memilikiUnitSyariah: boolean;
 }
 
-export interface DeepDive {
-  focus: string;
-  evaluate: string;
-  monitor: string;
+export interface SubQuestion {
+  id: string;
+  text: string;
+  cobit_ref: string;
+  cobit_process?: string;
+  breakdown: string[];
 }
 
 export interface DatabaseQuestion {
@@ -23,8 +25,9 @@ export interface DatabaseQuestion {
   aspect_name: string;
   ojk_question: string;
   cobit_ref: string;
+  cobit_process?: string;
   breakdown: string[];
-  deep_dive: DeepDive;
+  sub_questions?: SubQuestion[];
   requires_document?: boolean;
 }
 
