@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Progress } from '@/components/ui/progress';
 import { 
@@ -18,7 +20,11 @@ import {
   Eye,
   Send,
   Shuffle,
-  Download
+  Download,
+  Building,
+  User,
+  Phone,
+  Briefcase
 } from 'lucide-react';
 import { DatabaseQuestion, AspectCategory, Question, ASPECT_LABELS, ASPECT_ICONS } from '@/types/assessment';
 import questionDatabase from '@/data/questionDatabase.json';
@@ -27,6 +33,14 @@ import { useToast } from '@/hooks/use-toast';
 import { exportAssessmentToExcel } from '@/lib/excelExporter';
 
 const RESPONSES_STORAGE_KEY = 'questionnaire_responses';
+const USER_INFO_STORAGE_KEY = 'questionnaire_user_info';
+
+interface UserInfo {
+  danaPensiun: string;
+  pic: string;
+  jabatan: string;
+  noHandphone: string;
+}
 
 interface QuestionnaireProps {
   onSubmit: (questions: Question[]) => void;
@@ -47,6 +61,12 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
   const [responses, setResponses] = useState<Record<string, QuestionResponse>>({});
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserInfo>({
+    danaPensiun: '',
+    pic: '',
+    jabatan: '',
+    noHandphone: ''
+  });
   const { toast } = useToast();
 
   const questions = questionDatabase as DatabaseQuestion[];
@@ -58,7 +78,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     return acc;
   }, {} as Record<AspectCategory, DatabaseQuestion[]>);
 
-  // Load responses from localStorage on mount
+  // Load responses and user info from localStorage on mount
   useEffect(() => {
     try {
       const savedResponses = localStorage.getItem(RESPONSES_STORAGE_KEY);
@@ -81,8 +101,14 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
         });
         setResponses(newResponses);
       }
+
+      // Load user info
+      const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
+      if (savedUserInfo) {
+        setUserInfo(JSON.parse(savedUserInfo));
+      }
     } catch (e) {
-      console.error('Failed to load saved responses:', e);
+      console.error('Failed to load saved data:', e);
     }
     setIsLoaded(true);
   }, []);
@@ -97,6 +123,21 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
       }
     }
   }, [responses, isLoaded]);
+
+  // Save user info to localStorage whenever it changes
+  useEffect(() => {
+    if (isLoaded) {
+      try {
+        localStorage.setItem(USER_INFO_STORAGE_KEY, JSON.stringify(userInfo));
+      } catch (e) {
+        console.error('Failed to save user info:', e);
+      }
+    }
+  }, [userInfo, isLoaded]);
+
+  const updateUserInfo = (field: keyof UserInfo, value: string) => {
+    setUserInfo(prev => ({ ...prev, [field]: value }));
+  };
 
   const getResponse = useCallback((questionId: string): QuestionResponse => {
     return responses[questionId] || {
@@ -327,7 +368,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     }
 
     try {
-      const filename = exportAssessmentToExcel(questions, responses, 'IT_Assessment');
+      const filename = exportAssessmentToExcel(questions, responses, userInfo, 'IT_Assessment');
       toast({
         title: 'Export Berhasil',
         description: `File ${filename} berhasil diunduh`
@@ -439,6 +480,79 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
 
   return (
     <div className="space-y-6">
+      {/* Informasi Responden */}
+      <Card className="border-primary/30 bg-gradient-to-br from-background to-primary/5">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Building className="h-5 w-5 text-primary" />
+            Informasi Responden
+          </CardTitle>
+          <CardDescription>
+            Lengkapi informasi berikut untuk identifikasi assessment
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="danaPensiun" className="flex items-center gap-2 text-sm font-medium">
+                <Building className="h-4 w-4 text-muted-foreground" />
+                Dana Pensiun
+              </Label>
+              <Input
+                id="danaPensiun"
+                placeholder="Nama Dana Pensiun..."
+                value={userInfo.danaPensiun}
+                onChange={(e) => updateUserInfo('danaPensiun', e.target.value)}
+                className="border-primary/20 focus:border-primary"
+                maxLength={100}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pic" className="flex items-center gap-2 text-sm font-medium">
+                <User className="h-4 w-4 text-muted-foreground" />
+                PIC (Person In Charge)
+              </Label>
+              <Input
+                id="pic"
+                placeholder="Nama PIC..."
+                value={userInfo.pic}
+                onChange={(e) => updateUserInfo('pic', e.target.value)}
+                className="border-primary/20 focus:border-primary"
+                maxLength={100}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="jabatan" className="flex items-center gap-2 text-sm font-medium">
+                <Briefcase className="h-4 w-4 text-muted-foreground" />
+                Jabatan
+              </Label>
+              <Input
+                id="jabatan"
+                placeholder="Jabatan PIC..."
+                value={userInfo.jabatan}
+                onChange={(e) => updateUserInfo('jabatan', e.target.value)}
+                className="border-primary/20 focus:border-primary"
+                maxLength={100}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="noHandphone" className="flex items-center gap-2 text-sm font-medium">
+                <Phone className="h-4 w-4 text-muted-foreground" />
+                No. Handphone
+              </Label>
+              <Input
+                id="noHandphone"
+                placeholder="08xxxxxxxxxx"
+                value={userInfo.noHandphone}
+                onChange={(e) => updateUserInfo('noHandphone', e.target.value)}
+                className="border-primary/20 focus:border-primary"
+                maxLength={20}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Progress Overview */}
       <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
         <CardHeader className="pb-3">
