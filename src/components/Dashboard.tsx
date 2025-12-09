@@ -355,22 +355,22 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                 </div>
               )}
 
-              {/* AI Findings Detail */}
+              {/* AI Findings Detail - Enhanced with Relationship Explanation */}
               {aiResult.findings && aiResult.findings.length > 0 && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-semibold flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-warning" />
-                    Detail Temuan AI ({aiResult.findings.length})
+                    Detail Temuan AI - Analisis Keterkaitan ({aiResult.findings.length})
                   </h4>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {aiResult.findings.map((finding: AIFinding, idx: number) => (
                       <div 
                         key={idx}
-                        className={`p-4 rounded-xl border-l-4 bg-background/50 ${
+                        className={`p-5 rounded-xl border-l-4 bg-background/50 ${
                           finding.severity === 'major' ? 'border-l-destructive' : 'border-l-warning'
                         }`}
                       >
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <div className="flex flex-wrap items-center gap-2 mb-3">
                           <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                             finding.severity === 'major' 
                               ? 'bg-destructive/20 text-destructive' 
@@ -383,28 +383,52 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                           </span>
                           {finding.cobit_reference && finding.cobit_reference !== 'N/A' && (
                             <span className="px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
-                              {finding.cobit_reference}
+                              COBIT: {finding.cobit_reference}
                             </span>
                           )}
                         </div>
                         
-                        <p className="text-sm text-foreground mb-2">{finding.description}</p>
-                        
+                        {/* Question IDs with visual connection */}
                         {finding.question_ids && finding.question_ids.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            <span className="text-xs text-muted-foreground">Soal terkait:</span>
-                            {finding.question_ids.map((qId: string) => (
-                              <span key={qId} className="px-2 py-0.5 rounded bg-secondary text-xs font-mono">
-                                {qId}
+                          <div className="flex flex-wrap items-center gap-2 mb-3 p-2 rounded-lg bg-secondary/30">
+                            <span className="text-xs font-medium text-foreground">Pertanyaan Terkait:</span>
+                            {finding.question_ids.map((qId: string, qIdx: number) => (
+                              <span key={qId} className="flex items-center gap-1">
+                                <span className="px-2 py-1 rounded bg-primary/20 text-xs font-mono font-medium text-primary">
+                                  {qId}
+                                </span>
+                                {qIdx < finding.question_ids.length - 1 && (
+                                  <span className="text-muted-foreground">↔</span>
+                                )}
                               </span>
                             ))}
                           </div>
                         )}
+
+                        {/* Relationship Explanation - NEW */}
+                        {finding.relationship_explanation && (
+                          <div className="p-3 rounded-lg bg-accent/10 border border-accent/20 mb-3">
+                            <div className="flex items-start gap-2">
+                              <LayoutGrid className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs font-semibold text-accent mb-1">Analisis Keterkaitan:</p>
+                                <p className="text-sm text-foreground leading-relaxed">
+                                  {finding.relationship_explanation}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         
+                        {/* Description */}
+                        <p className="text-sm text-foreground mb-3 leading-relaxed">{finding.description}</p>
+                        
+                        {/* Recommendation */}
                         {finding.recommendation && (
-                          <div className="p-2 rounded bg-success/10 border border-success/20 mt-2">
-                            <p className="text-xs text-success">
-                              <strong>Rekomendasi:</strong> {finding.recommendation}
+                          <div className="p-3 rounded-lg bg-success/10 border border-success/20">
+                            <p className="text-xs font-semibold text-success mb-1">Rekomendasi Perbaikan:</p>
+                            <p className="text-sm text-success">
+                              {finding.recommendation}
                             </p>
                           </div>
                         )}
@@ -418,7 +442,7 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       )}
 
-      {/* Score Card */}
+      {/* AI Consistency Score Card - Enhanced */}
       <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
         
@@ -426,22 +450,33 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
           <div className="flex items-center gap-6">
             <div className={`
               w-28 h-28 rounded-2xl flex flex-col items-center justify-center
-              ${result.honestyScore >= 80 ? 'bg-success/20' : result.honestyScore >= 60 ? 'bg-warning/20' : 'bg-destructive/20'}
+              ${(aiResult?.consistency_score || result.honestyScore) >= 80 ? 'bg-success/20' : 
+                (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'bg-warning/20' : 'bg-destructive/20'}
             `}>
-              <span className={`text-4xl font-bold ${getScoreColor(result.honestyScore)}`}>
-                {result.honestyScore}%
+              <span className={`text-4xl font-bold ${
+                (aiResult?.consistency_score || result.honestyScore) >= 80 ? 'text-success' : 
+                (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'text-warning' : 'text-destructive'
+              }`}>
+                {aiResult?.consistency_score ?? result.honestyScore}%
               </span>
               <span className="text-xs text-muted-foreground mt-1">Skor</span>
             </div>
             <div>
               <h3 className="text-2xl font-bold text-foreground">
-                Skor Kejujuran
+                {aiResult ? 'Skor Konsistensi AI' : 'Skor Kejujuran'}
               </h3>
-              <p className={`text-lg font-medium ${getScoreColor(result.honestyScore)}`}>
-                {getScoreLabel(result.honestyScore)}
+              <p className={`text-lg font-medium ${
+                (aiResult?.consistency_score || result.honestyScore) >= 80 ? 'text-success' : 
+                (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'text-warning' : 'text-destructive'
+              }`}>
+                {(aiResult?.consistency_score || result.honestyScore) >= 80 ? 'Konsistensi Baik' :
+                 (aiResult?.consistency_score || result.honestyScore) >= 60 ? 'Perlu Perhatian' : 'Inkonsistensi Terdeteksi'}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                Berdasarkan {rules.length} aturan deteksi fraud
+                {aiResult 
+                  ? `Analisis NLP Aspek B • ${aiResult.findings?.length || 0} temuan`
+                  : `Berdasarkan ${rules.length} aturan deteksi fraud`
+                }
               </p>
             </div>
           </div>
