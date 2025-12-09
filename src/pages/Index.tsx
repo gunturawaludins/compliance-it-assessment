@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Questionnaire } from '@/components/Questionnaire';
-import { ExcelUploader } from '@/components/ExcelUploader';
 import { Dashboard } from '@/components/Dashboard';
+import { MultiComplianceUploader } from '@/components/MultiComplianceUploader';
+import { ComplianceComparisonChart } from '@/components/ComplianceComparisonChart';
 import { Question, FraudRule, AssessorInfo } from '@/types/assessment';
+import { DanaPensiunComplianceData } from '@/lib/multiExcelParser';
 import { defaultFraudRules } from '@/data/fraudRules';
 import { useToast } from '@/hooks/use-toast';
 
@@ -13,10 +15,11 @@ const ASSESSOR_KEY = 'it_audit_assessor';
 const USER_INFO_STORAGE_KEY = 'questionnaire_user_info';
 
 export default function Index() {
-  const [activeTab, setActiveTab] = useState<'editor' | 'upload' | 'dashboard'>('editor');
+  const [activeTab, setActiveTab] = useState<'editor' | 'upload' | 'dashboard' | 'compare'>('editor');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [rules, setRules] = useState<FraudRule[]>([]);
   const [assessorInfo, setAssessorInfo] = useState<AssessorInfo | undefined>();
+  const [comparisonData, setComparisonData] = useState<DanaPensiunComplianceData[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
 
@@ -124,18 +127,6 @@ export default function Index() {
     });
   };
 
-  const handleImportQuestions = (importedQuestions: Question[], importedAssessorInfo?: AssessorInfo) => {
-    // Clear previous data when importing
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem('it_audit_ai_result');
-    
-    setQuestions(importedQuestions);
-    if (importedAssessorInfo) {
-      setAssessorInfo(importedAssessorInfo);
-    }
-    setActiveTab('dashboard');
-  };
-
   const handleAnalyze = () => {
     toast({
       title: 'Analisis COBIT Selesai',
@@ -176,15 +167,22 @@ export default function Index() {
           </div>
         )}
         
-        {activeTab === 'upload' && (
-          <div className="animate-fade-in">
-            <ExcelUploader questions={questions} onImport={handleImportQuestions} assessorInfo={assessorInfo} />
-          </div>
-        )}
-        
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in">
             <Dashboard questions={questions} rules={rules} onAnalyze={handleAnalyze} assessorInfo={assessorInfo} />
+          </div>
+        )}
+        
+        {activeTab === 'compare' && (
+          <div className="animate-fade-in space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-foreground">Komparasi Compliance Dana Pensiun</h2>
+              <p className="text-muted-foreground mt-1">Upload file Excel hasil export untuk membandingkan compliance antar Dana Pensiun</p>
+            </div>
+            <MultiComplianceUploader onDataLoaded={setComparisonData} />
+            {comparisonData.length > 0 && (
+              <ComplianceComparisonChart data={comparisonData} />
+            )}
           </div>
         )}
       </main>
