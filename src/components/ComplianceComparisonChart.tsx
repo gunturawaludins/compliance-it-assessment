@@ -28,26 +28,27 @@ export function ComplianceComparisonChart({ data }: ComplianceComparisonChartPro
     })).sort((a, b) => b.compliance - a.compliance);
   }, [data]);
 
-  // Prepare data for aspect comparison (stacked bar)
+  // Prepare data for aspect comparison (stacked bar) - B and C swapped
   const aspectComparisonData = useMemo(() => {
     return data.map((dp) => ({
       name: dp.danaPensiun.length > 15 ? dp.danaPensiun.substring(0, 12) + '...' : dp.danaPensiun,
       fullName: dp.danaPensiun,
       'Aspek A': dp.aspectStats.find(s => s.aspect === 'A')?.complianceRate || 0,
-      'Aspek B': dp.aspectStats.find(s => s.aspect === 'B')?.complianceRate || 0,
-      'Aspek C': dp.aspectStats.find(s => s.aspect === 'C')?.complianceRate || 0,
+      'Aspek B': dp.aspectStats.find(s => s.aspect === 'C')?.complianceRate || 0, // Swapped: use C data
+      'Aspek C': dp.aspectStats.find(s => s.aspect === 'B')?.complianceRate || 0, // Swapped: use B data
       'Aspek D': dp.aspectStats.find(s => s.aspect === 'D')?.complianceRate || 0,
     }));
   }, [data]);
 
-  // Prepare radar data for each Dana Pensiun
+  // Prepare radar data for each Dana Pensiun - B and C swapped
   const radarData = useMemo(() => {
+    const aspectMapping: Record<string, string> = { 'A': 'A', 'B': 'C', 'C': 'B', 'D': 'D' }; // Swap B and C
     return ['A', 'B', 'C', 'D'].map(aspect => {
       const result: Record<string, string | number> = { 
         aspect: `Aspek ${aspect}` 
       };
-      data.forEach((dp, index) => {
-        const stat = dp.aspectStats.find(s => s.aspect === aspect);
+      data.forEach((dp) => {
+        const stat = dp.aspectStats.find(s => s.aspect === aspectMapping[aspect]);
         result[dp.danaPensiun] = stat?.complianceRate || 0;
       });
       return result;
@@ -363,7 +364,9 @@ export function ComplianceComparisonChart({ data }: ComplianceComparisonChartPro
                       </span>
                     </td>
                     {['A', 'B', 'C', 'D'].map(aspect => {
-                      const stat = dp.aspectStats.find(s => s.aspect === aspect);
+                      // Swap B and C data
+                      const mappedAspect = aspect === 'B' ? 'C' : aspect === 'C' ? 'B' : aspect;
+                      const stat = dp.aspectStats.find(s => s.aspect === mappedAspect);
                       const rate = stat?.complianceRate || 0;
                       return (
                         <td key={aspect} className="py-3 px-2 text-center">
