@@ -114,11 +114,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
     }));
   };
 
-  const setMainAnswer = (questionId: string, answer: 'Ya' | 'Tidak') => {
-    updateResponse(questionId, { mainAnswer: answer });
-  };
-
-  const setBreakdownAnswer = (questionId: string, index: number, answer: 'Ya' | 'Tidak') => {
+  const setMainAnswer = useCallback((questionId: string, answer: 'Ya' | 'Tidak') => {
     setResponses(prev => {
       const current = prev[questionId] || {
         mainAnswer: null,
@@ -128,23 +124,65 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
         evidenceFiles: [],
         notes: ''
       };
-      const newBreakdown = [...current.breakdownAnswers];
+      const newState = {
+        ...prev,
+        [questionId]: { ...current, mainAnswer: answer }
+      };
+      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+      return newState;
+    });
+  }, []);
+
+  const setBreakdownAnswer = useCallback((questionId: string, index: number, answer: 'Ya' | 'Tidak') => {
+    setResponses(prev => {
+      const current = prev[questionId] || {
+        mainAnswer: null,
+        breakdownAnswers: [],
+        subQuestionAnswers: {},
+        subBreakdownAnswers: {},
+        evidenceFiles: [],
+        notes: ''
+      };
+      // Ensure array is properly sized
+      const newBreakdown: ('Ya' | 'Tidak' | null)[] = [];
+      for (let i = 0; i <= Math.max(index, current.breakdownAnswers.length - 1); i++) {
+        newBreakdown[i] = current.breakdownAnswers[i] || null;
+      }
       newBreakdown[index] = answer;
-      return {
+      
+      const newState = {
         ...prev,
         [questionId]: { ...current, breakdownAnswers: newBreakdown }
       };
+      // Save immediately to localStorage
+      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+      return newState;
     });
-  };
+  }, []);
 
-  const setSubQuestionAnswer = (questionId: string, subQuestionId: string, answer: 'Ya' | 'Tidak') => {
-    const response = getResponse(questionId);
-    updateResponse(questionId, { 
-      subQuestionAnswers: { ...response.subQuestionAnswers, [subQuestionId]: answer }
+  const setSubQuestionAnswer = useCallback((questionId: string, subQuestionId: string, answer: 'Ya' | 'Tidak') => {
+    setResponses(prev => {
+      const current = prev[questionId] || {
+        mainAnswer: null,
+        breakdownAnswers: [],
+        subQuestionAnswers: {},
+        subBreakdownAnswers: {},
+        evidenceFiles: [],
+        notes: ''
+      };
+      const newState = {
+        ...prev,
+        [questionId]: { 
+          ...current, 
+          subQuestionAnswers: { ...current.subQuestionAnswers, [subQuestionId]: answer }
+        }
+      };
+      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+      return newState;
     });
-  };
+  }, []);
 
-  const setSubBreakdownAnswer = (questionId: string, subQuestionId: string, index: number, answer: 'Ya' | 'Tidak') => {
+  const setSubBreakdownAnswer = useCallback((questionId: string, subQuestionId: string, index: number, answer: 'Ya' | 'Tidak') => {
     setResponses(prev => {
       const current = prev[questionId] || {
         mainAnswer: null,
@@ -155,17 +193,24 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
         notes: ''
       };
       const currentBreakdowns = current.subBreakdownAnswers[subQuestionId] || [];
-      const newBreakdowns = [...currentBreakdowns];
+      // Ensure array is properly sized
+      const newBreakdowns: ('Ya' | 'Tidak' | null)[] = [];
+      for (let i = 0; i <= Math.max(index, currentBreakdowns.length - 1); i++) {
+        newBreakdowns[i] = currentBreakdowns[i] || null;
+      }
       newBreakdowns[index] = answer;
-      return {
+      
+      const newState = {
         ...prev,
         [questionId]: { 
           ...current, 
           subBreakdownAnswers: { ...current.subBreakdownAnswers, [subQuestionId]: newBreakdowns }
         }
       };
+      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+      return newState;
     });
-  };
+  }, []);
 
   const handleFileUpload = (questionId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
