@@ -439,22 +439,12 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       )}
 
-      {/* Skor Indeks Compliance Card - Weighted Calculation */}
+      {/* Skor Indeks Compliance Card - Simple Percentage from COBIT Details */}
       {(() => {
-        // Formula: Skor = 100 × (1 - ((N_mayor × W_mayor) + (N_minor × W_minor)) / (Q_total × W_max))
-        // Mayor = 3x weight (serious violations)
-        // Minor = 1x weight (minor inconsistencies)
-        const W_mayor = 3;
-        const W_minor = 1;
-        const W_max = 3; // Bobot tertinggi per soal
-        const N_mayor = result.majorFindings;
-        const N_minor = result.minorFindings;
-        const Q_total = result.answeredQuestions || 1;
-        
-        // Calculate using correct formula
-        const weightedNumerator = (N_mayor * W_mayor) + (N_minor * W_minor);
-        const weightedDenominator = Q_total * W_max;
-        const complianceScore = Math.max(0, Math.round(100 * (1 - (weightedNumerator / weightedDenominator))));
+        // Simple percentage: Total Ya / Total Terjawab × 100
+        const totalYes = Object.values(categoryStats).reduce((sum, stat) => sum + stat.yesCount, 0);
+        const totalAnswered = Object.values(categoryStats).reduce((sum, stat) => sum + stat.answered, 0);
+        const complianceScore = totalAnswered > 0 ? Math.round((totalYes / totalAnswered) * 100) : 0;
         
         return (
           <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
@@ -485,38 +475,38 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                      complianceScore >= 60 ? 'Perlu Perbaikan' : 'Compliance Rendah'}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Pembobotan: Mayor (×3) + Minor (×1)
+                    Berdasarkan persentase jawaban "Ya" dari detail COBIT
                   </p>
                 </div>
               </div>
               
               <div className="flex gap-4">
-                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-destructive/20 text-destructive">
-                  <ShieldAlert className="w-5 h-5" />
-                  <span className="text-2xl font-bold">{result.majorFindings}</span>
-                  <span className="text-xs">Mayor (×3)</span>
-                </div>
-                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-warning/20 text-warning">
-                  <AlertCircle className="w-5 h-5" />
-                  <span className="text-2xl font-bold">{result.minorFindings}</span>
-                  <span className="text-xs">Minor (×1)</span>
-                </div>
                 <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-success/20 text-success">
                   <ShieldCheck className="w-5 h-5" />
-                  <span className="text-2xl font-bold">{result.consistentAnswers}</span>
-                  <span className="text-xs">Konsisten</span>
+                  <span className="text-2xl font-bold">{totalYes}</span>
+                  <span className="text-xs">Ya</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-destructive/20 text-destructive">
+                  <AlertCircle className="w-5 h-5" />
+                  <span className="text-2xl font-bold">{totalAnswered - totalYes}</span>
+                  <span className="text-xs">Tidak</span>
+                </div>
+                <div className="flex flex-col items-center gap-1 p-3 rounded-xl bg-secondary text-foreground">
+                  <FileSearch className="w-5 h-5" />
+                  <span className="text-2xl font-bold">{totalAnswered}</span>
+                  <span className="text-xs">Total</span>
                 </div>
               </div>
             </div>
             
             {/* Explanation tooltip */}
             <div className="mt-4 p-3 rounded-lg bg-secondary/30 text-xs text-muted-foreground">
-              <p><strong>Rumus:</strong> Skor = 100 × (1 − ((N<sub>mayor</sub> × W<sub>mayor</sub>) + (N<sub>minor</sub> × W<sub>minor</sub>)) / (Q<sub>total</sub> × W<sub>max</sub>))</p>
+              <p><strong>Rumus:</strong> Skor = (Jawaban Ya / Total Terjawab) × 100</p>
               <p className="mt-2">
-                <strong>Detail:</strong> 100 × (1 − (({N_mayor} × {W_mayor}) + ({N_minor} × {W_minor})) / ({Q_total} × {W_max})) = 100 × (1 − {weightedNumerator} / {weightedDenominator}) = <strong>{complianceScore}%</strong>
+                <strong>Detail:</strong> ({totalYes} / {totalAnswered}) × 100 = <strong>{complianceScore}%</strong>
               </p>
               <p className="mt-1 text-xs">
-                <strong>Keterangan:</strong> N<sub>mayor</sub>={N_mayor} (temuan mayor), W<sub>mayor</sub>={W_mayor}, N<sub>minor</sub>={N_minor} (temuan minor), W<sub>minor</sub>={W_minor}, Q<sub>total</sub>={Q_total} (total soal), W<sub>max</sub>={W_max}
+                <strong>Keterangan:</strong> Persentase sederhana dari total jawaban "Ya" terhadap seluruh pertanyaan COBIT yang terjawab
               </p>
             </div>
           </div>
