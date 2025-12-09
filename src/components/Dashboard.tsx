@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { 
   AlertTriangle, 
   AlertCircle, 
@@ -16,20 +16,22 @@ import {
   BookOpen,
   TrendingUp,
   TrendingDown,
-  Minus
+  Minus,
+  ChevronDown,
+  ChevronRight,
+  LayoutGrid
 } from 'lucide-react';
 import { Question, FraudRule, ASPECT_SHORT_LABELS, AspectCategory, AssessorInfo, COBIT_DOMAINS, COBITDomain } from '@/types/assessment';
 import { analyzeFraud, getScoreColor, getScoreLabel } from '@/lib/fraudAnalyzer';
 import { Button } from '@/components/ui/button';
 import { useAIValidation, AIFinding } from '@/hooks/useAIValidation';
 import FraudRulesPanel from './FraudRulesPanel';
+import { AspectComplianceCard } from './AspectComplianceCard';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
 
 interface DashboardProps {
   questions: Question[];
@@ -467,58 +469,31 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       </div>
 
-      {/* Category Breakdown */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {(['A', 'B', 'C', 'D'] as AspectCategory[]).map(cat => {
-          const stats = categoryStats[cat];
-          const percentage = stats.total > 0 ? Math.round((stats.yesCount / stats.answered) * 100) || 0 : 0;
-          
-          return (
-            <div key={cat} className="glass-card rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <span className={`
-                  w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold
-                  ${cat === 'A' ? 'bg-primary/20 text-primary' : ''}
-                  ${cat === 'B' ? 'bg-accent/20 text-accent' : ''}
-                  ${cat === 'C' ? 'bg-warning/20 text-warning' : ''}
-                  ${cat === 'D' ? 'bg-success/20 text-success' : ''}
-                `}>
-                  {cat}
-                </span>
-                <span className="text-sm font-medium text-foreground">{ASPECT_SHORT_LABELS[cat]}</span>
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="text-foreground font-medium">{stats.answered}/{stats.total}</span>
-                </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full transition-all duration-500 rounded-full
-                      ${cat === 'A' ? 'bg-primary' : ''}
-                      ${cat === 'B' ? 'bg-accent' : ''}
-                      ${cat === 'C' ? 'bg-warning' : ''}
-                      ${cat === 'D' ? 'bg-success' : ''}
-                    `}
-                    style={{ width: `${stats.total > 0 ? (stats.answered / stats.total) * 100 : 0}%` }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {percentage}% jawaban "Ya"
-                </p>
-              </div>
-            </div>
-          );
-        })}
+      {/* Aspect Compliance Cards - Enhanced */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <LayoutGrid className="w-5 h-5 text-primary" />
+          Compliance per Aspek (Detail COBIT)
+        </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {(['A', 'B', 'C', 'D'] as AspectCategory[]).map(aspect => (
+            <AspectComplianceCard
+              key={aspect}
+              aspect={aspect}
+              questions={questions}
+              findings={result.findings}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* COBIT Domain Scores - Rule-Based */}
+      {/* COBIT Domain Scores - Rule-Based Summary */}
       <div className="glass-card rounded-xl p-6">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 mb-4">
           <ShieldCheck className="w-5 h-5 text-primary" />
-          Indeks Kepatuhan COBIT 2019 (Rule-Based)
+          Ringkasan Indeks COBIT 2019 (Rule-Based)
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {(['EDM', 'APO', 'BAI', 'DSS', 'MEA'] as COBITDomain[]).map(domain => {
             const score = cobitDomainScores.scores[domain];
             const stats = cobitDomainScores.domains[domain];
@@ -527,8 +502,11 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
             return (
               <div key={domain} className="p-4 rounded-xl bg-background/50 border space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-foreground">{domain}</span>
-                  <span className={`text-2xl font-bold ${
+                  <div className="flex items-center gap-2">
+                    <span className={`w-3 h-3 rounded-full ${domainInfo.color}`} />
+                    <span className="text-sm font-bold text-foreground">{domain}</span>
+                  </div>
+                  <span className={`text-xl font-bold ${
                     score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive'
                   }`}>
                     {score}%
@@ -545,7 +523,7 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                 <div className="space-y-1">
                   <p className="text-xs font-medium text-foreground">{domainInfo.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {stats.passed}/{stats.total} rules passed • {stats.findings} findings
+                    {stats.passed}/{stats.total} passed • {stats.findings} findings
                   </p>
                 </div>
               </div>
