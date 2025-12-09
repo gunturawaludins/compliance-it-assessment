@@ -17,12 +17,14 @@ import {
   Target,
   Eye,
   Send,
-  Shuffle
+  Shuffle,
+  Download
 } from 'lucide-react';
 import { DatabaseQuestion, AspectCategory, Question, ASPECT_LABELS, ASPECT_ICONS } from '@/types/assessment';
 import questionDatabase from '@/data/questionDatabase.json';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { exportAssessmentToExcel } from '@/lib/excelExporter';
 
 const RESPONSES_STORAGE_KEY = 'questionnaire_responses';
 
@@ -310,6 +312,35 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
       description: 'Semua jawaban telah direset'
     });
   }, [toast]);
+
+  // Export to Excel
+  const handleExportExcel = useCallback(() => {
+    const answeredCount = Object.values(responses).filter(r => r.mainAnswer !== null).length;
+    
+    if (answeredCount === 0) {
+      toast({
+        title: 'Tidak Ada Data',
+        description: 'Silakan jawab minimal satu pertanyaan sebelum export',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      const filename = exportAssessmentToExcel(questions, responses, 'IT_Assessment');
+      toast({
+        title: 'Export Berhasil',
+        description: `File ${filename} berhasil diunduh`
+      });
+    } catch (e) {
+      console.error('Export error:', e);
+      toast({
+        title: 'Export Gagal',
+        description: 'Terjadi kesalahan saat mengexport data',
+        variant: 'destructive'
+      });
+    }
+  }, [responses, questions, toast]);
 
   const handleSubmit = () => {
     const answeredQuestions = questions.filter(q => getResponse(q.id).mainAnswer !== null);
@@ -758,6 +789,15 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
             >
               <Shuffle className="h-4 w-4 mr-1" />
               Random
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleExportExcel}
+              className="text-green-600 border-green-600 hover:bg-green-50"
+            >
+              <Download className="h-4 w-4 mr-1" />
+              Export Excel
             </Button>
             <Button onClick={handleSubmit} className="gap-2">
               <Send className="h-4 w-4" />
