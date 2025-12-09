@@ -487,54 +487,6 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
         </div>
       </div>
 
-      {/* COBIT Domain Scores - Rule-Based Summary */}
-      <div className="glass-card rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 mb-4">
-          <ShieldCheck className="w-5 h-5 text-primary" />
-          Ringkasan Indeks COBIT 2019 (Rule-Based)
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {(['EDM', 'APO', 'BAI', 'DSS', 'MEA'] as COBITDomain[]).map(domain => {
-            const score = cobitDomainScores.scores[domain];
-            const stats = cobitDomainScores.domains[domain];
-            const domainInfo = COBIT_DOMAINS[domain];
-            
-            return (
-              <div key={domain} className="p-4 rounded-xl bg-background/50 border space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className={`w-3 h-3 rounded-full ${domainInfo.color}`} />
-                    <span className="text-sm font-bold text-foreground">{domain}</span>
-                  </div>
-                  <span className={`text-xl font-bold ${
-                    score >= 80 ? 'text-success' : score >= 60 ? 'text-warning' : 'text-destructive'
-                  }`}>
-                    {score}%
-                  </span>
-                </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full transition-all duration-500 rounded-full ${
-                      score >= 80 ? 'bg-success' : score >= 60 ? 'bg-warning' : 'bg-destructive'
-                    }`}
-                    style={{ width: `${score}%` }}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-medium text-foreground">{domainInfo.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {stats.passed}/{stats.total} passed • {stats.findings} findings
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Rules Panel - Now Collapsible */}
-      <FraudRulesPanel rules={rules} findings={result.findings} />
-
       {/* Findings List */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
