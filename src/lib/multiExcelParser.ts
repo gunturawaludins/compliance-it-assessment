@@ -113,7 +113,10 @@ export function parseGeneratedExcel(file: File): Promise<DanaPensiunComplianceDa
           if (!row) continue;
           
           const aspectLabel = String(row[0] || '');
-          const aspect = aspects[i];
+          
+          // Extract aspect letter from "Aspek X - ..." format instead of assuming order
+          const aspectMatch = aspectLabel.match(/Aspek\s+([A-D])/i);
+          const aspect = aspectMatch ? aspectMatch[1].toUpperCase() as 'A' | 'B' | 'C' | 'D' : aspects[i];
           
           // Columns: Aspek | Main(Total,Ans,Ya,Tidak) | Breakdown(Total,Ans,Ya,Tidak) | Sub(Total,Ans,Ya,Tidak) | SubBD(Total,Ans,Ya,Tidak)
           const mainTotal = Number(row[1]) || 0;
