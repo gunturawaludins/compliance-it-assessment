@@ -273,7 +273,17 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                 const totalFindings = aiResult.findings?.length || 0;
                 const majorFindings = aiResult.findings?.filter((f: AIFinding) => f.severity === 'major').length || 0;
                 const minorFindings = totalFindings - majorFindings;
-                const consistencyScore = aiResult.consistency_score || 0;
+                
+                // Same calculation as Compliance Index: Mayor ×3, Minor ×1
+                const majorWeight = 3;
+                const minorWeight = 1;
+                const totalAnswered = result.answeredQuestions || 1;
+                const weightedDeduction = (majorFindings * majorWeight) + (minorFindings * minorWeight);
+                const maxPossibleDeduction = totalAnswered * majorWeight;
+                const calculatedScore = Math.max(0, Math.round(100 - (weightedDeduction / maxPossibleDeduction) * 100));
+                
+                // Use AI score if available, otherwise use calculated
+                const consistencyScore = aiResult.consistency_score || calculatedScore;
                 
                 return (
                   <>
@@ -313,21 +323,22 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
                           <p className="text-muted-foreground mb-2">
-                            <strong>Rumus:</strong> 100 - ((Mayor × 5 + Minor × 2) / Total Soal × 100)
+                            <strong>Rumus:</strong> 100 - ((Mayor × 3 + Minor × 1) / (Total Soal × 3) × 100)
                           </p>
                           <div className="space-y-1 text-xs">
-                            <p><span className="font-medium text-destructive">Mayor (×5):</span> Inkonsistensi berat, manipulasi jelas, bukti bertentangan</p>
-                            <p><span className="font-medium text-warning">Minor (×2):</span> Inkonsistensi ringan, gap dokumentasi kecil</p>
+                            <p><span className="font-medium text-destructive">Mayor (×3):</span> Inkonsistensi berat, manipulasi jelas, bukti bertentangan</p>
+                            <p><span className="font-medium text-warning">Minor (×1):</span> Inkonsistensi ringan, gap dokumentasi kecil</p>
                           </div>
                         </div>
                         <div className="p-3 rounded-lg bg-background/50">
                           <p className="text-xs font-medium text-muted-foreground mb-2">Detail Perhitungan:</p>
                           <div className="space-y-1 text-xs">
-                            <p>• Mayor: <span className="font-bold text-destructive">{majorFindings}</span> temuan × 5 = <span className="font-bold">{majorFindings * 5}</span></p>
-                            <p>• Minor: <span className="font-bold text-warning">{minorFindings}</span> temuan × 2 = <span className="font-bold">{minorFindings * 2}</span></p>
-                            <p>• Total Penalti: <span className="font-bold">{majorFindings * 5 + minorFindings * 2}</span></p>
+                            <p>• Mayor: <span className="font-bold text-destructive">{majorFindings}</span> × 3 = <span className="font-bold">{majorFindings * 3}</span></p>
+                            <p>• Minor: <span className="font-bold text-warning">{minorFindings}</span> × 1 = <span className="font-bold">{minorFindings * 1}</span></p>
+                            <p>• Total Penalti: <span className="font-bold">{weightedDeduction}</span></p>
+                            <p>• Maksimal Penalti: {totalAnswered} × 3 = <span className="font-bold">{maxPossibleDeduction}</span></p>
                             <p className="pt-1 border-t mt-1">
-                              • Skor: 100 - {Math.round((majorFindings * 5 + minorFindings * 2) / Math.max(result.answeredQuestions, 1) * 100)}% = <span className={`font-bold ${consistencyScore >= 80 ? 'text-success' : consistencyScore >= 60 ? 'text-warning' : 'text-destructive'}`}>{consistencyScore}%</span>
+                              • Skor: 100 - ({weightedDeduction} / {maxPossibleDeduction} × 100) = <span className={`font-bold ${consistencyScore >= 80 ? 'text-success' : consistencyScore >= 60 ? 'text-warning' : 'text-destructive'}`}>{consistencyScore}%</span>
                             </p>
                           </div>
                         </div>
