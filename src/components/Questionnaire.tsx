@@ -119,10 +119,22 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
   };
 
   const setBreakdownAnswer = (questionId: string, index: number, answer: 'Ya' | 'Tidak') => {
-    const response = getResponse(questionId);
-    const newBreakdown = [...response.breakdownAnswers];
-    newBreakdown[index] = answer;
-    updateResponse(questionId, { breakdownAnswers: newBreakdown });
+    setResponses(prev => {
+      const current = prev[questionId] || {
+        mainAnswer: null,
+        breakdownAnswers: [],
+        subQuestionAnswers: {},
+        subBreakdownAnswers: {},
+        evidenceFiles: [],
+        notes: ''
+      };
+      const newBreakdown = [...current.breakdownAnswers];
+      newBreakdown[index] = answer;
+      return {
+        ...prev,
+        [questionId]: { ...current, breakdownAnswers: newBreakdown }
+      };
+    });
   };
 
   const setSubQuestionAnswer = (questionId: string, subQuestionId: string, answer: 'Ya' | 'Tidak') => {
@@ -133,12 +145,25 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
   };
 
   const setSubBreakdownAnswer = (questionId: string, subQuestionId: string, index: number, answer: 'Ya' | 'Tidak') => {
-    const response = getResponse(questionId);
-    const currentBreakdowns = response.subBreakdownAnswers[subQuestionId] || [];
-    const newBreakdowns = [...currentBreakdowns];
-    newBreakdowns[index] = answer;
-    updateResponse(questionId, { 
-      subBreakdownAnswers: { ...response.subBreakdownAnswers, [subQuestionId]: newBreakdowns }
+    setResponses(prev => {
+      const current = prev[questionId] || {
+        mainAnswer: null,
+        breakdownAnswers: [],
+        subQuestionAnswers: {},
+        subBreakdownAnswers: {},
+        evidenceFiles: [],
+        notes: ''
+      };
+      const currentBreakdowns = current.subBreakdownAnswers[subQuestionId] || [];
+      const newBreakdowns = [...currentBreakdowns];
+      newBreakdowns[index] = answer;
+      return {
+        ...prev,
+        [questionId]: { 
+          ...current, 
+          subBreakdownAnswers: { ...current.subBreakdownAnswers, [subQuestionId]: newBreakdowns }
+        }
+      };
     });
   };
 

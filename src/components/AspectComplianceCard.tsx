@@ -277,7 +277,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
           </div>
         )}
 
-        {/* Findings Highlight */}
+        {/* Temuan Inkonsistensi */}
         {aspectFindings.length > 0 && (
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
@@ -285,7 +285,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-destructive" />
                   <span className="text-sm font-semibold text-destructive">
-                    {aspectFindings.length} Temuan Terdeteksi
+                    {aspectFindings.length} Temuan Inkonsistensi
                   </span>
                 </div>
                 {isOpen ? (
@@ -306,22 +306,41 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                     }`}
                     onClick={() => setSelectedFinding(finding)}
                   >
-                    <div className="flex items-start gap-2">
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${
-                        finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
-                      }`}>
-                        {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-foreground">{finding.ruleName}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">Soal: {finding.questionId}</p>
-                        {relatedQ && (
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                            "{relatedQ.text}"
-                          </p>
-                        )}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${
+                          finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
+                        }`}>
+                          {finding.severity === 'major' ? 'INKONSISTENSI MAYOR' : 'INKONSISTENSI MINOR'}
+                        </span>
                       </div>
-                      <Info className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground">{finding.ruleName}</p>
+                        <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
+                          <div className="flex items-center gap-1 text-primary mb-1">
+                            <FileText className="w-3 h-3" />
+                            <span className="font-medium">Soal {finding.questionId}</span>
+                          </div>
+                          {relatedQ && (
+                            <p className="text-muted-foreground line-clamp-2">
+                              "{relatedQ.text}"
+                            </p>
+                          )}
+                          {relatedQ?.answer && (
+                            <div className="mt-1 flex items-center gap-1">
+                              <span className="text-muted-foreground">Jawaban:</span>
+                              <span className={`px-1.5 py-0.5 rounded ${
+                                relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                              }`}>
+                                {relatedQ.answer}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-xs text-primary mt-2 flex items-center gap-1">
+                          <Info className="w-3 h-3" /> Klik untuk penjelasan detail
+                        </p>
+                      </div>
                     </div>
                   </div>
                 );
@@ -333,7 +352,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                   className="w-full text-primary hover:text-primary"
                   onClick={() => setShowAllFindings(true)}
                 >
-                  Lihat {aspectFindings.length - 3} temuan lainnya →
+                  Lihat {aspectFindings.length - 3} temuan inkonsistensi lainnya →
                 </Button>
               )}
             </CollapsibleContent>
@@ -354,10 +373,10 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-destructive" />
-              Semua Temuan Aspek {aspect}
+              Semua Temuan Inkonsistensi Aspek {aspect}
             </DialogTitle>
             <DialogDescription>
-              {aspectFindings.length} temuan terdeteksi pada aspek {ASPECT_SHORT_LABELS[aspect]}
+              {aspectFindings.length} inkonsistensi terdeteksi pada aspek {ASPECT_SHORT_LABELS[aspect]}
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] pr-4">
@@ -379,18 +398,44 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                         finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
                       }`}>
-                        {finding.severity === 'major' ? 'MAYOR' : 'MINOR'}
+                        {finding.severity === 'major' ? 'INKONSISTENSI MAYOR' : 'INKONSISTENSI MINOR'}
                       </span>
-                      <span className="text-xs text-muted-foreground">Soal: {finding.questionId}</span>
                     </div>
-                    <p className="text-sm font-medium text-foreground mb-1">{finding.ruleName}</p>
-                    {relatedQ && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">
-                        "{relatedQ.text}"
-                      </p>
-                    )}
+                    <p className="text-sm font-medium text-foreground mb-2">{finding.ruleName}</p>
+                    
+                    {/* Detail Soal Terkait */}
+                    <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                      <div className="flex items-center gap-1 text-primary text-xs font-medium">
+                        <FileText className="w-3 h-3" />
+                        Soal {finding.questionId}
+                      </div>
+                      {relatedQ && (
+                        <>
+                          <p className="text-xs text-foreground">
+                            "{relatedQ.text}"
+                          </p>
+                          <div className="flex items-center gap-2 text-xs">
+                            <span className="text-muted-foreground">Jawaban:</span>
+                            <span className={`px-1.5 py-0.5 rounded ${
+                              relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                            }`}>
+                              {relatedQ.answer || 'Belum dijawab'}
+                            </span>
+                            {relatedQ.cobitRef && (
+                              <>
+                                <span className="text-muted-foreground">|</span>
+                                <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">
+                                  {relatedQ.cobitRef}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    
                     <p className="text-xs text-primary mt-2 flex items-center gap-1">
-                      <Info className="w-3 h-3" /> Klik untuk detail lengkap
+                      <Info className="w-3 h-3" /> Klik untuk penjelasan lengkap inkonsistensi
                     </p>
                   </div>
                 );
@@ -400,7 +445,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
         </DialogContent>
       </Dialog>
 
-      {/* Dialog for Finding Detail */}
+      {/* Dialog for Finding Detail - Inkonsistensi */}
       <Dialog open={!!selectedFinding} onOpenChange={(open) => !open && setSelectedFinding(null)}>
         <DialogContent className="max-w-2xl max-h-[85vh]">
           {selectedFinding && (
@@ -410,108 +455,140 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                   <AlertTriangle className={`w-5 h-5 ${
                     selectedFinding.severity === 'major' ? 'text-destructive' : 'text-warning'
                   }`} />
-                  Detail Temuan
+                  Detail Inkonsistensi
                 </DialogTitle>
                 <DialogDescription>
-                  Informasi lengkap mengenai temuan yang terdeteksi
+                  Penjelasan lengkap mengapa ini terdeteksi sebagai inkonsistensi
                 </DialogDescription>
               </DialogHeader>
               <ScrollArea className="max-h-[65vh] pr-4">
                 <div className="space-y-4">
                   {/* Severity & ID */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
                       selectedFinding.severity === 'major' 
                         ? 'bg-destructive/20 text-destructive' 
                         : 'bg-warning/20 text-warning'
                     }`}>
-                      {selectedFinding.severity === 'major' ? 'TEMUAN MAYOR' : 'TEMUAN MINOR'}
+                      {selectedFinding.severity === 'major' ? 'INKONSISTENSI MAYOR' : 'INKONSISTENSI MINOR'}
                     </span>
                     <span className="text-sm text-muted-foreground">
                       ID: {selectedFinding.id}
                     </span>
                   </div>
 
-                  {/* Rule Name */}
-                  <div className="p-4 rounded-lg bg-muted/50 border">
-                    <h4 className="text-sm font-semibold text-muted-foreground mb-1">Jenis Temuan</h4>
+                  {/* Jenis Inkonsistensi */}
+                  <div className="p-4 rounded-lg bg-destructive/5 border border-destructive/20">
+                    <h4 className="text-sm font-semibold text-destructive mb-1">Jenis Inkonsistensi</h4>
                     <p className="text-base font-medium text-foreground">{selectedFinding.ruleName}</p>
+                    {selectedFinding.description && (
+                      <p className="text-sm text-muted-foreground mt-2">{selectedFinding.description}</p>
+                    )}
                   </div>
 
-                  {/* Related Question */}
+                  {/* Detail Soal yang Terlibat */}
                   <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-                    <h4 className="text-sm font-semibold text-primary mb-2 flex items-center gap-2">
+                    <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
                       <FileText className="w-4 h-4" />
-                      Soal Terkait
+                      Soal yang Terlibat dalam Inkonsistensi
                     </h4>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm">
-                        <span className="font-medium text-foreground">ID Soal:</span>
-                        <span className="px-2 py-0.5 bg-background rounded text-foreground">{selectedFinding.questionId}</span>
-                      </div>
-                      {(() => {
-                        const relatedQ = getRelatedQuestion(selectedFinding.questionId);
-                        return relatedQ ? (
-                          <>
-                            <div className="text-sm">
-                              <span className="font-medium text-foreground">Pertanyaan:</span>
-                              <p className="mt-1 text-muted-foreground bg-background p-2 rounded">
+                    <div className="space-y-3">
+                      {/* Main Question */}
+                      <div className="p-3 bg-background rounded-lg border">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">
+                            {selectedFinding.questionId}
+                          </span>
+                        </div>
+                        {(() => {
+                          const relatedQ = getRelatedQuestion(selectedFinding.questionId);
+                          return relatedQ ? (
+                            <>
+                              <p className="text-sm text-foreground mb-2">
                                 "{relatedQ.text}"
                               </p>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <span className="font-medium text-foreground">Jawaban:</span>
-                              <span className={`px-2 py-0.5 rounded ${
-                                relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
-                              }`}>
-                                {relatedQ.answer || 'Tidak dijawab'}
-                              </span>
-                            </div>
-                            {relatedQ.cobitRef && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <span className="font-medium text-foreground">Referensi COBIT:</span>
-                                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">{relatedQ.cobitRef}</span>
+                              <div className="flex items-center gap-3 text-xs flex-wrap">
+                                <div className="flex items-center gap-1">
+                                  <span className="text-muted-foreground">Jawaban:</span>
+                                  <span className={`px-2 py-0.5 rounded font-medium ${
+                                    relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                                  }`}>
+                                    {relatedQ.answer || 'Belum dijawab'}
+                                  </span>
+                                </div>
+                                {relatedQ.cobitRef && (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-muted-foreground">COBIT:</span>
+                                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">{relatedQ.cobitRef}</span>
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </>
-                        ) : null;
-                      })()}
+                            </>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Soal tidak ditemukan</p>
+                          );
+                        })()}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Explanation */}
+                  {/* Penjelasan Inkonsistensi */}
                   <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
                     <h4 className="text-sm font-semibold text-amber-800 mb-2 flex items-center gap-2">
                       <Info className="w-4 h-4" />
-                      Alasan Deteksi
+                      Mengapa Ini Inkonsistensi?
                     </h4>
                     <p className="text-sm text-amber-900 leading-relaxed">
                       {generateFindingExplanation(selectedFinding)}
                     </p>
                   </div>
 
-                  {/* Relationship */}
+                  {/* Keterkaitan Antar Soal */}
                   <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
                     <h4 className="text-sm font-semibold text-blue-800 mb-2 flex items-center gap-2">
                       <Link2 className="w-4 h-4" />
-                      Keterkaitan & Implikasi
+                      Keterkaitan & Dampak
                     </h4>
                     <p className="text-sm text-blue-900 leading-relaxed">
                       {generateRelationshipExplanation(selectedFinding)}
                     </p>
                   </div>
 
-                  {/* Recommendation */}
+                  {/* Implikasi */}
+                  <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
+                    <h4 className="text-sm font-semibold text-purple-800 mb-2 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Implikasi terhadap Compliance
+                    </h4>
+                    <p className="text-sm text-purple-900 leading-relaxed">
+                      {selectedFinding.severity === 'major' 
+                        ? 'Inkonsistensi mayor ini berpotensi menurunkan skor compliance secara signifikan. Ketidaksesuaian antara klaim dan realitas operasional menunjukkan adanya gap dalam implementasi kontrol yang perlu segera ditangani.'
+                        : 'Inkonsistensi minor ini mempengaruhi akurasi assessment secara keseluruhan. Meskipun tidak kritis, perbaikan tetap diperlukan untuk meningkatkan integritas hasil assessment.'}
+                    </p>
+                  </div>
+
+                  {/* Rekomendasi */}
                   <div className="p-4 rounded-lg bg-success/10 border border-success/30">
                     <h4 className="text-sm font-semibold text-success mb-2 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4" />
-                      Rekomendasi
+                      Rekomendasi Perbaikan
                     </h4>
-                    <p className="text-sm text-foreground leading-relaxed">
-                      {selectedFinding.severity === 'major' 
-                        ? 'Lakukan review ulang terhadap jawaban dan pastikan bukti dokumen pendukung tersedia. Pertimbangkan untuk melakukan audit internal terhadap area ini.'
-                        : 'Perhatikan temuan ini untuk perbaikan di periode assessment berikutnya. Dokumentasikan action plan untuk mitigasi risiko.'}
-                    </p>
+                    <ul className="text-sm text-foreground leading-relaxed space-y-1">
+                      {selectedFinding.severity === 'major' ? (
+                        <>
+                          <li>• Review ulang jawaban pada soal terkait untuk memastikan akurasi</li>
+                          <li>• Verifikasi ketersediaan bukti dokumen pendukung</li>
+                          <li>• Pertimbangkan audit internal terhadap area ini</li>
+                          <li>• Dokumentasikan temuan untuk follow-up assessment berikutnya</li>
+                        </>
+                      ) : (
+                        <>
+                          <li>• Perhatikan konsistensi jawaban pada area terkait</li>
+                          <li>• Lengkapi dokumentasi pendukung jika belum tersedia</li>
+                          <li>• Catat sebagai area perbaikan untuk periode berikutnya</li>
+                        </>
+                      )}
+                    </ul>
                   </div>
                 </div>
               </ScrollArea>
