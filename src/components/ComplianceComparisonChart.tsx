@@ -12,8 +12,8 @@ interface ComplianceComparisonChartProps {
 const COLORS = ['#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#0891b2', '#7c3aed', '#db2777', '#65a30d'];
 const ASPECT_COLORS = {
   A: '#dc2626',
-  B: '#ea580c', 
-  C: '#0891b2',
+  B: '#0891b2', // Swapped: was C's color
+  C: '#ea580c', // Swapped: was B's color
   D: '#16a34a'
 };
 
