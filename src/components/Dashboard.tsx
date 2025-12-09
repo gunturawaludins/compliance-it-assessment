@@ -274,13 +274,14 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                 const majorFindings = aiResult.findings?.filter((f: AIFinding) => f.severity === 'major').length || 0;
                 const minorFindings = totalFindings - majorFindings;
                 
-                // Same calculation as Compliance Index: Mayor ×3, Minor ×1
-                const majorWeight = 3;
-                const minorWeight = 1;
-                const totalAnswered = result.answeredQuestions || 1;
-                const weightedDeduction = (majorFindings * majorWeight) + (minorFindings * minorWeight);
-                const maxPossibleDeduction = totalAnswered * majorWeight;
-                const calculatedScore = Math.max(0, Math.round(100 - (weightedDeduction / maxPossibleDeduction) * 100));
+                // Formula: Skor = 100 × (1 - ((N_mayor × W_mayor) + (N_minor × W_minor)) / (Q_total × W_max))
+                const W_mayor = 3;
+                const W_minor = 1;
+                const W_max = 3;
+                const Q_total = result.answeredQuestions || 1;
+                const weightedNumerator = (majorFindings * W_mayor) + (minorFindings * W_minor);
+                const weightedDenominator = Q_total * W_max;
+                const calculatedScore = Math.max(0, Math.round(100 * (1 - (weightedNumerator / weightedDenominator))));
                 
                 // Use AI score if available, otherwise use calculated
                 const consistencyScore = aiResult.consistency_score || calculatedScore;
@@ -323,22 +324,34 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
                           <p className="text-muted-foreground mb-2">
-                            <strong>Rumus:</strong> 100 - ((Mayor × 3 + Minor × 1) / (Total Soal × 3) × 100)
+                            <strong>Rumus:</strong> Skor = 100 × (1 − ((N<sub>mayor</sub> × W<sub>mayor</sub>) + (N<sub>minor</sub> × W<sub>minor</sub>)) / (Q<sub>total</sub> × W<sub>max</sub>))
                           </p>
-                          <div className="space-y-1 text-xs">
-                            <p><span className="font-medium text-destructive">Mayor (×3):</span> Inkonsistensi berat, manipulasi jelas, bukti bertentangan</p>
-                            <p><span className="font-medium text-warning">Minor (×1):</span> Inkonsistensi ringan, gap dokumentasi kecil</p>
+                          <div className="space-y-1 text-xs mt-3">
+                            <p><span className="font-medium text-destructive">N<sub>mayor</sub>:</span> Jumlah temuan Mayor (inkonsistensi berat, manipulasi)</p>
+                            <p><span className="font-medium text-warning">N<sub>minor</sub>:</span> Jumlah temuan Minor (inkonsistensi ringan)</p>
+                            <p><span className="font-medium">W<sub>mayor</sub> = 3:</span> Bobot Mayor</p>
+                            <p><span className="font-medium">W<sub>minor</sub> = 1:</span> Bobot Minor</p>
+                            <p><span className="font-medium">Q<sub>total</sub>:</span> Total Pertanyaan</p>
+                            <p><span className="font-medium">W<sub>max</sub> = 3:</span> Bobot tertinggi per soal</p>
                           </div>
                         </div>
                         <div className="p-3 rounded-lg bg-background/50">
                           <p className="text-xs font-medium text-muted-foreground mb-2">Detail Perhitungan:</p>
                           <div className="space-y-1 text-xs">
-                            <p>• Mayor: <span className="font-bold text-destructive">{majorFindings}</span> × 3 = <span className="font-bold">{majorFindings * 3}</span></p>
-                            <p>• Minor: <span className="font-bold text-warning">{minorFindings}</span> × 1 = <span className="font-bold">{minorFindings * 1}</span></p>
-                            <p>• Total Penalti: <span className="font-bold">{weightedDeduction}</span></p>
-                            <p>• Maksimal Penalti: {totalAnswered} × 3 = <span className="font-bold">{maxPossibleDeduction}</span></p>
-                            <p className="pt-1 border-t mt-1">
-                              • Skor: 100 - ({weightedDeduction} / {maxPossibleDeduction} × 100) = <span className={`font-bold ${consistencyScore >= 80 ? 'text-success' : consistencyScore >= 60 ? 'text-warning' : 'text-destructive'}`}>{consistencyScore}%</span>
+                            <p>• N<sub>mayor</sub> = <span className="font-bold text-destructive">{majorFindings}</span>, W<sub>mayor</sub> = {W_mayor}</p>
+                            <p>• N<sub>minor</sub> = <span className="font-bold text-warning">{minorFindings}</span>, W<sub>minor</sub> = {W_minor}</p>
+                            <p>• Q<sub>total</sub> = <span className="font-bold">{Q_total}</span>, W<sub>max</sub> = {W_max}</p>
+                            <p className="pt-2 border-t mt-2">
+                              Skor = 100 × (1 − (({majorFindings} × {W_mayor}) + ({minorFindings} × {W_minor})) / ({Q_total} × {W_max}))
+                            </p>
+                            <p>
+                              = 100 × (1 − {weightedNumerator} / {weightedDenominator})
+                            </p>
+                            <p>
+                              = 100 × (1 − {(weightedNumerator / weightedDenominator).toFixed(4)})
+                            </p>
+                            <p className="pt-1">
+                              = <span className={`font-bold text-lg ${consistencyScore >= 80 ? 'text-success' : consistencyScore >= 60 ? 'text-warning' : 'text-destructive'}`}>{consistencyScore}%</span>
                             </p>
                           </div>
                         </div>
@@ -428,15 +441,20 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
 
       {/* Skor Indeks Compliance Card - Weighted Calculation */}
       {(() => {
-        // Weighted compliance calculation
+        // Formula: Skor = 100 × (1 - ((N_mayor × W_mayor) + (N_minor × W_minor)) / (Q_total × W_max))
         // Mayor = 3x weight (serious violations)
         // Minor = 1x weight (minor inconsistencies)
-        const majorWeight = 3;
-        const minorWeight = 1;
-        const totalAnswered = result.answeredQuestions || 1;
-        const weightedDeduction = (result.majorFindings * majorWeight) + (result.minorFindings * minorWeight);
-        const maxPossibleDeduction = totalAnswered * majorWeight; // If all were major
-        const complianceScore = Math.max(0, Math.round(100 - (weightedDeduction / maxPossibleDeduction) * 100));
+        const W_mayor = 3;
+        const W_minor = 1;
+        const W_max = 3; // Bobot tertinggi per soal
+        const N_mayor = result.majorFindings;
+        const N_minor = result.minorFindings;
+        const Q_total = result.answeredQuestions || 1;
+        
+        // Calculate using correct formula
+        const weightedNumerator = (N_mayor * W_mayor) + (N_minor * W_minor);
+        const weightedDenominator = Q_total * W_max;
+        const complianceScore = Math.max(0, Math.round(100 * (1 - (weightedNumerator / weightedDenominator))));
         
         return (
           <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
@@ -493,8 +511,13 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
             
             {/* Explanation tooltip */}
             <div className="mt-4 p-3 rounded-lg bg-secondary/30 text-xs text-muted-foreground">
-              <p><strong>Perhitungan:</strong> 100 - ((Mayor × 3 + Minor × 1) / (Total Soal × 3) × 100)</p>
-              <p className="mt-1"><strong>Mayor:</strong> Pelanggaran serius (tidak ada kebijakan, manipulasi jelas) | <strong>Minor:</strong> Inkonsistensi ringan</p>
+              <p><strong>Rumus:</strong> Skor = 100 × (1 − ((N<sub>mayor</sub> × W<sub>mayor</sub>) + (N<sub>minor</sub> × W<sub>minor</sub>)) / (Q<sub>total</sub> × W<sub>max</sub>))</p>
+              <p className="mt-2">
+                <strong>Detail:</strong> 100 × (1 − (({N_mayor} × {W_mayor}) + ({N_minor} × {W_minor})) / ({Q_total} × {W_max})) = 100 × (1 − {weightedNumerator} / {weightedDenominator}) = <strong>{complianceScore}%</strong>
+              </p>
+              <p className="mt-1 text-xs">
+                <strong>Keterangan:</strong> N<sub>mayor</sub>={N_mayor} (temuan mayor), W<sub>mayor</sub>={W_mayor}, N<sub>minor</sub>={N_minor} (temuan minor), W<sub>minor</sub>={W_minor}, Q<sub>total</sub>={Q_total} (total soal), W<sub>max</sub>={W_max}
+              </p>
             </div>
           </div>
         );
