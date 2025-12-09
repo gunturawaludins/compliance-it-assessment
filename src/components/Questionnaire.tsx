@@ -469,24 +469,8 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                   </Button>
                 </div>
 
-                {/* Expand/Collapse for Details */}
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between text-muted-foreground"
-                  onClick={() => setExpandedQuestion(isExpanded ? null : question.id)}
-                >
-                  <span className="flex items-center gap-2">
-                    <Info className="h-4 w-4" />
-                    Breakdown & Bukti Dokumen
-                  </span>
-                  <ChevronRight className={cn(
-                    "h-4 w-4 transition-transform",
-                    isExpanded && "rotate-90"
-                  )} />
-                </Button>
-
-                {isExpanded && (
-                  <div className="space-y-4 pt-2 border-t">
+                {/* Breakdown & Details - Always Visible */}
+                <div className="space-y-4 pt-3 mt-3 border-t">
                     {/* Breakdown Questions */}
                     {question.breakdown.length > 0 && (
                       <div className="space-y-3">
@@ -667,7 +651,6 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
                       />
                     </div>
                   </div>
-                )}
               </CardContent>
             </Card>
           );
