@@ -269,34 +269,73 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
 
             <CollapsibleContent className="mt-4 space-y-6">
               {/* Summary Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-xl bg-background/50 text-center border">
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold mb-2 ${getRiskLevelColor(aiResult.overall_risk_level || 'unknown')}`}>
-                    {getRiskLevelIcon(aiResult.overall_risk_level || 'unknown')}
-                    {(aiResult.overall_risk_level || 'N/A').toUpperCase()}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Risk Level</div>
-                </div>
-                <div className="p-4 rounded-xl bg-background/50 text-center border">
-                  <div className={`text-3xl font-bold ${
-                    (aiResult.consistency_score || 0) >= 80 ? 'text-success' : 
-                    (aiResult.consistency_score || 0) >= 60 ? 'text-warning' : 'text-destructive'
-                  }`}>
-                    {aiResult.consistency_score || 0}%
-                  </div>
-                  <div className="text-xs text-muted-foreground">Konsistensi</div>
-                </div>
-                <div className="p-4 rounded-xl bg-background/50 text-center border">
-                  <div className="text-3xl font-bold text-destructive">{aiResult.findings?.length || 0}</div>
-                  <div className="text-xs text-muted-foreground">AI Findings</div>
-                </div>
-                <div className="p-4 rounded-xl bg-background/50 text-center border">
-                  <div className="text-3xl font-bold text-warning">
-                    {aiResult.findings?.filter((f: AIFinding) => f.severity === 'major').length || 0}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Major Issues</div>
-                </div>
-              </div>
+              {(() => {
+                const totalFindings = aiResult.findings?.length || 0;
+                const majorFindings = aiResult.findings?.filter((f: AIFinding) => f.severity === 'major').length || 0;
+                const minorFindings = totalFindings - majorFindings;
+                const consistencyScore = aiResult.consistency_score || 0;
+                
+                return (
+                  <>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="p-4 rounded-xl bg-background/50 text-center border">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold mb-2 ${getRiskLevelColor(aiResult.overall_risk_level || 'unknown')}`}>
+                          {getRiskLevelIcon(aiResult.overall_risk_level || 'unknown')}
+                          {(aiResult.overall_risk_level || 'N/A').toUpperCase()}
+                        </div>
+                        <div className="text-xs text-muted-foreground">Risk Level</div>
+                      </div>
+                      <div className="p-4 rounded-xl bg-background/50 text-center border">
+                        <div className={`text-3xl font-bold ${
+                          consistencyScore >= 80 ? 'text-success' : 
+                          consistencyScore >= 60 ? 'text-warning' : 'text-destructive'
+                        }`}>
+                          {consistencyScore}%
+                        </div>
+                        <div className="text-xs text-muted-foreground">Konsistensi AI</div>
+                      </div>
+                      <div className="p-4 rounded-xl bg-background/50 text-center border">
+                        <div className="text-3xl font-bold text-destructive">{totalFindings}</div>
+                        <div className="text-xs text-muted-foreground">AI Findings</div>
+                      </div>
+                      <div className="p-4 rounded-xl bg-background/50 text-center border">
+                        <div className="text-3xl font-bold text-warning">{majorFindings}</div>
+                        <div className="text-xs text-muted-foreground">Major Issues</div>
+                      </div>
+                    </div>
+                    
+                    {/* Consistency Score Explanation */}
+                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                      <h4 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
+                        <Brain className="w-4 h-4 text-primary" />
+                        Perhitungan Skor Konsistensi AI
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-muted-foreground mb-2">
+                            <strong>Rumus:</strong> 100 - ((Mayor × 5 + Minor × 2) / Total Soal × 100)
+                          </p>
+                          <div className="space-y-1 text-xs">
+                            <p><span className="font-medium text-destructive">Mayor (×5):</span> Inkonsistensi berat, manipulasi jelas, bukti bertentangan</p>
+                            <p><span className="font-medium text-warning">Minor (×2):</span> Inkonsistensi ringan, gap dokumentasi kecil</p>
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-lg bg-background/50">
+                          <p className="text-xs font-medium text-muted-foreground mb-2">Detail Perhitungan:</p>
+                          <div className="space-y-1 text-xs">
+                            <p>• Mayor: <span className="font-bold text-destructive">{majorFindings}</span> temuan × 5 = <span className="font-bold">{majorFindings * 5}</span></p>
+                            <p>• Minor: <span className="font-bold text-warning">{minorFindings}</span> temuan × 2 = <span className="font-bold">{minorFindings * 2}</span></p>
+                            <p>• Total Penalti: <span className="font-bold">{majorFindings * 5 + minorFindings * 2}</span></p>
+                            <p className="pt-1 border-t mt-1">
+                              • Skor: 100 - {Math.round((majorFindings * 5 + minorFindings * 2) / Math.max(result.answeredQuestions, 1) * 100)}% = <span className={`font-bold ${consistencyScore >= 80 ? 'text-success' : consistencyScore >= 60 ? 'text-warning' : 'text-destructive'}`}>{consistencyScore}%</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
 
               {/* AI Findings Detail - Enhanced with Relationship Explanation */}
               {aiResult.findings && aiResult.findings.length > 0 && (
