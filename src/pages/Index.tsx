@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 const STORAGE_KEY = 'it_audit_questions';
 const RULES_KEY = 'it_audit_rules';
 const ASSESSOR_KEY = 'it_audit_assessor';
+const USER_INFO_STORAGE_KEY = 'questionnaire_user_info';
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState<'editor' | 'upload' | 'dashboard'>('editor');
@@ -19,10 +20,42 @@ export default function Index() {
   const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
 
+  // Function to load assessor info from both sources (Excel import and Questionnaire form)
+  const loadAssessorInfo = () => {
+    // First try to get from Questionnaire form (USER_INFO_STORAGE_KEY)
+    const savedUserInfo = localStorage.getItem(USER_INFO_STORAGE_KEY);
+    if (savedUserInfo) {
+      try {
+        const userInfo = JSON.parse(savedUserInfo);
+        // Map UserInfo to AssessorInfo format
+        return {
+          namaDanaPensiun: userInfo.danaPensiun || '',
+          namaPIC: userInfo.pic || '',
+          nomorHP: userInfo.noHandphone || '',
+          jabatanPIC: userInfo.jabatan || '',
+          memilikiUnitSyariah: false
+        } as AssessorInfo;
+      } catch {
+        // ignore
+      }
+    }
+    
+    // Fallback to Excel import assessor info
+    const savedAssessor = localStorage.getItem(ASSESSOR_KEY);
+    if (savedAssessor) {
+      try {
+        return JSON.parse(savedAssessor) as AssessorInfo;
+      } catch {
+        // ignore
+      }
+    }
+    
+    return undefined;
+  };
+
   useEffect(() => {
     const savedQuestions = localStorage.getItem(STORAGE_KEY);
     const savedRules = localStorage.getItem(RULES_KEY);
-    const savedAssessor = localStorage.getItem(ASSESSOR_KEY);
     
     if (savedQuestions) {
       try {
@@ -42,12 +75,10 @@ export default function Index() {
       setRules(defaultFraudRules);
     }
 
-    if (savedAssessor) {
-      try {
-        setAssessorInfo(JSON.parse(savedAssessor));
-      } catch {
-        // ignore
-      }
+    // Load assessor info from either source
+    const assessor = loadAssessorInfo();
+    if (assessor) {
+      setAssessorInfo(assessor);
     }
     
     setIsLoaded(true);
@@ -76,6 +107,12 @@ export default function Index() {
     // Clear all previous assessment data
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem('it_audit_ai_result');
+    
+    // Update assessor info from questionnaire form
+    const updatedAssessor = loadAssessorInfo();
+    if (updatedAssessor) {
+      setAssessorInfo(updatedAssessor);
+    }
     
     // Set fresh questions data
     setQuestions(submittedQuestions);
@@ -112,6 +149,7 @@ export default function Index() {
     setAssessorInfo(undefined);
     localStorage.removeItem(ASSESSOR_KEY);
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(USER_INFO_STORAGE_KEY);
     localStorage.removeItem('it_audit_ai_result');
     toast({
       title: 'Data Direset',
