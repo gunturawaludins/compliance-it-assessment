@@ -277,7 +277,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
           </div>
         )}
 
-        {/* Temuan Inkonsistensi */}
+        {/* Temuan Permasalahan Compliance */}
         {aspectFindings.length > 0 && (
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
@@ -285,7 +285,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-destructive" />
                   <span className="text-sm font-semibold text-destructive">
-                    {aspectFindings.length} Temuan Inkonsistensi
+                    {aspectFindings.length} Temuan Permasalahan Compliance
                   </span>
                 </div>
                 {isOpen ? (
@@ -298,6 +298,10 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
             <CollapsibleContent className="mt-2 space-y-2">
               {aspectFindings.slice(0, 3).map((finding) => {
                 const relatedQ = getRelatedQuestion(finding.questionId);
+                // Extract COBIT reference from finding or question
+                const cobitRef = finding.fraudType?.match(/\[([A-Z]{3}\d{2}[^\]]*)\]/)?.[1] || relatedQ?.cobitRef || '';
+                const breakdownDetail = finding.fraudType?.includes('[') ? finding.fraudType : '';
+                
                 return (
                   <div 
                     key={finding.id} 
@@ -307,38 +311,60 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                     onClick={() => setSelectedFinding(finding)}
                   >
                     <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className={`px-2 py-0.5 rounded text-xs font-medium shrink-0 ${
                           finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
                         }`}>
-                          {finding.severity === 'major' ? 'INKONSISTENSI MAYOR' : 'INKONSISTENSI MINOR'}
+                          {finding.severity === 'major' ? 'NON-COMPLIANCE MAYOR' : 'NON-COMPLIANCE MINOR'}
                         </span>
+                        {cobitRef && (
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-mono">
+                            [{cobitRef}]
+                          </span>
+                        )}
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground">{finding.ruleName}</p>
-                        <div className="mt-2 p-2 bg-muted/50 rounded text-xs">
-                          <div className="flex items-center gap-1 text-primary mb-1">
-                            <FileText className="w-3 h-3" />
-                            <span className="font-medium">Soal {finding.questionId}</span>
+                        <div className="mt-2 p-2 bg-muted/50 rounded text-xs space-y-2">
+                          {/* Detail Soal dengan Breakdown */}
+                          <div className="flex items-start gap-1">
+                            <FileText className="w-3 h-3 text-primary mt-0.5 shrink-0" />
+                            <div>
+                              <span className="font-medium text-primary">Soal {finding.questionId}</span>
+                              {breakdownDetail && (
+                                <span className="ml-1 text-muted-foreground">• Pendalaman COBIT</span>
+                              )}
+                            </div>
                           </div>
                           {relatedQ && (
-                            <p className="text-muted-foreground line-clamp-2">
+                            <p className="text-muted-foreground line-clamp-2 pl-4">
                               "{relatedQ.text}"
                             </p>
                           )}
+                          {/* Alasan Non-Compliance */}
+                          <div className="pl-4 pt-1 border-t border-dashed">
+                            <span className="text-destructive font-medium">Alasan Non-Compliance:</span>
+                            <p className="text-foreground mt-0.5">
+                              {finding.description || 'Jawaban tidak sesuai dengan standar COBIT yang ditetapkan'}
+                            </p>
+                          </div>
                           {relatedQ?.answer && (
-                            <div className="mt-1 flex items-center gap-1">
+                            <div className="pl-4 flex items-center gap-2">
                               <span className="text-muted-foreground">Jawaban:</span>
-                              <span className={`px-1.5 py-0.5 rounded ${
+                              <span className={`px-1.5 py-0.5 rounded font-medium ${
                                 relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
                               }`}>
                                 {relatedQ.answer}
+                              </span>
+                              <span className="text-muted-foreground">→</span>
+                              <span className="text-destructive text-xs">
+                                {relatedQ.answer === 'Tidak' ? 'Tidak memenuhi standar' : 'Memerlukan verifikasi bukti'}
                               </span>
                             </div>
                           )}
                         </div>
                         <p className="text-xs text-primary mt-2 flex items-center gap-1">
-                          <Info className="w-3 h-3" /> Klik untuk penjelasan detail
+                          <Info className="w-3 h-3" /> Klik untuk penjelasan detail standar compliance
                         </p>
                       </div>
                     </div>
@@ -352,7 +378,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                   className="w-full text-primary hover:text-primary"
                   onClick={() => setShowAllFindings(true)}
                 >
-                  Lihat {aspectFindings.length - 3} temuan inkonsistensi lainnya →
+                  Lihat {aspectFindings.length - 3} temuan permasalahan compliance lainnya →
                 </Button>
               )}
             </CollapsibleContent>
@@ -362,7 +388,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
         {aspectFindings.length === 0 && stats.answered > 0 && (
           <div className="p-3 rounded-xl bg-success/10 border border-success/20 flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-success" />
-            <span className="text-sm text-success font-medium">Tidak ada temuan untuk aspek ini</span>
+            <span className="text-sm text-success font-medium">Semua standar compliance terpenuhi untuk aspek ini</span>
           </div>
         )}
       </div>
@@ -373,16 +399,18 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-destructive" />
-              Semua Temuan Inkonsistensi Aspek {aspect}
+              Semua Temuan Permasalahan Compliance Aspek {aspect}
             </DialogTitle>
             <DialogDescription>
-              {aspectFindings.length} inkonsistensi terdeteksi pada aspek {ASPECT_SHORT_LABELS[aspect]}
+              {aspectFindings.length} permasalahan compliance terdeteksi pada aspek {ASPECT_SHORT_LABELS[aspect]}
             </DialogDescription>
           </DialogHeader>
           <ScrollArea className="max-h-[60vh] pr-4">
             <div className="space-y-3">
               {aspectFindings.map((finding) => {
                 const relatedQ = getRelatedQuestion(finding.questionId);
+                const cobitRef = finding.fraudType?.match(/\[([A-Z]{3}\d{2}[^\]]*)\]/)?.[1] || relatedQ?.cobitRef || '';
+                
                 return (
                   <div 
                     key={finding.id} 
@@ -394,48 +422,53 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                       setSelectedFinding(finding);
                     }}
                   >
-                    <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-start justify-between gap-2 mb-2 flex-wrap">
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                         finding.severity === 'major' ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'
                       }`}>
-                        {finding.severity === 'major' ? 'INKONSISTENSI MAYOR' : 'INKONSISTENSI MINOR'}
+                        {finding.severity === 'major' ? 'NON-COMPLIANCE MAYOR' : 'NON-COMPLIANCE MINOR'}
                       </span>
+                      {cobitRef && (
+                        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-mono">
+                          [{cobitRef}]
+                        </span>
+                      )}
                     </div>
                     <p className="text-sm font-medium text-foreground mb-2">{finding.ruleName}</p>
                     
-                    {/* Detail Soal Terkait */}
+                    {/* Detail Soal Terkait dengan Standar */}
                     <div className="p-3 bg-muted/50 rounded-lg space-y-2">
-                      <div className="flex items-center gap-1 text-primary text-xs font-medium">
+                      <div className="flex items-center gap-2 text-primary text-xs font-medium">
                         <FileText className="w-3 h-3" />
-                        Soal {finding.questionId}
+                        <span>Soal {finding.questionId}</span>
+                        {cobitRef && <span className="text-muted-foreground">• Standar: {cobitRef}</span>}
                       </div>
                       {relatedQ && (
-                        <>
-                          <p className="text-xs text-foreground">
-                            "{relatedQ.text}"
-                          </p>
-                          <div className="flex items-center gap-2 text-xs">
-                            <span className="text-muted-foreground">Jawaban:</span>
-                            <span className={`px-1.5 py-0.5 rounded ${
-                              relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
-                            }`}>
-                              {relatedQ.answer || 'Belum dijawab'}
-                            </span>
-                            {relatedQ.cobitRef && (
-                              <>
-                                <span className="text-muted-foreground">|</span>
-                                <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">
-                                  {relatedQ.cobitRef}
-                                </span>
-                              </>
-                            )}
-                          </div>
-                        </>
+                        <p className="text-xs text-foreground">
+                          "{relatedQ.text}"
+                        </p>
+                      )}
+                      {/* Alasan Non-Compliance */}
+                      <div className="pt-2 border-t border-dashed">
+                        <span className="text-destructive text-xs font-medium">Alasan Non-Compliance:</span>
+                        <p className="text-xs text-foreground mt-1">
+                          {finding.description || 'Jawaban tidak sesuai dengan standar COBIT yang ditetapkan'}
+                        </p>
+                      </div>
+                      {relatedQ && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-muted-foreground">Jawaban:</span>
+                          <span className={`px-1.5 py-0.5 rounded ${
+                            relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                          }`}>
+                            {relatedQ.answer || 'Belum dijawab'}
+                          </span>
+                        </div>
                       )}
                     </div>
                     
                     <p className="text-xs text-primary mt-2 flex items-center gap-1">
-                      <Info className="w-3 h-3" /> Klik untuk penjelasan lengkap inkonsistensi
+                      <Info className="w-3 h-3" /> Klik untuk penjelasan lengkap standar compliance
                     </p>
                   </div>
                 );
@@ -445,7 +478,7 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
         </DialogContent>
       </Dialog>
 
-      {/* Dialog for Finding Detail - Inkonsistensi */}
+      {/* Dialog for Finding Detail - Permasalahan Compliance */}
       <Dialog open={!!selectedFinding} onOpenChange={(open) => !open && setSelectedFinding(null)}>
         <DialogContent className="max-w-2xl max-h-[85vh]">
           {selectedFinding && (
@@ -455,119 +488,166 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                   <AlertTriangle className={`w-5 h-5 ${
                     selectedFinding.severity === 'major' ? 'text-destructive' : 'text-warning'
                   }`} />
-                  Detail Inkonsistensi
+                  Detail Permasalahan Compliance
                 </DialogTitle>
                 <DialogDescription>
-                  Penjelasan lengkap mengapa ini terdeteksi sebagai inkonsistensi
+                  Penjelasan detail mengapa item ini tidak memenuhi standar compliance COBIT
                 </DialogDescription>
               </DialogHeader>
               <ScrollArea className="max-h-[65vh] pr-4">
                 <div className="space-y-4">
-                  {/* Severity & ID */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      selectedFinding.severity === 'major' 
-                        ? 'bg-destructive/20 text-destructive' 
-                        : 'bg-warning/20 text-warning'
-                    }`}>
-                      {selectedFinding.severity === 'major' ? 'INKONSISTENSI MAYOR' : 'INKONSISTENSI MINOR'}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      ID: {selectedFinding.id}
-                    </span>
-                  </div>
+                  {/* Severity & COBIT Reference */}
+                  {(() => {
+                    const cobitRef = selectedFinding.fraudType?.match(/\[([A-Z]{3}\d{2}[^\]]*)\]/)?.[1] || 
+                                    getRelatedQuestion(selectedFinding.questionId)?.cobitRef || '';
+                    return (
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          selectedFinding.severity === 'major' 
+                            ? 'bg-destructive/20 text-destructive' 
+                            : 'bg-warning/20 text-warning'
+                        }`}>
+                          {selectedFinding.severity === 'major' ? 'NON-COMPLIANCE MAYOR' : 'NON-COMPLIANCE MINOR'}
+                        </span>
+                        {cobitRef && (
+                          <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-mono">
+                            Standar: [{cobitRef}]
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()}
 
-                  {/* Jenis Inkonsistensi */}
+                  {/* Jenis Permasalahan */}
                   <div className="p-4 rounded-lg bg-destructive/5 border border-destructive/20">
-                    <h4 className="text-sm font-semibold text-destructive mb-1">Jenis Inkonsistensi</h4>
+                    <h4 className="text-sm font-semibold text-destructive mb-1">Jenis Permasalahan Compliance</h4>
                     <p className="text-base font-medium text-foreground">{selectedFinding.ruleName}</p>
-                    {selectedFinding.description && (
-                      <p className="text-sm text-muted-foreground mt-2">{selectedFinding.description}</p>
-                    )}
                   </div>
 
-                  {/* Detail Soal yang Terlibat */}
+                  {/* Detail Soal & Standar COBIT */}
                   <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
                     <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
                       <FileText className="w-4 h-4" />
-                      Soal yang Terlibat dalam Inkonsistensi
+                      Detail Soal & Standar yang Tidak Terpenuhi
                     </h4>
                     <div className="space-y-3">
-                      {/* Main Question */}
+                      {/* Question Detail */}
                       <div className="p-3 bg-background rounded-lg border">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">
-                            {selectedFinding.questionId}
-                          </span>
-                        </div>
                         {(() => {
                           const relatedQ = getRelatedQuestion(selectedFinding.questionId);
-                          return relatedQ ? (
+                          const cobitRef = selectedFinding.fraudType?.match(/\[([A-Z]{3}\d{2}[^\]]*)\]/)?.[1] || relatedQ?.cobitRef || '';
+                          return (
                             <>
-                              <p className="text-sm text-foreground mb-2">
-                                "{relatedQ.text}"
-                              </p>
-                              <div className="flex items-center gap-3 text-xs flex-wrap">
-                                <div className="flex items-center gap-1">
-                                  <span className="text-muted-foreground">Jawaban:</span>
-                                  <span className={`px-2 py-0.5 rounded font-medium ${
-                                    relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
-                                  }`}>
-                                    {relatedQ.answer || 'Belum dijawab'}
+                              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                <span className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">
+                                  Soal {selectedFinding.questionId}
+                                </span>
+                                {cobitRef && (
+                                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-mono">
+                                    [{cobitRef}]
                                   </span>
-                                </div>
-                                {relatedQ.cobitRef && (
-                                  <div className="flex items-center gap-1">
-                                    <span className="text-muted-foreground">COBIT:</span>
-                                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded">{relatedQ.cobitRef}</span>
-                                  </div>
                                 )}
                               </div>
+                              {relatedQ ? (
+                                <>
+                                  <p className="text-sm text-foreground mb-3">
+                                    "{relatedQ.text}"
+                                  </p>
+                                  <div className="flex items-center gap-3 text-xs flex-wrap">
+                                    <div className="flex items-center gap-1">
+                                      <span className="text-muted-foreground">Jawaban:</span>
+                                      <span className={`px-2 py-0.5 rounded font-medium ${
+                                        relatedQ.answer === 'Ya' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                                      }`}>
+                                        {relatedQ.answer || 'Belum dijawab'}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </>
+                              ) : (
+                                <p className="text-sm text-muted-foreground">Soal tidak ditemukan</p>
+                              )}
                             </>
-                          ) : (
-                            <p className="text-sm text-muted-foreground">Soal tidak ditemukan</p>
                           );
                         })()}
                       </div>
                     </div>
                   </div>
 
-                  {/* Penjelasan Inkonsistensi */}
+                  {/* Alasan Non-Compliance Detail */}
                   <div className="p-4 rounded-lg bg-amber-50 border border-amber-200">
                     <h4 className="text-sm font-semibold text-amber-800 mb-2 flex items-center gap-2">
                       <Info className="w-4 h-4" />
-                      Mengapa Ini Inkonsistensi?
+                      Mengapa Tidak Memenuhi Standar Compliance?
                     </h4>
-                    <p className="text-sm text-amber-900 leading-relaxed">
-                      {generateFindingExplanation(selectedFinding)}
-                    </p>
+                    <div className="text-sm text-amber-900 leading-relaxed space-y-2">
+                      <p>{selectedFinding.description || generateFindingExplanation(selectedFinding)}</p>
+                      {(() => {
+                        const relatedQ = getRelatedQuestion(selectedFinding.questionId);
+                        if (relatedQ?.answer === 'Tidak') {
+                          return (
+                            <div className="mt-2 p-2 bg-amber-100 rounded">
+                              <span className="font-medium">Jawaban "Tidak"</span> menunjukkan bahwa kontrol atau kebijakan yang disyaratkan oleh standar COBIT belum diimplementasikan atau tidak berjalan dengan efektif.
+                            </div>
+                          );
+                        } else if (relatedQ?.answer === 'Ya') {
+                          return (
+                            <div className="mt-2 p-2 bg-amber-100 rounded">
+                              <span className="font-medium">Meskipun dijawab "Ya"</span>, diperlukan verifikasi lebih lanjut karena terdeteksi ketidaksesuaian dengan kontrol COBIT terkait atau bukti pendukung tidak mencukupi.
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
+                    </div>
                   </div>
 
-                  {/* Keterkaitan Antar Soal */}
+                  {/* Standar COBIT yang Dilanggar */}
                   <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
                     <h4 className="text-sm font-semibold text-blue-800 mb-2 flex items-center gap-2">
-                      <Link2 className="w-4 h-4" />
-                      Keterkaitan & Dampak
+                      <Shield className="w-4 h-4" />
+                      Standar COBIT yang Tidak Terpenuhi
                     </h4>
-                    <p className="text-sm text-blue-900 leading-relaxed">
-                      {generateRelationshipExplanation(selectedFinding)}
-                    </p>
+                    {(() => {
+                      const relatedQ = getRelatedQuestion(selectedFinding.questionId);
+                      const cobitRef = selectedFinding.fraudType?.match(/\[([A-Z]{3}\d{2}[^\]]*)\]/)?.[1] || relatedQ?.cobitRef || '';
+                      const domain = cobitRef.substring(0, 3);
+                      const domainInfo = COBIT_DOMAINS[domain as COBITDomain];
+                      
+                      return (
+                        <div className="text-sm text-blue-900 leading-relaxed space-y-2">
+                          {cobitRef && (
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-1 bg-blue-200 text-blue-800 rounded font-mono font-medium">
+                                {cobitRef}
+                              </span>
+                              {domainInfo && (
+                                <span className="text-blue-700">({domainInfo.name})</span>
+                              )}
+                            </div>
+                          )}
+                          <p>
+                            {generateRelationshipExplanation(selectedFinding)}
+                          </p>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Implikasi */}
                   <div className="p-4 rounded-lg bg-purple-50 border border-purple-200">
                     <h4 className="text-sm font-semibold text-purple-800 mb-2 flex items-center gap-2">
                       <TrendingUp className="w-4 h-4" />
-                      Implikasi terhadap Compliance
+                      Implikasi terhadap Compliance Organisasi
                     </h4>
                     <p className="text-sm text-purple-900 leading-relaxed">
                       {selectedFinding.severity === 'major' 
-                        ? 'Inkonsistensi mayor ini berpotensi menurunkan skor compliance secara signifikan. Ketidaksesuaian antara klaim dan realitas operasional menunjukkan adanya gap dalam implementasi kontrol yang perlu segera ditangani.'
-                        : 'Inkonsistensi minor ini mempengaruhi akurasi assessment secara keseluruhan. Meskipun tidak kritis, perbaikan tetap diperlukan untuk meningkatkan integritas hasil assessment.'}
+                        ? 'Permasalahan mayor ini menunjukkan gap signifikan dalam implementasi kontrol COBIT. Organisasi berpotensi tidak memenuhi standar governance TI yang dipersyaratkan, yang dapat berdampak pada keandalan sistem dan kepatuhan regulasi.'
+                        : 'Permasalahan minor ini menunjukkan area yang memerlukan perbaikan untuk mencapai compliance penuh. Meskipun tidak kritis, perbaikan diperlukan untuk meningkatkan maturitas governance TI organisasi.'}
                     </p>
                   </div>
 
-                  {/* Rekomendasi */}
+                  {/* Rekomendasi Perbaikan */}
                   <div className="p-4 rounded-lg bg-success/10 border border-success/30">
                     <h4 className="text-sm font-semibold text-success mb-2 flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4" />
@@ -576,16 +656,18 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                     <ul className="text-sm text-foreground leading-relaxed space-y-1">
                       {selectedFinding.severity === 'major' ? (
                         <>
-                          <li>• Review ulang jawaban pada soal terkait untuk memastikan akurasi</li>
-                          <li>• Verifikasi ketersediaan bukti dokumen pendukung</li>
+                          <li>• Implementasikan kontrol yang disyaratkan oleh standar COBIT terkait</li>
+                          <li>• Dokumentasikan kebijakan dan prosedur yang mendukung kontrol</li>
+                          <li>• Siapkan bukti implementasi yang dapat diverifikasi</li>
+                          <li>• Lakukan review berkala untuk memastikan kontrol berjalan efektif</li>
                           <li>• Pertimbangkan audit internal terhadap area ini</li>
-                          <li>• Dokumentasikan temuan untuk follow-up assessment berikutnya</li>
                         </>
                       ) : (
                         <>
-                          <li>• Perhatikan konsistensi jawaban pada area terkait</li>
-                          <li>• Lengkapi dokumentasi pendukung jika belum tersedia</li>
-                          <li>• Catat sebagai area perbaikan untuk periode berikutnya</li>
+                          <li>• Review implementasi kontrol pada area terkait</li>
+                          <li>• Lengkapi dokumentasi pendukung yang diperlukan</li>
+                          <li>• Identifikasi gap dan buat rencana perbaikan</li>
+                          <li>• Catat sebagai area improvement untuk periode berikutnya</li>
                         </>
                       )}
                     </ul>
