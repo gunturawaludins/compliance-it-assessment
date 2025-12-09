@@ -1,8 +1,8 @@
-import { Shield, Upload, ClipboardList, BarChart3 } from 'lucide-react';
+import { Shield, Upload, ClipboardList, BarChart3, GitCompare } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'editor' | 'upload' | 'dashboard';
-  onTabChange: (tab: 'editor' | 'upload' | 'dashboard') => void;
+  activeTab: 'editor' | 'upload' | 'dashboard' | 'compare';
+  onTabChange: (tab: 'editor' | 'upload' | 'dashboard' | 'compare') => void;
 }
 
 export function Header({ activeTab, onTabChange }: HeaderProps) {
@@ -34,16 +34,16 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
               label="Pertanyaan IT Assessment"
             />
             <TabButton
-              active={activeTab === 'upload'}
-              onClick={() => onTabChange('upload')}
-              icon={<Upload className="w-4 h-4" />}
-              label="Upload Excel"
-            />
-            <TabButton
               active={activeTab === 'dashboard'}
               onClick={() => onTabChange('dashboard')}
               icon={<BarChart3 className="w-4 h-4" />}
               label="Dashboard"
+            />
+            <TabButton
+              active={activeTab === 'compare'}
+              onClick={() => onTabChange('compare')}
+              icon={<GitCompare className="w-4 h-4" />}
+              label="Komparasi"
             />
           </nav>
         </div>
