@@ -647,31 +647,6 @@ export function AspectComplianceCard({ aspect, questions, findings }: AspectComp
                     </p>
                   </div>
 
-                  {/* Rekomendasi Perbaikan */}
-                  <div className="p-4 rounded-lg bg-success/10 border border-success/30">
-                    <h4 className="text-sm font-semibold text-success mb-2 flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4" />
-                      Rekomendasi Perbaikan
-                    </h4>
-                    <ul className="text-sm text-foreground leading-relaxed space-y-1">
-                      {selectedFinding.severity === 'major' ? (
-                        <>
-                          <li>• Implementasikan kontrol yang disyaratkan oleh standar COBIT terkait</li>
-                          <li>• Dokumentasikan kebijakan dan prosedur yang mendukung kontrol</li>
-                          <li>• Siapkan bukti implementasi yang dapat diverifikasi</li>
-                          <li>• Lakukan review berkala untuk memastikan kontrol berjalan efektif</li>
-                          <li>• Pertimbangkan audit internal terhadap area ini</li>
-                        </>
-                      ) : (
-                        <>
-                          <li>• Review implementasi kontrol pada area terkait</li>
-                          <li>• Lengkapi dokumentasi pendukung yang diperlukan</li>
-                          <li>• Identifikasi gap dan buat rencana perbaikan</li>
-                          <li>• Catat sebagai area improvement untuk periode berikutnya</li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
                 </div>
               </ScrollArea>
             </>

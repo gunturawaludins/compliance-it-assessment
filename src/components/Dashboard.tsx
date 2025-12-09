@@ -298,18 +298,6 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                 </div>
               </div>
 
-              {/* Analysis Summary - Written Explanation */}
-              {aiResult.analysis_summary && (
-                <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                  <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-primary" />
-                    Ringkasan Analisis AI
-                  </h4>
-                  <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                    {aiResult.analysis_summary}
-                  </p>
-                </div>
-              )}
               
               {/* COBIT Compliance Summary */}
               {aiResult.cobit_compliance_summary && (
@@ -423,15 +411,6 @@ export function Dashboard({ questions, rules, onAnalyze, assessorInfo }: Dashboa
                         {/* Description */}
                         <p className="text-sm text-foreground mb-3 leading-relaxed">{finding.description}</p>
                         
-                        {/* Recommendation */}
-                        {finding.recommendation && (
-                          <div className="p-3 rounded-lg bg-success/10 border border-success/20">
-                            <p className="text-xs font-semibold text-success mb-1">Rekomendasi Perbaikan:</p>
-                            <p className="text-sm text-success">
-                              {finding.recommendation}
-                            </p>
-                          </div>
-                        )}
                       </div>
                     ))}
                   </div>
