@@ -56,10 +56,12 @@ export interface FraudRule {
   conditionQuestionId: string;
   conditionAnswer: 'Ya' | 'Tidak';
   evidenceQuestionId: string;
-  evidenceCondition: 'empty' | 'Tidak';
+  evidenceCondition: 'empty' | 'Tidak' | 'harus Ya';
   severity: 'major' | 'minor';
-  fraudType: 'Manipulasi Administratif' | 'Operasional Fiktif' | 'Inkonsistensi Kebijakan' | 'Bukti Tidak Memadai';
+  fraudType: string;
   cobitRef?: string;
+  cobitDomain?: COBITDomain;
+  cobitProcess?: string;
 }
 
 export interface FraudFinding {
