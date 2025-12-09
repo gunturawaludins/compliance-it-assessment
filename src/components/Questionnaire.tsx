@@ -108,10 +108,15 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
   };
 
   const updateResponse = (questionId: string, updates: Partial<QuestionResponse>) => {
-    setResponses(prev => ({
-      ...prev,
-      [questionId]: { ...getResponse(questionId), ...updates }
-    }));
+    setResponses(prev => {
+      const newState = {
+        ...prev,
+        [questionId]: { ...getResponse(questionId), ...updates }
+      };
+      // Save immediately to localStorage
+      localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newState));
+      return newState;
+    });
   };
 
   const setMainAnswer = useCallback((questionId: string, answer: 'Ya' | 'Tidak') => {
@@ -272,6 +277,8 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
       };
     });
     
+    // Save immediately to localStorage
+    localStorage.setItem(RESPONSES_STORAGE_KEY, JSON.stringify(newResponses));
     setResponses(newResponses);
     toast({
       title: 'Auto Random Answer',
