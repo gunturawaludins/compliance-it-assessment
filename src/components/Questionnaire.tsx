@@ -412,8 +412,7 @@ export function Questionnaire({ onSubmit, initialQuestions }: QuestionnaireProps
       }
     });
 
-    // Clear localStorage after successful submit
-    localStorage.removeItem(RESPONSES_STORAGE_KEY);
+    // Keep responses in localStorage after submit (don't clear)
     
     onSubmit(result);
     toast({
