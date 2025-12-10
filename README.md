@@ -23,5 +23,4 @@ This tool compares claimed policies (governance) against operational evidence an
 
 ## Notes
 
-- This repo no longer uses external "Lovable" tooling; project files and configuration are self-contained.
 - To run locally, ensure Node.js and npm/yarn are installed.

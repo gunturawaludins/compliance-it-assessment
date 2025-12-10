@@ -190,7 +190,7 @@ export default function Index() {
       <footer className="border-t border-border/50 py-4 mt-8">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-sm text-muted-foreground">
-            IT Audit Fraud Detector - COBIT 2019 Framework &copy; {new Date().getFullYear()}
+            IT Compliance Assessments - COBIT 2019 Framework &copy; {new Date().getFullYear()}
           </p>
           <button
             onClick={handleResetData}

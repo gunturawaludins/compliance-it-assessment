@@ -70,11 +70,6 @@ serve(async (req) => {
 
   try {
     const { questions }: ValidationRequest = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
 
     // Filter to focus on Aspect B (Kebijakan dan Prosedur)
     const aspectBQuestions = questions.filter(q => q.category === 'B' || q.id.startsWith('B.'));
@@ -349,13 +344,14 @@ INSTRUKSI ANALISIS:
     console.log(`Processing AI NLP validation for ${answeredQuestions.length} Aspect B questions`);
     console.log(`Pre-analysis found ${preAnalysis.length} potential inconsistencies`);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    // Note: AI validation API endpoint not configured
+    // const response = await fetch("https://api.example.com/v1/chat/completions", {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: `Bearer ${API_KEY}`,
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
